@@ -6,7 +6,9 @@ Library with classes for the stuff you would otherwise build in every single pro
 
 ## Versioning
 
-We use [SemVer](http://semver.org/), which means you can depend on RapidCore version `<major>.*`.
+We use [SemVer](http://semver.org/), which means you can depend on RapidCore version `<major>.*`
+
+It also means that while the major version is `0`, the APIs should be considered unstable.
 
 ## Issues
 
