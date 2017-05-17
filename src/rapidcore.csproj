@@ -19,6 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
