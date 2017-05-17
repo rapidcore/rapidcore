@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/bbbp2vpe1xeol2er/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore-mongo/branch/master)
+
 # RapidCore.Mongo
 
 RapidCore classes that depend on MongoDB.
