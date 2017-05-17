@@ -11,13 +11,24 @@ namespace RapidCore.IO.FileSystem
         /// <param name="path">
         /// the path
         /// </param>
-        /// <param name="extension">
+        /// <param name="searchPattern">
         /// the files extension
         /// </param>
         /// <returns>
         /// the items in the path
         /// </returns>
-        IEnumerable<string> List(string path, string extension = "*.*");
+        IEnumerable<string> List(string path, string searchPattern);
+
+        /// <summary>
+        /// List the items in a given path
+        /// </summary>
+        /// <param name="path">
+        /// the path
+        /// </param>
+        /// <returns>
+        /// the items in the path
+        /// </returns>
+        IEnumerable<string> List(string path);
 
         /// <summary>
         /// Get the current working directory
@@ -61,7 +72,7 @@ namespace RapidCore.IO.FileSystem
         /// <returns>
         /// FileStream of the file
         /// </returns>
-        FileStream OpenReadFile(string path);
+        Stream OpenReadFile(string path);
 
         /// <summary>
         /// Determines whether the given path is actually a csproj file or a path
@@ -84,5 +95,39 @@ namespace RapidCore.IO.FileSystem
         /// the content
         /// </returns>
         string LoadContent(string filePath);
+
+        /// <summary>
+        /// Get the file name and extension of the specified path string
+        /// </summary>
+        /// <param name="path">
+        /// the path
+        /// </param>
+        /// <returns>
+        /// the filename and extension
+        /// </returns>
+        string GetFileName(string path);
+
+        /// <summary>
+        /// Determines whether the given path is
+        ///  an existing directory
+        /// </summary>
+        /// <param name="path">
+        /// the path
+        /// </param>
+        /// <returns>
+        /// whether the directory exists or not
+        /// </returns>
+        bool DirectoryExists(string path);
+
+        /// <summary>
+        /// Creates a directory
+        /// </summary>
+        /// <param name="path">
+        /// the path to create the directory in
+        /// </param>
+        /// <returns>
+        /// the directory info
+        /// </returns>
+        FileSystemInfo CreateDirectory(string path);
     }
 }
