@@ -4,6 +4,8 @@
 
 Library with classes for the stuff you would otherwise build in every single project.
 
+We target `NetStandard1.0` to include as many .NET runtimes as possible, while still having access to as many features as possible (see [Microsoft's version matrix](https://github.com/dotnet/standard/blob/master/docs/versions.md)).
+
 ## Versioning
 
 We use [SemVer](http://semver.org/), which means you can depend on RapidCore version `<major>.*`
