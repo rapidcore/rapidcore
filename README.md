@@ -3,3 +3,11 @@
 # RapidCore
 
 Library with classes for the stuff you would otherwise build in every single project.
+
+## Versioning
+
+We use [SemVer](http://semver.org/), which means you can depend on RapidCore version `<major>.*`.
+
+## Issues
+
+Issues should be reported in https://github.com/rapidcore/issues/issues
