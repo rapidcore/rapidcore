@@ -70,7 +70,7 @@ namespace RapidCore.IO.FileSystem
         /// the path
         /// </param>
         /// <returns>
-        /// FileStream of the file
+        /// Stream of the file
         /// </returns>
         Stream OpenReadFile(string path);
 

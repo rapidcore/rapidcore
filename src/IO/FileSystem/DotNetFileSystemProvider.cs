@@ -7,14 +7,18 @@ namespace RapidCore.IO.FileSystem
 {
     public class DotNetFileSystemProvider : IFileSystemProvider
     {
-        public FileStream OpenReadFile(string path)
+        /// <summary>
+        /// Opens an existing file for reading
+        /// </summary>
+        /// <param name="path">
+        /// the path
+        /// </param>
+        /// <returns>
+        /// Stream of the file
+        /// </returns>
+        public Stream OpenReadFile(string path)
         {
             return File.OpenRead(path);
-        }
-
-        Stream IFileSystemProvider.OpenReadFile(string path)
-        {
-            return OpenReadFile(path);
         }
 
         /// <summary>
