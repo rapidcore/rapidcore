@@ -14,12 +14,14 @@ namespace RapidCore.UnitTests.IO.FileSystem
         private string _assemblyPath;
         private string _filesPath;
         private string _originFilesPath;
+        private string _localFilesFolder;
 
         public DotNetFileSystemProviderTest()
         {
             _fileSystem = new DotNetFileSystemProvider();
             _assemblyPath = Path.GetDirectoryName(typeof(DotNetFileSystemProviderTest).GetTypeInfo().Assembly.Location);
-            _filesPath = Path.Combine(_assemblyPath, $"IO{Path.DirectorySeparatorChar}FileSystem{Path.DirectorySeparatorChar}Files");
+            _localFilesFolder = $"IO{Path.DirectorySeparatorChar}FileSystem{Path.DirectorySeparatorChar}Files";
+            _filesPath = Path.Combine(_assemblyPath, _localFilesFolder);
             _originFilesPath = Path.Combine(_assemblyPath, $"IO{Path.DirectorySeparatorChar}FileSystem{Path.DirectorySeparatorChar}OriginFolder");
         }
 
@@ -70,7 +72,12 @@ namespace RapidCore.UnitTests.IO.FileSystem
 
             Assert.Contains(srcFile, srcFolder);
             Assert.DoesNotContain(dstFile, dstFolder);
+        }
 
+        [Fact]
+        public void Can_CombinePaths()
+        {
+            Assert.Equal(_fileSystem.CombinePath(_assemblyPath, _localFilesFolder), Path.Combine(_assemblyPath, _localFilesFolder));
         }
     }
 }
