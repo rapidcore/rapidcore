@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>RapidCore</RootNamespace>
     <Version>0.3.0</Version>
     <Title>RapidCore</Title>
@@ -29,8 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.IO.FileSystem">
-      <HintPath>..\..\..\.nuget\packages\system.io.filesystem\4.3.0\ref\netstandard1.3\System.IO.FileSystem.dll</HintPath>
-    </Reference>
+    <Reference Include="System.IO.FileSystem" />
   </ItemGroup>
 </Project>
