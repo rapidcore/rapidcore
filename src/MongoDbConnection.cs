@@ -37,12 +37,23 @@ namespace RapidCore.Mongo
         /// <param name="collectionName">The collection to work on</param>
         /// <param name="doc">The document to upsert</param>
         /// <param name="filter">Filter for finding the document to replace</param>
-        /// <returns></returns>
         public virtual Task UpsertAsync<TDocument>(string collectionName, TDocument doc, Expression<Func<TDocument, bool>> filter)
         {
             return this.mongoDb
                 .GetCollection<TDocument>(collectionName)
                 .ReplaceOneAsync(filter, doc, new UpdateOptions { IsUpsert = true });
+        }
+
+        /// <summary>
+        /// Run an async delete query
+        /// </summary>
+        /// <param name="collectionName">The collection to work on</param>
+        /// <param name="filter">Filter for finding the documents to delete</param>
+        public virtual Task DeleteAsync<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter)
+        {
+            return this.mongoDb
+                .GetCollection<TDocument>(collectionName)
+                .DeleteManyAsync(filter);
         }
     }
 }

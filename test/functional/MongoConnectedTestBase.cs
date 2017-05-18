@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MongoDB.Driver;
 
 namespace RapidCore.Mongo.FunctionalTests
@@ -44,6 +45,11 @@ namespace RapidCore.Mongo.FunctionalTests
         protected void Insert<TDocument>(string collectionName, TDocument doc)
         {
             GetDb().GetCollection<TDocument>(collectionName).InsertOne(doc);
+        }
+
+        protected IList<TDocument> GetAll<TDocument>(string collectionName)
+        {
+            return GetDb().GetCollection<TDocument>(collectionName).Find(filter => true).ToList();
         }
     }
 }

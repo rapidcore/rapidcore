@@ -59,7 +59,7 @@ namespace RapidCore.Mongo.FunctionalTests
         }
 
         [Fact]
-        public async Task Upsert_Can_Insert_and_Update()
+        public async Task UpsertAsync_Can_Insert_and_Update()
         {
             EnsureEmptyCollection(collectionName);
 
@@ -80,6 +80,23 @@ namespace RapidCore.Mongo.FunctionalTests
 
             Assert.NotNull(updatedDocument);
             Assert.Equal("bye", updatedDocument.String);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_deletesAllMatches()
+        {
+            EnsureEmptyCollection(collectionName);
+
+            Insert<Document>(collectionName, new Document { String = "one", Aux = "deleteMe" });
+            Insert<Document>(collectionName, new Document { String = "two", Aux = "keep" });
+            Insert<Document>(collectionName, new Document { String = "thr", Aux = "deleteMe" });
+            
+            await connection.DeleteAsync<Document>(collectionName, filter => filter.Aux == "deleteMe");
+
+            var actual = GetAll<Document>(collectionName);
+
+            Assert.Equal(1, actual.Count);
+            Assert.Equal("two", actual[0].String);
         }
 
         #region Test document
