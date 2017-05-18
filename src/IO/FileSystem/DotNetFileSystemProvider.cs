@@ -18,20 +18,6 @@ namespace RapidCore.IO.FileSystem
         }
 
         /// <summary>
-        /// Determines whether the given path is actually a csproj file
-        /// </summary>
-        /// <param name="path">
-        /// the path
-        /// </param>
-        /// <returns>
-        /// whether it is a cs.proj file
-        /// </returns>
-        public bool IsCsProjectFile(string path)
-        {
-            return File.Exists(path) && path.EndsWith(".csproj");
-        }
-
-        /// <summary>
         /// List the files of the given path
         /// </summary>
         /// <param name="path">

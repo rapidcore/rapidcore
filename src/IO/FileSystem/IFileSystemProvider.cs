@@ -75,17 +75,6 @@ namespace RapidCore.IO.FileSystem
         Stream OpenReadFile(string path);
 
         /// <summary>
-        /// Determines whether the given path is actually a csproj file or a path
-        /// </summary>
-        /// <param name="path">
-        /// the path
-        /// </param>
-        /// <returns>
-        /// whether it is a cs.proj file
-        /// </returns>
-        bool IsCsProjectFile(string path);
-
-        /// <summary>
         /// Loads all the content from the given file path as a string
         /// </summary>
         /// <param name="filePath">
