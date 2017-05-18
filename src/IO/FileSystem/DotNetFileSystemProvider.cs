@@ -63,6 +63,15 @@ namespace RapidCore.IO.FileSystem
             return Directory.GetCurrentDirectory();
         }
 
+        /// <summary>
+        /// Moves a file
+        /// </summary>
+        /// <param name="sourceFile">
+        /// The source file
+        /// </param>
+        /// <param name="destFile">
+        /// The destination file
+        /// </param>
         public void Move(string sourceFile, string destFile)
         {
             File.Move(sourceFile, destFile);
