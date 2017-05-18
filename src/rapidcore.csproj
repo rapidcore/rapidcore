@@ -27,8 +27,4 @@
     <None Remove="../stylecop.json" />
     <AdditionalFiles Include="../stylecop.json" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.IO.FileSystem" />
-  </ItemGroup>
 </Project>
