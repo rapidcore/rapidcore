@@ -63,6 +63,29 @@ namespace RapidCore.Reflection
             return method.Invoke(instance, null);
         }
 
+        /// <summary>
+        /// Invoke property setter recursively
+        /// </summary>
+        /// <param name="instance">The instance</param>
+        /// <param name="propertyName">The name of the property</param>
+        /// <parma name="value">The value to set</param>
+        /// <exception cref="System.MissingMethodException">Thrown if the property does not have a setter</exception>
+        /// <exception cref="System.MissingMemberException">Thrown if the property does not exist</exception>
+        public static void InvokeSetterRecursively(this object instance, string propertyName, object value)
+        {
+            var method = instance
+                .GetType()
+                .GetPropertyRecursively(propertyName)
+                .SetMethod;
+
+            if (method == null)
+            {
+                throw new MissingMethodException($"The property {propertyName} does not have a setter");
+            }
+
+            method.Invoke(instance, new object[] { value });
+        }
+
         private static Type[] GetTypeArray(object[] args)
         {
             return args.Select(a => a.GetType()).ToArray();

@@ -117,6 +117,41 @@ namespace RapidCore.UnitTests.Reflection
             Assert.ThrowsAny<MissingMemberException>(() => guineaPig.InvokeGetterRecursively("DoesNotExist"));
         }
 
+        [Fact]
+        public void InvokeSetterRecursively_GetterAndSetter_inFirstLayer()
+        {
+            guineaPig.InvokeSetterRecursively("GetterAndSetter", "hephey");
+
+            Assert.Equal("hephey", guineaPig.GetterAndSetter);
+        }
+
+        [Fact]
+        public void InvokeSetterRecursively_GetterAndSetter_inNextLayer()
+        {
+            guineaPig.InvokeSetterRecursively("AllAboutThatBase", "hephey");
+
+            Assert.Equal("hephey", guineaPig.AllAboutThatBase);
+        }
+
+        [Fact]
+        public void InvokeSetterRecursively_Throws_ifThereIsNoSetter()
+        {
+            try
+            {
+                guineaPig.InvokeSetterRecursively("Getter", "!");
+            }
+            catch (MissingMethodException ex)
+            {
+                Assert.Equal("The property Getter does not have a setter", ex.Message);
+            }
+        }
+
+        [Fact]
+        public void InvokeSetterRecursively_Throws_ifThePropertyDoesNotExist()
+        {
+            Assert.ThrowsAny<MissingMemberException>(() => guineaPig.InvokeSetterRecursively("DoesNotExist", "!"));
+        }
+
         #region GuineaPig
         private class GuineaPig : GuineaPigBase
         {
