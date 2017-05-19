@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using MongoDB.Bson;
 using RapidCore.Mongo.Internal;
 using Xunit;
 
@@ -30,31 +31,28 @@ namespace RapidCore.Mongo.FunctionalTests
             var actual = GetDb().GetCollection<SimpleIndexes>(collectionName).Indexes.List();
             actual.MoveNext();
             
-            var expectedIndexes = new Dictionary<string, bool> {
-                { "String", false },
-                { "Int", false }
-            };
-            var numberOfIndexes = 0;
+            var indexes = new Dictionary<string, BsonDocument>();
+
             foreach (var index in actual.Current)
             {
-                Assert.Equal(1, index.ElementCount);
-                numberOfIndexes += 1;
-
-                expectedIndexes[index.GetElement(0).Name] = true;
+                indexes[index.GetElement("name").Value.AsString] = index;
             }
 
-            Assert.Equal(2, numberOfIndexes);
-            Assert.True(expectedIndexes["String"]);
-            Assert.True(expectedIndexes["Int"]);
+            Assert.Equal(4, indexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("String", 1), indexes["string_index"].GetElement("key").Value);
+            Assert.Equal(new BsonDocument().Add("Int", 1), indexes["Int_1"].GetElement("key").Value);
+            Assert.Equal(new BsonDocument().Add("Int", 1).Add("String", 1), indexes["compound_index"].GetElement("key").Value);
         }
 
         #region Simple indexes
         private class SimpleIndexes
         {
             [Index("string_index")]
+            [Index("compound_index", Order = 2)]
             public string String { get; set; }
 
-            [Index("int_index")]
+            [Index]
+            [Index("compound_index", Order = 1)]
             public int Int { get; set; }
         }
         #endregion

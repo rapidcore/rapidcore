@@ -13,11 +13,6 @@ namespace RapidCore.Mongo
     {
         public void EnsureIndexes(IMongoDatabase lowLevelDb, Assembly assembly, string entityNamespace)
         {
-            // lowLevelDb.GetCollection<Hello>("hello").Indexes.CreateOne("{ Yo: 1 }");
-            // lowLevelDb.GetCollection<Hello>("hello").Indexes.GetType().ListMethodsRecursively();
-            // throw new Exception("Die");
-
-
             var types = from t in assembly.DefinedTypes
                         from p in t.GetProperties()
                         where t.Namespace == entityNamespace
@@ -30,14 +25,6 @@ namespace RapidCore.Mongo
                 {
                     // make the following call:
                     // lowLevelDb.GetCollection<TDocument>("collectionName").Indexes.CreateOne(index.GetKeySpec(), index.GetOptions())
-
-                    // var dbType = lowLevelDb.GetType();
-                    // var dbTypeInfo = dbType.GetTypeInfo();
-                    // var dbMethod = dbTypeInfo.GetDeclaredMethod("GetCollection");
-                    // var dbMethodGeneric = dbMethod.MakeGenericMethod(new Type[] { index.DocumentType });
-
-                    // var dbInvoke = dbMethodGeneric.Invoke(lowLevelDb, new object[] { index.Collection, null });
-
                     var mongoCollection = lowLevelDb
                         .GetType()
                         .GetTypeInfo()
@@ -54,10 +41,6 @@ namespace RapidCore.Mongo
 
                     var ciType = collectionIndexes.GetType();
                     var ciTypeInfo = ciType.GetTypeInfo().BaseType.GetTypeInfo();
-                    // ciTypeInfo.ListMethodsRecursively();
-                    //
-                    // var ciMethod = ciTypeInfo.GetDeclaredMethod("CreateOne");
-                    // var ciInvoke = ciMethod.Invoke(collectionIndexes, new object[] { index.GetKeySpec(), index.GetOptions(), null });
 
                     collectionIndexes
                         .GetType()
@@ -65,7 +48,7 @@ namespace RapidCore.Mongo
                         .BaseType // because CreateOne is not declared on MongoIndexManager, but on the base class
                         .GetTypeInfo()
                         .GetDeclaredMethod("CreateOne")
-                        .Invoke(collectionIndexes, new object[] { index.GetKeySpecAsAlalalaa(), index.GetOptions(), null });
+                        .Invoke(collectionIndexes, new object[] { index.GetKeySpec(), index.GetOptions(), null });
                 });
             }
         }

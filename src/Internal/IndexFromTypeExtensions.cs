@@ -26,7 +26,7 @@ namespace RapidCore.Mongo.Internal
                             var attribute = (IndexAttribute)a;
                             IndexDefinition def;
 
-                            if (definitions.ContainsKey(attribute.Name))
+                            if (!string.IsNullOrEmpty(attribute.Name) && definitions.ContainsKey(attribute.Name))
                             {
                                 def = definitions[attribute.Name];
                             }
@@ -37,7 +37,9 @@ namespace RapidCore.Mongo.Internal
                                 def.Collection = type.GetCollectionName();
                                 def.Name = attribute.Name;
 
-                                definitions.Add(attribute.Name, def);
+                                var lookupName = def.Name ?? prop.Name;
+
+                                definitions.Add(lookupName, def);
                             }
 
                             def.Update(attribute, prop.Name);

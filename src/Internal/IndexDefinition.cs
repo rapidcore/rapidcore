@@ -25,33 +25,15 @@ namespace RapidCore.Mongo.Internal
             Keys.Add(new IndexKey { Name = field, Order = attribute.Order });
         }
 
-        public virtual string GetKeySpec()
+        /// <summary>
+        /// Generates an IndexKeysDefinition instance for this index
+        /// </summary>
+        /// <returns>BsonDocumentIndexKeysDefinition<DocumentType></returns>
+        public virtual object GetKeySpec()
         {
-            var sb = new StringBuilder();
-
-            Keys.OrderBy(k => k.Order).ToList().ForEach(k => sb.Append($"{k.Name} : 1"));
-
-            return $"{{ {sb.ToString()} }}";
+            var indexDefinitionsType = typeof(BsonDocumentIndexKeysDefinition<>).MakeGenericType(DocumentType);
+            return Activator.CreateInstance(indexDefinitionsType, GetKeySpecBsonDocument());
         }
-
-        public virtual BsonDocument GetKeySpecAsAlalalaa()
-        {
-            var doc = new BsonDocument();
-
-            Keys
-                .OrderBy(k => k.Order)
-                .ToList()
-                .ForEach(k => {
-                    doc.Add(k.Name, 1);
-                });
-
-            return doc;
-        }
-
-        // public virtual object GetKeySpecBababababa()
-        // {
-        //     typeof(IndexKeysDefinition).MakeGenericType(DocumentType);
-        // }
 
         public virtual CreateIndexOptions GetOptions()
         {
@@ -59,8 +41,24 @@ namespace RapidCore.Mongo.Internal
 
             options.Background = true;
             options.Sparse = Sparse;
+            options.Name = Name;
 
             return options;
+        }
+
+        private BsonDocument GetKeySpecBsonDocument()
+        {
+            var doc = new BsonDocument();
+
+            Keys
+                .OrderBy(k => k.Order)
+                .ToList()
+                .ForEach(k =>
+                {
+                    doc.Add(k.Name, 1);
+                });
+
+            return doc;
         }
     }
 }

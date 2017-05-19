@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/rapidcore/rapidcore.mongo/</RepositoryUrl>
     <PackageId>RapidCore.Mongo</PackageId>
     <Company>SKARP ApS</Company>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
