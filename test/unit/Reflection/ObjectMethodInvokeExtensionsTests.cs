@@ -70,6 +70,53 @@ namespace RapidCore.UnitTests.Reflection
             Assert.Equal("hello from the base of Attribute", actual);
         }
 
+        [Fact]
+        public void InvokeGetterRecursively_GetterAndSetter_inFirstLayer()
+        {
+            guineaPig.GetterAndSetter = "yo";
+
+            var actual = guineaPig.InvokeGetterRecursively("GetterAndSetter");
+
+            Assert.Equal("yo", actual);
+        }
+
+        [Fact]
+        public void InvokeGetterRecursively_GetterAndSetter_inNextLayer()
+        {
+            guineaPig.AllAboutThatBase = "aahhhhh yeah";
+
+            var actual = guineaPig.InvokeGetterRecursively("AllAboutThatBase");
+
+            Assert.Equal("aahhhhh yeah", actual);
+        }
+
+        [Fact]
+        public void InvokeGetterRecursively_Getter_inFirstLayer()
+        {
+            var actual = guineaPig.InvokeGetterRecursively("Getter");
+
+            Assert.Equal("getter only", actual);
+        }
+
+        [Fact]
+        public void InvokeGetterRecursively_Throws_ifThereIsNoGetter()
+        {
+            try
+            {
+                guineaPig.InvokeGetterRecursively("SetterOnly");
+            }
+            catch (MissingMethodException ex)
+            {
+                Assert.Equal("The property SetterOnly does not have a getter", ex.Message);
+            }
+        }
+
+        [Fact]
+        public void InvokeGetterRecursively_Throws_ifThePropertyDoesNotExist()
+        {
+            Assert.ThrowsAny<MissingMemberException>(() => guineaPig.InvokeGetterRecursively("DoesNotExist"));
+        }
+
         #region GuineaPig
         private class GuineaPig : GuineaPigBase
         {
@@ -82,11 +129,27 @@ namespace RapidCore.UnitTests.Reflection
             public int ZeroParamsWithReturn() { return 666; }
 
             public string Generic<T>(string b) { return $"{b} {typeof(T).Name}"; }
+
+            public string GetterAndSetter { get; set; }
+
+            public string Getter => "getter only";
+
+            private string setterOnly;
+
+            public string SetterOnly
+            {
+                set
+                {
+                    setterOnly = value;
+                }
+            }
         }
 
         private abstract class GuineaPigBase
         {
             public string Generic<T>(string b, string c) { return $"{b} {c} {typeof(T).Name}"; }
+
+            public string AllAboutThatBase { get; set; }
         }
         #endregion
     }

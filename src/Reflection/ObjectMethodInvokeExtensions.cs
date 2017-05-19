@@ -40,6 +40,29 @@ namespace RapidCore.Reflection
                 .Invoke(instance, args);
         }
 
+        /// <summary>
+        /// Invoke property getter recursively
+        /// </summary>
+        /// <param name="instance">The instance</param>
+        /// <param name="propertyName">The name of the property</param>
+        /// <returns>The value of the property</returns>
+        /// <exception cref="System.MissingMethodException">Thrown if the property does not have a getter</exception>
+        /// <exception cref="System.MissingMemberException">Thrown if the property does not exist</exception>
+        public static object InvokeGetterRecursively(this object instance, string propertyName)
+        {
+            var method = instance
+                .GetType()
+                .GetPropertyRecursively(propertyName)
+                .GetMethod;
+
+            if (method == null)
+            {
+                throw new MissingMethodException($"The property {propertyName} does not have a getter");
+            }
+
+            return method.Invoke(instance, null);
+        }
+
         private static Type[] GetTypeArray(object[] args)
         {
             return args.Select(a => a.GetType()).ToArray();
