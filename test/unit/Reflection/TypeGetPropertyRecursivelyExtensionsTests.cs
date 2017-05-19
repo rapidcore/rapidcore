@@ -26,14 +26,9 @@ namespace RapidCore.UnitTests.Reflection
         [Fact]
         public void GetPropertyRecursively_throwsIfNoSuchProperty()
         {
-            try
-            {
-                typeof(GuineaPig).GetPropertyRecursively("DoesNotExist");
-            }
-            catch (MissingMemberException ex)
-            {
-                Assert.Equal("Could not find a property called DoesNotExist", ex.Message);
-            }
+            var ex = Assert.Throws<MissingMemberException>(() => typeof(GuineaPig).GetPropertyRecursively("DoesNotExist"));
+
+            Assert.Equal("Could not find a property called DoesNotExist", ex.Message);
         }
 
         #region GuineaPig

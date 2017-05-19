@@ -58,53 +58,35 @@ namespace RapidCore.UnitTests.Reflection
         [Fact]
         public void GetMethodRecursively_Throws_ifMethodDoesNotExist_withoutParams()
         {
-            try
-            {
-                typeof(GuineaPig).GetMethodRecursively("DoesNotExist");
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("Could not find method DoesNotExist()", ex.Message);
-            }
+
+            var ex = Assert.Throws<MissingMethodException>(() => typeof(GuineaPig).GetMethodRecursively("DoesNotExist"));
+
+            Assert.Equal("Could not find method DoesNotExist()", ex.Message);
         }
 
         [Fact]
         public void GetMethodRecursively_Throws_ifMethodDoesNotExist_singleParam()
         {
-            try
-            {
-                typeof(GuineaPig).GetMethodRecursively("DoesNotExist", typeof(long));
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("Could not find method DoesNotExist(Int64)", ex.Message);
-            }
+            var ex = Assert.Throws<MissingMethodException>(() => typeof(GuineaPig).GetMethodRecursively("DoesNotExist", typeof(long)));
+
+            Assert.Equal("Could not find method DoesNotExist(Int64)", ex.Message);
         }
 
         [Fact]
         public void GetMethodRecursively_Throws_ifMethodDoesNotExist_multipleParams()
         {
-            try
-            {
-                typeof(GuineaPig).GetMethodRecursively("DoesNotExist", typeof(long), typeof(int), typeof(Attribute));
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("Could not find method DoesNotExist(Int64, Int32, Attribute)", ex.Message);
-            }
+
+            var ex = Assert.Throws<MissingMethodException>(() => typeof(GuineaPig).GetMethodRecursively("DoesNotExist", typeof(long), typeof(int), typeof(Attribute)));
+
+            Assert.Equal("Could not find method DoesNotExist(Int64, Int32, Attribute)", ex.Message);
         }
 
         [Fact]
         public void GetMethodRecursively_Throws_ifMethodDoesNotExist_withThoseParameters()
         {
-            try
-            {
-                typeof(GuineaPig).GetMethodRecursively("HasOverload", typeof(long), typeof(int), typeof(Attribute));
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("Could not find method HasOverload(Int64, Int32, Attribute)", ex.Message);
-            }
+            var ex = Assert.Throws<MissingMethodException>(() => typeof(GuineaPig).GetMethodRecursively("HasOverload", typeof(long), typeof(int), typeof(Attribute)));
+
+            Assert.Equal("Could not find method HasOverload(Int64, Int32, Attribute)", ex.Message);
         }
 
         #region GuineaPig

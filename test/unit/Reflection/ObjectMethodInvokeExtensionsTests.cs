@@ -101,14 +101,10 @@ namespace RapidCore.UnitTests.Reflection
         [Fact]
         public void InvokeGetterRecursively_Throws_ifThereIsNoGetter()
         {
-            try
-            {
-                guineaPig.InvokeGetterRecursively("SetterOnly");
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("The property SetterOnly does not have a getter", ex.Message);
-            }
+
+            var ex = Assert.Throws<MissingMethodException>(() => guineaPig.InvokeGetterRecursively("SetterOnly"));
+
+            Assert.Equal("The property SetterOnly does not have a getter", ex.Message);
         }
 
         [Fact]
@@ -136,14 +132,10 @@ namespace RapidCore.UnitTests.Reflection
         [Fact]
         public void InvokeSetterRecursively_Throws_ifThereIsNoSetter()
         {
-            try
-            {
-                guineaPig.InvokeSetterRecursively("Getter", "!");
-            }
-            catch (MissingMethodException ex)
-            {
-                Assert.Equal("The property Getter does not have a setter", ex.Message);
-            }
+
+            var ex = Assert.Throws<MissingMethodException>(() => guineaPig.InvokeSetterRecursively("Getter", "!"));
+
+            Assert.Equal("The property Getter does not have a setter", ex.Message);
         }
 
         [Fact]
