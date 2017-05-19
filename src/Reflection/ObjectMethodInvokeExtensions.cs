@@ -9,7 +9,7 @@ namespace RapidCore.Reflection
     public static class ObjectMethodInvokeExtensions
     {
         /// <summary>
-        /// Invoke a method recursively on the given instance
+        /// Invoke a method recursively
         /// </summary>
         /// <param name="instance">The instance</param>
         /// <param name="methodName">The name of the method</param>
@@ -20,6 +20,23 @@ namespace RapidCore.Reflection
             return instance
                 .GetType()
                 .GetMethodRecursively(methodName, GetTypeArray(args))
+                .Invoke(instance, args);
+        }
+
+        /// <summary>
+        /// Invoke a generic method recursively
+        /// </summary>
+        /// <param name="instance">The instance</param>
+        /// <param name="methodName">The name of the method</param>
+        /// <param name="genericTypes">The generic type arguments</param>
+        /// <param name="args">The arguments for the method</param>
+        /// <returns></returns>
+        public static object InvokeGenericMethodRecursively(this object instance, string methodName, Type[] genericTypes, params object[] args)
+        {
+            return instance
+                .GetType()
+                .GetMethodRecursively(methodName, GetTypeArray(args))
+                .MakeGenericMethod(genericTypes)
                 .Invoke(instance, args);
         }
 

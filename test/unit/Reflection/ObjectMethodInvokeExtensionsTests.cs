@@ -54,8 +54,24 @@ namespace RapidCore.UnitTests.Reflection
             Assert.IsAssignableFrom(typeof(Type), actual.GetType());
         }
 
+        [Fact]
+        public void InvokeGenericMethodRecursively_firstLayer()
+        {
+            var actual = guineaPig.InvokeGenericMethodRecursively("Generic", new Type[] { typeof(Attribute) }, "hello from generic");
+
+            Assert.Equal("hello from generic Attribute", actual);
+        }
+
+        [Fact]
+        public void InvokeGenericMethodRecursively_inNextLayer()
+        {
+            var actual = guineaPig.InvokeGenericMethodRecursively("Generic", new Type[] { typeof(Attribute) }, "hello from", "the base of");
+
+            Assert.Equal("hello from the base of Attribute", actual);
+        }
+
         #region GuineaPig
-        private class GuineaPig
+        private class GuineaPig : GuineaPigBase
         {
             public void OneParam(string a) { }
 
@@ -64,6 +80,13 @@ namespace RapidCore.UnitTests.Reflection
             public void ZeroParams() { }
 
             public int ZeroParamsWithReturn() { return 666; }
+
+            public string Generic<T>(string b) { return $"{b} {typeof(T).Name}"; }
+        }
+
+        private abstract class GuineaPigBase
+        {
+            public string Generic<T>(string b, string c) { return $"{b} {c} {typeof(T).Name}"; }
         }
         #endregion
     }
