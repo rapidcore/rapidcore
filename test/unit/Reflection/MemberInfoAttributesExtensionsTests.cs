@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RapidCore.UnitTests.Reflection
 {
-    public class PropertyInfoAttributesExtensionsTests
+    public class MemberInfoAttributesExtensionsTests
     {
         [Theory]
         [InlineDataAttribute("HasObsoleteAttrib", typeof(ObsoleteAttribute), true)] // returns true when it has the attribute
@@ -34,12 +34,22 @@ namespace RapidCore.UnitTests.Reflection
             Assert.Empty(actual);
         }
 
+        [Fact]
+        public void GetSpecificAttribute_worksOnClassLevel()
+        {
+            var actual = typeof(GuineaPig).GetTypeInfo().GetSpecificAttribute(typeof(DisplayNameAttribute));
+
+            Assert.Equal(1, actual.Count);
+            Assert.IsType(typeof(DisplayNameAttribute), actual[0]);
+        }
+
         private PropertyInfo GetProperty(string propertyName)
         {
             return typeof(GuineaPig).GetTypeInfo().GetProperty(propertyName);
         }
 
         #region GuineaPig
+        [DisplayName]
         private class GuineaPig
         {
             [Obsolete]
