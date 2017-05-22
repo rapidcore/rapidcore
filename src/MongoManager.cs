@@ -13,11 +13,13 @@ namespace RapidCore.Mongo
     {
         public void EnsureIndexes(IMongoDatabase lowLevelDb, Assembly assembly, string entityNamespace)
         {
-            var types = from t in assembly.DefinedTypes
-                        from p in t.GetProperties()
-                        where t.Namespace == entityNamespace
-                        where p.HasAttribute(typeof(IndexAttribute))
-                        select t;
+            // get types having at least 1 property flagged with [Index]
+            var types = assembly
+                .DefinedTypes
+                .Where(t => t
+                            .GetProperties()
+                            .Any(p => p.HasAttribute(typeof(IndexAttribute)))
+                ).Select(t => t);
 
             foreach (var type in types)
             {
