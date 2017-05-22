@@ -18,41 +18,38 @@ namespace RapidCore.Mongo.FunctionalTests
         [Fact]
         public void CanCreateSimpleIndexes()
         {
-            var collectionName = typeof(SimpleIndexes).GetTypeInfo().GetCollectionName();
-            GetDb().DropCollection(collectionName);
-            GetDb().CreateCollection(collectionName);
+            var actual = CreateAndGetIndexes<SimpleIndexes>();
 
-            manager.EnsureIndexes(
-                GetDb(),
-                typeof(SimpleIndexes).GetTypeInfo().Assembly,
-                typeof(SimpleIndexes).GetTypeInfo().Namespace
-            );
-
-            var indexes = GetIndexes<SimpleIndexes>(collectionName);
-
-            Assert.Equal(3, indexes.Count); // the auto-generated "_id_" and our own
-            Assert.Equal(new BsonDocument().Add("String", 1), indexes["string_index"].GetElement("key").Value);
-            Assert.Equal(new BsonDocument().Add("Int", 1), indexes["Int_1"].GetElement("key").Value);
+            Assert.Equal(3, actual.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("String", 1), actual["string_index"].GetElement("key").Value);
+            Assert.Equal(new BsonDocument().Add("Int", 1), actual["Int_1"].GetElement("key").Value);
         }
 
         [Fact]
         public void CanCreateCompoundIndexes()
         {
-            var collectionName = typeof(CompoundIndexes).GetTypeInfo().GetCollectionName();
+            var actual = CreateAndGetIndexes<CompoundIndexes>();
+
+            Assert.Equal(2, actual.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1).Add("StringOfCompoundness", 1), actual["compound_index"].GetElement("key").Value);
+        }
+
+        #region Create and get indexes
+        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
+        {
+            var collectionName = typeof(TDocument).GetTypeInfo().GetCollectionName();
             GetDb().DropCollection(collectionName);
             GetDb().CreateCollection(collectionName);
 
             manager.EnsureIndexes(
                 GetDb(),
-                typeof(CompoundIndexes).GetTypeInfo().Assembly,
-                typeof(CompoundIndexes).GetTypeInfo().Namespace
+                typeof(TDocument).GetTypeInfo().Assembly,
+                typeof(TDocument).GetTypeInfo().Namespace
             );
 
-            var indexes = GetIndexes<CompoundIndexes>(collectionName);
-
-            Assert.Equal(2, indexes.Count); // the auto-generated "_id_" and our own
-            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1).Add("StringOfCompoundness", 1), indexes["compound_index"].GetElement("key").Value);
+            return GetIndexes<TDocument>(collectionName);
         }
+        #endregion
 
         #region GetIndexes
         private IDictionary<string, BsonDocument> GetIndexes<TDocument>(string collectionName)
