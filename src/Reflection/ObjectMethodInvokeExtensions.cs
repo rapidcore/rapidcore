@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RapidCore.Reflection
@@ -88,7 +89,21 @@ namespace RapidCore.Reflection
 
         private static Type[] GetTypeArray(object[] args)
         {
-            return args.Select(a => a.GetType()).ToArray();
+            var list = new List<Type>();
+
+            foreach (var a in args)
+            {
+                if (a == null)
+                {
+                    list.Add(null);
+                }
+                else
+                {
+                    list.Add(a.GetType());
+                }
+            }
+
+            return list.ToArray();
         }
     }
 }

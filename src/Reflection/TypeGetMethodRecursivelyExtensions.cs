@@ -20,7 +20,19 @@ namespace RapidCore.Reflection
         public static MethodInfo GetMethodRecursively(this Type type, string methodName, params Type[] argTypes)
         {
             var typeInfo = type.GetTypeInfo();
-            var method = typeInfo.GetMethod(methodName, argTypes);
+            // var method = typeInfo.GetMethod(methodName, argTypes);
+
+            MethodInfo method = null;
+            typeInfo
+                .GetMethods()
+                .Where(m => m.Name == methodName && m.GetParameters().Count() == argTypes.Length)
+                .Select(m => m)
+                .ToList()
+                .ForEach(m =>
+                {
+                    // check if the parameter types match
+                    // if argsTypes[n] is null, then the corresponding parameter must be a nullable type
+                });
 
             if (method == null && typeInfo.BaseType != null)
             {
