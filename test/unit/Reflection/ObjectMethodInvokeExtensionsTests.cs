@@ -55,6 +55,24 @@ namespace RapidCore.UnitTests.Reflection
         }
 
         [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_lastOne()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", "one", "two", null);
+        }
+
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_notFirstNotLast()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", "one", null, "three");
+        }
+
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_firstOne()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", null, "two", "three");
+        }
+
+        [Fact]
         public void InvokeGenericMethodRecursively_firstLayer()
         {
             var actual = guineaPig.InvokeGenericMethodRecursively("Generic", new Type[] { typeof(Attribute) }, "hello from generic");
@@ -177,6 +195,8 @@ namespace RapidCore.UnitTests.Reflection
             public string Generic<T>(string b, string c) { return $"{b} {c} {typeof(T).Name}"; }
 
             public string AllAboutThatBase { get; set; }
+
+            public void MultipleParams(string one, string two, string three) { }
         }
         #endregion
     }
