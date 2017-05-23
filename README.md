@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ja3vf8fp1ros6q4t/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore/branch/master)
+[![nuget version][nuget-image]][nuget-url]
 
 # RapidCore
 
@@ -15,3 +16,6 @@ It also means that while the major version is `0`, the APIs should be considered
 ## Issues
 
 Issues should be reported in https://github.com/rapidcore/issues/issues
+
+[nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg
+[nuget-url]: https://www.nuget.org/packages/RapidCore
