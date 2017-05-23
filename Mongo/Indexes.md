@@ -32,7 +32,7 @@ Due to the current state of reflection in .NET Core, you have to provide the ass
 
 - All key indexes are made in **ascending** order.
 - All indexes are made in the background
-- By default indexes are **not** sparse
+- By default indexes are **not** [sparse](https://docs.mongodb.com/manual/indexes/#sparse-indexes)
 
 
 The simple case
