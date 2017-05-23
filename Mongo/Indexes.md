@@ -14,7 +14,7 @@ The `RapidCore.Mongo.MongoManager` class can help you ensure that the indexes yo
 var client = new MongoDB.Driver.MongoClient("mongodb://localhost:27017");
 
 // instantiate the manager
-var manager = new MongoManager(client);
+var manager = new MongoManager();
 
 // ensure indexes from entities in given assembly and namespace
 manager.EnsureIndexes(
