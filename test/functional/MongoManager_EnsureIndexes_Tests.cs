@@ -53,6 +53,15 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(new BsonDocument().Add("OnTwo", 1).Add("OnOne", 1), actual["multi_level"].GetElement("key").Value);
         }
 
+        [Fact]
+        public void CreatesIndexesOnNestedTypes()
+        {
+            var actual = CreateAndGetIndexes<Envelope>();
+
+            Assert.Equal(2, actual.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("OnNested", 1), actual["OnNested_1"].GetElement("key").Value);
+        }
+
         #region Create and get indexes
         private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
         {
@@ -88,6 +97,7 @@ namespace RapidCore.Mongo.FunctionalTests
         #endregion
 
         #region Simple indexes
+        [Entity]
         private class SimpleIndexes
         {
             [Index("string_index")]
@@ -99,6 +109,7 @@ namespace RapidCore.Mongo.FunctionalTests
         #endregion
 
         #region Compound indexes
+        [Entity]
         private class CompoundIndexes
         {
             [Index("compound_index", Order = 2)]
@@ -117,11 +128,26 @@ namespace RapidCore.Mongo.FunctionalTests
             public string OnOne { get; set; }
         }
 
+        [Entity]
         private class MultiLevelTwo : MultiLevelOne
         {
             [Index]
             [Index("multi_level")]
             public string OnTwo { get; set; }
+        }
+        #endregion
+
+        #region Nested types
+        [Entity]
+        private class Envelope
+        {
+            public Nested Nested { get; set; }
+        }
+
+        private class Nested
+        {
+            [Index]
+            public string OnNested { get; set; }
         }
         #endregion
     }
