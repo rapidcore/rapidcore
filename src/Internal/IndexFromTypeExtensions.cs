@@ -17,7 +17,7 @@ namespace RapidCore.Mongo.Internal
         {
             var definitions = new IndexDefinitionCollection();
 
-            GetIndexDefinitionsWorker(type, definitions);
+            GetIndexDefinitionsWorker(type, definitions, string.Empty);
 
             definitions
                 .SetDocumentType(type.UnderlyingSystemType)
@@ -26,7 +26,7 @@ namespace RapidCore.Mongo.Internal
             return definitions;
         }
 
-        private static void GetIndexDefinitionsWorker(TypeInfo type, IndexDefinitionCollection indexes)
+        private static void GetIndexDefinitionsWorker(TypeInfo type, IndexDefinitionCollection indexes, string fieldPrefix)
         {
             var definitions = new Dictionary<string, IndexDefinition>();
 
@@ -58,7 +58,7 @@ namespace RapidCore.Mongo.Internal
                                     definitions.Add(lookupName, def);
                                 }
 
-                                def.Update(attribute, prop.Name);
+                                def.Update(attribute, $"{fieldPrefix}{prop.Name}");
                             });
                     }
 
@@ -66,7 +66,7 @@ namespace RapidCore.Mongo.Internal
                     // properties with [Index], we should look at those too
                     if (!prop.PropertyType.Namespace.StartsWith("System."))
                     {
-                        GetIndexDefinitionsWorker(prop.PropertyType.GetTypeInfo(), indexes);
+                        GetIndexDefinitionsWorker(prop.PropertyType.GetTypeInfo(), indexes, $"{fieldPrefix}{prop.Name}.");
                     }
                 });
 

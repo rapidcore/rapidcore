@@ -59,7 +59,7 @@ namespace RapidCore.Mongo.FunctionalTests
             var actual = CreateAndGetIndexes<Envelope>();
 
             Assert.Equal(2, actual.Count); // the auto-generated "_id_" and our own
-            Assert.Equal(new BsonDocument().Add("OnNested", 1), actual["OnNested_1"].GetElement("key").Value);
+            Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), actual["Nested.OnNested_1"].GetElement("key").Value);
         }
 
         #region Create and get indexes
