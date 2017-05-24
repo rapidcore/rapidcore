@@ -28,6 +28,11 @@ namespace RapidCore.Mongo.Internal
 
         private static void GetIndexDefinitionsWorker(TypeInfo type, IndexDefinitionCollection indexes, string fieldPrefix)
         {
+            if (fieldPrefix.Split('.').Count() > 20)
+            {
+                throw new InvalidOperationException($"Tree is too deep - could be a recursion. Current 'path' is {fieldPrefix}");
+            }
+
             var definitions = new Dictionary<string, IndexDefinition>();
 
             type
