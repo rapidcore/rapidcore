@@ -34,29 +34,71 @@ namespace RapidCore.Mongo
         {
             type.GetIndexDefinitions().ToList().ForEach(index =>
             {
-                // make the following call:
-                // lowLevelDb.GetCollection<TDocument>("collectionName").Indexes.CreateOne(index.GetKeySpec(), index.GetOptions())
+                try
+                {
+                    CreateIndex(lowLevelDb, index);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException is MongoCommandException)
+                    {
+                        if (ex.InnerException.Message.Equals($"Command createIndexes failed: Index with name: {index.Name} already exists with different options."))
+                        {
+                            DropIndex(lowLevelDb, index);
+                            CreateIndex(lowLevelDb, index);
+                            return;
+                        }
+                    }
 
-                var genericDocType = new Type[] { index.DocumentType };
+                    throw ex;
+                }
+            });
+        }
 
-                var mongoCollection = lowLevelDb
-                    .GetType()
-                    .GetMethodRecursively("GetCollection", typeof(string), typeof(MongoCollectionSettings))
-                    .MakeGenericMethod(genericDocType)
-                    .Invoke(lowLevelDb, new object[] { index.Collection, null });
+        private void CreateIndex(IMongoDatabase lowLevelDb, IndexDefinition index)
+        {
+            // make the following call:
+            // lowLevelDb.GetCollection<TDocument>("collectionName").Indexes.CreateOne(index.GetKeySpec(), index.GetOptions())
 
-                var collectionIndexes = mongoCollection.InvokeGetterRecursively("Indexes");
+            var collectionIndexes = GetCollectionIndexesManager(lowLevelDb, index);
 
-                collectionIndexes
+            collectionIndexes
                     .GetType()
                     .GetMethodRecursively(
                         "CreateOne",
-                        typeof(IndexKeysDefinition<>).MakeGenericType(genericDocType),
+                        typeof(IndexKeysDefinition<>).MakeGenericType(new Type[] { index.DocumentType }),
                         typeof(CreateIndexOptions),
                         typeof(CancellationToken)
                     )
                     .Invoke(collectionIndexes, new object[] { index.GetKeySpec(), index.GetOptions(), null });
-            });
+        }
+
+        private void DropIndex(IMongoDatabase lowLevelDb, IndexDefinition index)
+        {
+            // make the following call
+            // lowLevelDb.GetCollection<T>("name").Indexes.DropOne(index.Collection);
+
+            var collectionIndexes = GetCollectionIndexesManager(lowLevelDb, index);
+
+            collectionIndexes
+                    .GetType()
+                    .GetMethodRecursively(
+                        "DropOne",
+                        typeof(string),
+                        typeof(CancellationToken)
+                    )
+                    .Invoke(collectionIndexes, new object[] { index.Name, null });
+        }
+
+        private object GetCollectionIndexesManager(IMongoDatabase lowLevelDb, IndexDefinition index)
+        {
+            var mongoCollection = lowLevelDb
+                .GetType()
+                .GetMethodRecursively("GetCollection", typeof(string), typeof(MongoCollectionSettings))
+                .MakeGenericMethod(new Type[] { index.DocumentType })
+                .Invoke(lowLevelDb, new object[] { index.Collection, null });
+
+            return mongoCollection.InvokeGetterRecursively("Indexes");
         }
     }
 }
