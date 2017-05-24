@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using RapidCore.Mongo.Internal;
 using Xunit;
 
@@ -62,6 +64,31 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), actual["Nested.OnNested_1"].GetElement("key").Value);
         }
 
+        [Fact]
+        public void DropsAndReCreatesExistingIndexes()
+        {
+            var indexDefinition = typeof(Envelope).GetTypeInfo().GetIndexDefinitions().First;
+            var changedOptions = indexDefinition.GetOptions();
+            changedOptions.Sparse = !changedOptions.Sparse;
+            
+            // create the index with different options
+            GetDb().GetCollection<Envelope>("Envelope").Indexes.CreateOne(
+                (IndexKeysDefinition<Envelope>)indexDefinition.GetKeySpec(),
+                changedOptions
+            );
+
+            var firstSetOfIndexes = GetIndexes<Envelope>("Envelope");
+            Assert.Equal(2, firstSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), firstSetOfIndexes["Nested.OnNested_1"].GetElement("key").Value);
+            Assert.Equal(changedOptions.Sparse, firstSetOfIndexes["Nested.OnNested_1"]["sparse"]);
+
+
+            var secondSetOfIndexes = CreateAndGetIndexes<Envelope>();
+            Assert.Equal(2, secondSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), secondSetOfIndexes["Nested.OnNested_1"].GetElement("key").Value);
+            Assert.Equal(!changedOptions.Sparse, secondSetOfIndexes["Nested.OnNested_1"]["sparse"]);
+        }
+
         #region Create and get indexes
         private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
         {
@@ -71,8 +98,7 @@ namespace RapidCore.Mongo.FunctionalTests
 
             manager.EnsureIndexes(
                 GetDb(),
-                typeof(TDocument).GetTypeInfo().Assembly,
-                typeof(TDocument).GetTypeInfo().Namespace
+                typeof(TDocument)
             );
 
             return GetIndexes<TDocument>(collectionName);

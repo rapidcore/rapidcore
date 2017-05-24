@@ -28,10 +28,16 @@ namespace RapidCore.Mongo.Internal
 
         private static void GetIndexDefinitionsWorker(TypeInfo type, IndexDefinitionCollection indexes, string fieldPrefix)
         {
+            if (fieldPrefix.Split('.').Count() > 20)
+            {
+                throw new InvalidOperationException($"Tree is too deep - could be a recursion. Current 'path' is {fieldPrefix}");
+            }
+
             var definitions = new Dictionary<string, IndexDefinition>();
 
             type
                 .GetProperties()
+                .Where(prop => IsIndexCandidate(prop))
                 .ToList()
                 .ForEach(prop =>
                 {
@@ -64,13 +70,28 @@ namespace RapidCore.Mongo.Internal
 
                     // if the type of the property could have its own
                     // properties with [Index], we should look at those too
-                    if (!prop.PropertyType.Namespace.StartsWith("System."))
+                    if (IsSubDocument(prop.PropertyType))
                     {
                         GetIndexDefinitionsWorker(prop.PropertyType.GetTypeInfo(), indexes, $"{fieldPrefix}{prop.Name}.");
                     }
                 });
 
             indexes.AddRange(definitions.Values.ToList());
+        }
+
+        private static bool IsIndexCandidate(PropertyInfo prop)
+        {
+            if (prop.GetMethod == null || prop.GetMethod.IsStatic)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsSubDocument(Type type)
+        {
+            return !(type.Namespace.Equals("System") || type.Namespace.StartsWith("System.")); // we should still allow someones stuff to have namespace SystemOfDoom
         }
     }
 }
