@@ -63,14 +63,6 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), actual["Nested.OnNested_1"].GetElement("key").Value);
         }
 
-        [Fact]
-        public void DetectsRecursionAndStops()
-        {
-            var actual = Assert.Throws<InvalidOperationException>(() => CreateAndGetIndexes<RecursiveParent>());
-
-            Assert.Equal("Tree is too deep - could be a recursion. Current 'path' is Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.Child.Parent.", actual.Message);
-        }
-
         #region Create and get indexes
         private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
         {
@@ -156,19 +148,6 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             [Index]
             public string OnNested { get; set; }
-        }
-        #endregion
-
-        #region Recursive
-        [Entity]
-        private class RecursiveParent
-        {
-            public RecursiveChild Child { get; set; }
-        }
-
-        private class RecursiveChild
-        {
-            public RecursiveParent Parent { get; set; }
         }
         #endregion
     }
