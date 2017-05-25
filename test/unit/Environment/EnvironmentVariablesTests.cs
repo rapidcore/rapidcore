@@ -23,9 +23,9 @@ namespace RapidCore.UnitTests.Environment
         [Fact]
         public void Get_ReturnsValue_ifExists()
         {
-            var actual = envVariables.Get<string>("PATH", "default");
+            var actual = envVariables.Get<string>("DOTNET_CLI_TELEMETRY_SESSIONID", "default");
 
-            var expected = System.Environment.GetEnvironmentVariable("PATH");
+            var expected = System.Environment.GetEnvironmentVariable("DOTNET_CLI_TELEMETRY_SESSIONID");
 
             Assert.Equal(expected, actual);
         }
@@ -35,13 +35,8 @@ namespace RapidCore.UnitTests.Environment
         {
             var actual = envVariables.AllSorted();
 
-            foreach (var kvp in actual)
-            {
-                System.Console.WriteLine($"{kvp.Key} = {kvp.Value}");
-            }
-
             Assert.True(actual.Count > 0, "There should be at least 1 variable defined");
-            Assert.True(actual.ContainsKey("PATH"), "As a minimum 'PATH' should be defined");
+            Assert.True(actual.ContainsKey("DOTNET_CLI_TELEMETRY_SESSIONID"), "As a minimum 'DOTNET_CLI_TELEMETRY_SESSIONID' should be defined");
         }
     }
 }

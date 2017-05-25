@@ -31,9 +31,6 @@ $revision = "{0:D4}" -f [convert]::ToInt32($revision, 10)
 
 exec { & dotnet build }
 
-# define an environment variable that we can use in our unit tests
-$env:TestVariable = "This is a test environment variable."
-
 exec { & dotnet test .\test\unit\unittests.csproj -c Release }
 
 exec { & dotnet pack .\src\rapidcore.csproj -c Release -o ..\artifacts --include-source }
