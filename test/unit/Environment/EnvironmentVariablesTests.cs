@@ -35,8 +35,13 @@ namespace RapidCore.UnitTests.Environment
         {
             var actual = envVariables.AllSorted();
 
-            Assert.True(actual.Count > 0);
-            Assert.True(actual.ContainsKey("PATH"));
+            foreach (var kvp in actual)
+            {
+                System.Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+            }
+
+            Assert.True(actual.Count > 0, "There should be at least 1 variable defined");
+            Assert.True(actual.ContainsKey("PATH"), "As a minimum 'PATH' should be defined");
         }
     }
 }
