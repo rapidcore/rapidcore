@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+    "settings": {
+        "documentationRules": {
+            "xmlHeader": true,
+            "documentInterfaces": true,
+            "documentExposedElements": true
+        },
+        "indentation": {
+            "indentationSize": 4,
+            "tabSize": 4,
+            "useTabs": false
+        },
+        "orderingRules": {
+            "usingDirectivesPlacement": "outsideNamespace"
+        },
+        "maintainabilityRules": {
+            "topLevelTypes": [
+                "class",
+                "interface",
+                "struct",
+                "enum"
+            ]
+        }
+    }
+}

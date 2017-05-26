@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for StyleCop.Analyzers" Description="Code analysis rules for RapidCore." ToolsVersion="14.0">
+  <Rules AnalyzerId="AsyncUsageAnalyzers" RuleNamespace="AsyncUsageAnalyzers">
+    <Rule Id="AvoidAsyncSuffix" Action="Error" />
+    <Rule Id="AvoidAsyncVoid" Action="Error" />
+    <Rule Id="UseAsyncSuffix" Action="Error" />
+    <Rule Id="UseConfigureAwait" Action="Error" />
+  </Rules>
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1516" Action="None" />
+    <Rule Id="SA1309" Action="None" />
+    <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA0001" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="AD0001" Action="None" />
+    <Rule Id="SA1210" Action="None" />
+    <Rule Id="SA1601" Action="None" />
+    <Rule Id="SA1208" Action="None" /> <!-- Using directive must appear before ... -->
+    <Rule Id="SA1009" Action="None" /> <!-- Closing parenthesis must be spaced correctly, Does not work with valuetuples -->
+    <Rule Id="SA1101" Action="None" /> <!-- Prefix local calls with this -->
+    <Rule Id="SA1111" Action="None" /> <!-- Closing parenthesis must be on line of last parameter -->
+  </Rules>
+</RuleSet>
