@@ -65,7 +65,7 @@ namespace RapidCore.Mongo.FunctionalTests
         }
 
         [Fact]
-        public void DropsAndReCreatesExistingIndexes()
+        public void DropsAndReCreatesExistingIndexes_WhenIndexOptionsHaveChanged()
         {
             var indexDefinition = typeof(Envelope).GetTypeInfo().GetIndexDefinitions().First;
             var changedOptions = indexDefinition.GetOptions();
