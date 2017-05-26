@@ -17,5 +17,7 @@ namespace RapidCore.Locking
             : base(message, inner)
         {
         }
+
+        public DistributedAppLockExceptionReason Reason { get; set; }
     }
 }
