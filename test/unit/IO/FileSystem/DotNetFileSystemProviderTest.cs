@@ -138,5 +138,20 @@ namespace RapidCore.UnitTests.IO.FileSystem
             Assert.True(Directory.Exists(path));
             Directory.Delete(path);
         }
+
+        [Fact]
+        public void Can_WriteAllLinesToAFile()
+        {
+            var text = new List<string>
+            {
+                "my text",
+                "lines"
+            };
+            var path = Path.Combine(_filesPath, "testFile.txt");
+            _fileSystem.WriteAllLines(path, text);
+            
+            Assert.Equal(text, File.ReadAllLines(path));
+            File.Delete(path);
+        }
     }
 }

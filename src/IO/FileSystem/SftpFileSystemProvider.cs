@@ -174,10 +174,9 @@ namespace RapidCore.IO.FileSystem
         /// <param name="path">
         /// the path
         /// </param>
-        public FileSystemInfo CreateDirectory(string path)
+        public void CreateDirectory(string path)
         {
             GetSftpClient().CreateDirectory(path);
-            return new FileInfo(path);
         }
 
         public void Dispose()

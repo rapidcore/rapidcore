@@ -114,9 +114,17 @@ namespace RapidCore.IO.FileSystem
         /// <param name="path">
         /// the path to create the directory in
         /// </param>
-        /// <returns>
-        /// the directory info
-        /// </returns>
-        FileSystemInfo CreateDirectory(string path);
+        void CreateDirectory(string path);
+
+        /// <summary>
+        /// Writes lines to a file
+        /// </summary>
+        /// <param name="path">
+        /// the path
+        /// </param>
+        /// <param name="contents">
+        /// the lines to write
+        /// </param>
+        void WriteAllLines(string path, IEnumerable<string> contents);
     }
 }
