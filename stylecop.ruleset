@@ -21,7 +21,9 @@
     <Rule Id="SA1009" Action="None" /> <!-- Closing parenthesis must be spaced correctly, Does not work with valuetuples -->
     <Rule Id="SA1101" Action="None" /> <!-- Prefix local calls with this -->
     <Rule Id="SA1111" Action="None" /> <!-- Closing parenthesis must be on line of last parameter -->
+    <Rule Id="SA1515" Action="None" /> <!-- Single-line comment must be preceded by blank line -->
     <Rule Id="SA1512" Action="None" /> <!-- Single-line comments must not be followed by blank line -->
+    <Rule Id="SA1028" Action="None" /> <!-- Code must not contain trailing whitespace -->
     <Rule Id="SA1120" Action="None" /> <!-- Comments must contain text -->
   </Rules>
 </RuleSet>
