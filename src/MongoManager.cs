@@ -38,19 +38,10 @@ namespace RapidCore.Mongo
                 {
                     CreateIndex(lowLevelDb, index);
                 }
-                catch (TargetInvocationException ex)
+                catch (TargetInvocationException ex) when (ex.InnerException is MongoCommandException && ((MongoCommandException)ex.InnerException).EnsureIndexesShouldDropAndRetry(index))
                 {
-                    if (ex.InnerException != null && ex.InnerException is MongoCommandException)
-                    {
-                        if (ex.InnerException.Message.Equals($"Command createIndexes failed: Index with name: {index.Name} already exists with different options."))
-                        {
-                            DropIndex(lowLevelDb, index);
-                            CreateIndex(lowLevelDb, index);
-                            return;
-                        }
-                    }
-
-                    throw ex;
+                    DropIndex(lowLevelDb, index);
+                    CreateIndex(lowLevelDb, index);
                 }
             });
         }

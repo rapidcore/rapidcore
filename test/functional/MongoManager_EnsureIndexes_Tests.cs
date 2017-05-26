@@ -65,7 +65,7 @@ namespace RapidCore.Mongo.FunctionalTests
         }
 
         [Fact]
-        public void DropsAndReCreatesExistingIndexes()
+        public void DropsAndReCreatesExistingIndexes_WhenIndexOptionsHaveChanged()
         {
             var indexDefinition = typeof(Envelope).GetTypeInfo().GetIndexDefinitions().First;
             var changedOptions = indexDefinition.GetOptions();
@@ -89,12 +89,47 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(!changedOptions.Sparse, secondSetOfIndexes["Nested.OnNested_1"]["sparse"]);
         }
 
+        [Fact]
+        public void DropsAndReCreatesExistingIndexes_IfTheIndexHasChanged()
+        {
+            var indexDefinition = typeof(CompoundIndexes).GetTypeInfo().GetIndexDefinitions().First;
+            indexDefinition.Keys.RemoveAt(0); // remove a key
+            
+            GetDb().GetCollection<CompoundIndexes>("CompoundIndexes").Indexes.CreateOne(
+                (IndexKeysDefinition<CompoundIndexes>)indexDefinition.GetKeySpec(),
+                indexDefinition.GetOptions()
+            );
+
+            var firstSetOfIndexes = GetIndexes<CompoundIndexes>("CompoundIndexes");
+            Assert.Equal(2, firstSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1), firstSetOfIndexes["compound_index"].GetElement("key").Value);
+
+            var secondSetOfIndexes = CreateAndGetIndexes<CompoundIndexes>(false);
+            Assert.Equal(2, secondSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1).Add("StringOfCompoundness", 1), secondSetOfIndexes["compound_index"].GetElement("key").Value);
+        }
+
+        [Fact]
+        public void DoNothingIfTheIndexAlreadyExists_andIsTheSame()
+        {
+            CreateAndGetIndexes<SimpleIndexes>(); // should drop and create
+            var afterSecondRun = CreateAndGetIndexes<SimpleIndexes>(false); // should _NOT_ drop
+
+            Assert.Equal(3, afterSecondRun.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("String", 1), afterSecondRun["string_index"].GetElement("key").Value);
+            Assert.Equal(new BsonDocument().Add("Int", 1), afterSecondRun["Int_1"].GetElement("key").Value);
+        }
+
         #region Create and get indexes
-        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
+        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>(bool doDrop = true)
         {
             var collectionName = typeof(TDocument).GetTypeInfo().GetCollectionName();
-            GetDb().DropCollection(collectionName);
-            GetDb().CreateCollection(collectionName);
+
+            if (doDrop)
+            {
+                GetDb().DropCollection(collectionName);
+                GetDb().CreateCollection(collectionName);
+            }
 
             manager.EnsureIndexes(
                 GetDb(),
