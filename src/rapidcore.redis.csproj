@@ -19,7 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="RapidCore" Version="0.7.0" />
-    <PackageReference Include="ServiceStack.Redis.Core" Version="1.0.41" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.3.0" />
   </ItemGroup>
