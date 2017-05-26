@@ -89,12 +89,36 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(!changedOptions.Sparse, secondSetOfIndexes["Nested.OnNested_1"]["sparse"]);
         }
 
+        [Fact]
+        public void DropsAndReCreatesExistingIndexes_IfTheIndexHasChanged()
+        {
+            var indexDefinition = typeof(CompoundIndexes).GetTypeInfo().GetIndexDefinitions().First;
+            indexDefinition.Keys.RemoveAt(0); // remove a key
+            
+            GetDb().GetCollection<CompoundIndexes>("CompoundIndexes").Indexes.CreateOne(
+                (IndexKeysDefinition<CompoundIndexes>)indexDefinition.GetKeySpec(),
+                indexDefinition.GetOptions()
+            );
+
+            var firstSetOfIndexes = GetIndexes<CompoundIndexes>("CompoundIndexes");
+            Assert.Equal(2, firstSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1), firstSetOfIndexes["compound_index"].GetElement("key").Value);
+
+            var secondSetOfIndexes = CreateAndGetIndexes<CompoundIndexes>(false);
+            Assert.Equal(2, secondSetOfIndexes.Count); // the auto-generated "_id_" and our own
+            Assert.Equal(new BsonDocument().Add("CompoundnessOfTheLong", 1).Add("StringOfCompoundness", 1), secondSetOfIndexes["compound_index"].GetElement("key").Value);
+        }
+
         #region Create and get indexes
-        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>()
+        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>(bool doDrop = true)
         {
             var collectionName = typeof(TDocument).GetTypeInfo().GetCollectionName();
-            GetDb().DropCollection(collectionName);
-            GetDb().CreateCollection(collectionName);
+
+            if (doDrop)
+            {
+                GetDb().DropCollection(collectionName);
+                GetDb().CreateCollection(collectionName);
+            }
 
             manager.EnsureIndexes(
                 GetDb(),
