@@ -90,5 +90,21 @@ namespace RapidCore.Mongo
                     .FindAsync<TDocument>(filter, options))
                     .ToList();
         }
+
+        /// <summary>
+        /// UNSTABLE API!!
+        /// 
+        /// Get an <see cref="IMongoCollection<T>" /> to work on. This
+        /// is to enable consumers to do advanced stuff that requires more
+        /// freedom than we can provide.
+        /// 
+        /// This method does however provide a Mocking "hook-point".
+        /// </summary>
+        /// <param name="collectionName">The name of the collection. Defaults to the name of <typeparamref name="TDocument" /></param>
+        public virtual IMongoCollection<TDocument> GetCollection<TDocument>(string collectionName = null)
+        {
+            return this.mongoDb
+                    .GetCollection<TDocument>(collectionName ?? typeof(TDocument).Name);
+        }
     }
 }
