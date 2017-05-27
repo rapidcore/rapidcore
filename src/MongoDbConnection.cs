@@ -33,6 +33,18 @@ namespace RapidCore.Mongo
         }
 
         /// <summary>
+        /// Async insert
+        /// </summary>
+        /// <param name="collectionName">The collection to work on</param>
+        /// <param name="doc">The document to insert</param>
+        public virtual Task InsertAsync<TDocument>(string collectionName, TDocument doc)
+        {
+            return this.mongoDb
+                .GetCollection<TDocument>(collectionName)
+                .InsertOneAsync(doc);
+        }
+
+        /// <summary>
         /// Async upsert
         /// </summary>
         /// <param name="collectionName">The collection to work on</param>
@@ -77,6 +89,22 @@ namespace RapidCore.Mongo
                     .GetCollection<TDocument>(collectionName)
                     .FindAsync<TDocument>(filter, options))
                     .ToList();
+        }
+
+        /// <summary>
+        /// UNSTABLE API!!
+        /// 
+        /// Get an <see cref="IMongoCollection<T>" /> to work on. This
+        /// is to enable consumers to do advanced stuff that requires more
+        /// freedom than we can provide.
+        /// 
+        /// This method does however provide a Mocking "hook-point".
+        /// </summary>
+        /// <param name="collectionName">The name of the collection. Defaults to the name of <typeparamref name="TDocument" /></param>
+        public virtual IMongoCollection<TDocument> GetCollection<TDocument>(string collectionName = null)
+        {
+            return this.mongoDb
+                    .GetCollection<TDocument>(collectionName ?? typeof(TDocument).Name);
         }
     }
 }
