@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests
 {
-    public class MongoDbConnectionTests : MongoConnectedTestBase
+    public partial class MongoDbConnectionTests : MongoConnectedTestBase
     {
         private readonly MongoDbConnection connection;
         private readonly string collectionName = "documents";
@@ -140,17 +138,5 @@ namespace RapidCore.Mongo.FunctionalTests
 
             Assert.Empty(actual);
         }
-
-        #region Test document
-        private class Document
-        {
-            [BsonIgnoreIfDefault]
-            public ObjectId Id { get; set; }
-
-            public string String { get; set; }
-
-            public string Aux { get; set; }
-        }
-        #endregion
     }
 }

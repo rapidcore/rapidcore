@@ -33,6 +33,18 @@ namespace RapidCore.Mongo
         }
 
         /// <summary>
+        /// Async insert
+        /// </summary>
+        /// <param name="collectionName">The collection to work on</param>
+        /// <param name="doc">The document to insert</param>
+        public virtual Task InsertAsync<TDocument>(string collectionName, TDocument doc)
+        {
+            return this.mongoDb
+                .GetCollection<TDocument>(collectionName)
+                .InsertOneAsync(doc);
+        }
+
+        /// <summary>
         /// Async upsert
         /// </summary>
         /// <param name="collectionName">The collection to work on</param>
