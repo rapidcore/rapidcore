@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -54,6 +55,28 @@ namespace RapidCore.Mongo
             return this.mongoDb
                 .GetCollection<TDocument>(collectionName)
                 .DeleteManyAsync(filter);
+        }
+
+        /// <summary>
+        /// UNSTABLE API!!
+        /// 
+        /// Get all documents that match the given filter.
+        /// </summary>
+        /// <param name="collectionName">The collection to work on</param>
+        /// <param name="filter">Filter for finding documents</param>
+        /// <param name="limit">Optional limit on how many documents you want</param>
+        public virtual async Task<IList<TDocument>> GetAsync<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, int? limit = null)
+        {
+            var options = new FindOptions<TDocument, TDocument>();
+            if (limit.HasValue)
+            {
+                options.Limit = limit.Value;
+            }
+            
+            return (await this.mongoDb
+                    .GetCollection<TDocument>(collectionName)
+                    .FindAsync<TDocument>(filter, options))
+                    .ToList();
         }
     }
 }

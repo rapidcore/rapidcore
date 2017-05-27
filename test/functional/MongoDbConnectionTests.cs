@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -97,6 +98,47 @@ namespace RapidCore.Mongo.FunctionalTests
 
             Assert.Equal(1, actual.Count);
             Assert.Equal("two", actual[0].String);
+        }
+
+        [Fact]
+        public async Task GetAsync_ReturnsAllMatches_WhenNotGivenLimit()
+        {
+            EnsureEmptyCollection(collectionName);
+
+            Insert<Document>(collectionName, new Document { String = "one", Aux = "mememe" });
+            Insert<Document>(collectionName, new Document { String = "two", Aux = "hipster" });
+            Insert<Document>(collectionName, new Document { String = "thr", Aux = "mememe" });
+
+            var actual = await connection.GetAsync<Document>(collectionName, filter => filter.Aux == "mememe");
+
+            Assert.Equal(2, actual.Count());
+            Assert.Equal("one", actual.ElementAt(0).String);
+            Assert.Equal("thr", actual.ElementAt(1).String);
+        }
+
+        [Fact]
+        public async Task GetAsync_UsesLimit()
+        {
+            EnsureEmptyCollection(collectionName);
+
+            Insert<Document>(collectionName, new Document { String = "one", Aux = "mememe" });
+            Insert<Document>(collectionName, new Document { String = "two", Aux = "hipster" });
+            Insert<Document>(collectionName, new Document { String = "thr", Aux = "mememe" });
+
+            var actual = await connection.GetAsync<Document>(collectionName, filter => filter.Aux == "mememe", 1);
+
+            Assert.Equal(1, actual.Count());
+            Assert.Equal("one", actual.ElementAt(0).String);
+        }
+
+        [Fact]
+        public async Task GetAsync_ReturnsEmptyList_ifNoResults()
+        {
+            EnsureEmptyCollection(collectionName);
+
+            var actual = await connection.GetAsync<Document>(collectionName, filter => true, 1);
+
+            Assert.Empty(actual);
         }
 
         #region Test document
