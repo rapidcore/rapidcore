@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using MongoDB.Driver;
 
-namespace RapidCore.Mongo.FunctionalTests
+namespace RapidCore.Mongo.Testing
 {
+    /// <summary>
+    /// Base class for functional tests that need access to
+    /// a Mongo database.
+    /// 
+    /// It provides simple helpers that we use ourselves.
+    /// </summary>
     public abstract class MongoConnectedTestBase
     {
         private MongoClient lowLevelClient;

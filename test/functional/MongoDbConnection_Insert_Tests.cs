@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using RapidCore.Mongo.Testing;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests
