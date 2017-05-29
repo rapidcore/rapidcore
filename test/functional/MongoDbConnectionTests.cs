@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using RapidCore.Mongo.Testing;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests
