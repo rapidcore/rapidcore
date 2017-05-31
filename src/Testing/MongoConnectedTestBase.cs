@@ -15,26 +15,27 @@ namespace RapidCore.Mongo.Testing
         private IMongoDatabase db;
         private bool isConnected = false;
 
+        protected string ConnectionString { get; set; } = "mongodb://localhost:27017";
+
         protected string GetDbName()
         {
             return GetType().Name;
         }
 
-        protected void Connect(string connectionString = "mongodb://localhost:27017")
+        protected void Connect()
         {
-            lowLevelClient = new MongoClient(connectionString);
-            lowLevelClient.DropDatabase(GetDbName());
-            db = lowLevelClient.GetDatabase(GetDbName());
+            if (!isConnected)
+            {
+                lowLevelClient = new MongoClient(ConnectionString);
+                lowLevelClient.DropDatabase(GetDbName());
+                db = lowLevelClient.GetDatabase(GetDbName());
+                isConnected = true;
+            }
         }
 
         protected MongoClient GetClient()
         {
-            if (!isConnected)
-            {
-                Connect();
-                isConnected = true;
-            }
-
+            Connect();
             return lowLevelClient;
         }
 
