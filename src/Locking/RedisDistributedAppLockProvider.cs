@@ -6,10 +6,10 @@ using StackExchange.Redis;
 namespace RapidCore.Redis.Locking
 {
     /// <summary>
-    /// Implementation of a <see cref="IDistributedAppLocker"/> that utilizes Redis as the backing store for 
+    /// Implementation of a <see cref="IDistributedAppLockProvider"/> that utilizes Redis as the backing store for 
     /// creating the locks
     /// </summary>
-    public class RedisDistributedAppLocker : IDistributedAppLocker
+    public class RedisDistributedAppLockProvider : IDistributedAppLockProvider
     {
         private readonly IConnectionMultiplexer _redisMuxer;
         
@@ -17,7 +17,7 @@ namespace RapidCore.Redis.Locking
         /// Create a new instance of the locker
         /// </summary>
         /// <param name="redisMuxer">A connected instance of a redis muxer</param>
-        public RedisDistributedAppLocker(IConnectionMultiplexer redisMuxer)
+        public RedisDistributedAppLockProvider(IConnectionMultiplexer redisMuxer)
         {
             _redisMuxer = redisMuxer;
         }

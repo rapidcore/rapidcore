@@ -7,12 +7,12 @@ using Xunit;
 
 namespace RapidCore.Redis.FunctionalTest.Locking
 {
-    public class RedisDistributedAppLockerTest
+    public class RedisDistributedAppLockProviderTest
     {
         private readonly IConnectionMultiplexer _redisMuxer;
         private readonly string _hostname;
 
-        public RedisDistributedAppLockerTest()
+        public RedisDistributedAppLockProviderTest()
         {
             _hostname = "127.0.0.1:6379";
             _redisMuxer = ConnectionMultiplexer.Connect(_hostname);
@@ -24,7 +24,7 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             var lockName = "first-lock";
             // ensure that no stale keys are left
             _redisMuxer.GetDatabase().KeyDelete(lockName);
-            var locker = new RedisDistributedAppLocker(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
             using (locker.Acquire(lockName))
             {
                 // mutual exclusion scope here
@@ -45,7 +45,7 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             var lockName = "second-lock";
             // ensure that no stale keys are left
             _redisMuxer.GetDatabase().KeyDelete(lockName);
-            var locker = new RedisDistributedAppLocker(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
 
             using (locker.Acquire(lockName, TimeSpan.FromSeconds(1)))
             {
@@ -72,7 +72,7 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             // ensure that no stale keys are left
             _redisMuxer.GetDatabase().KeyDelete(lockName);
             
-            var locker = new RedisDistributedAppLocker(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
             firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
             
             // Create task to dispose of loclk at some point
@@ -85,12 +85,21 @@ namespace RapidCore.Redis.FunctionalTest.Locking
                 // wait and the new lock should be acquired
                 Task.Delay(TimeSpan.FromMilliseconds(500));
                 Assert.Equal(lockName, secondLock.Name);
-                Assert.True(secondLock.HasAcquiredLock);
+                Assert.True(secondLock.IsActive);
                 secondLock.Dispose();
             });
 
             // this second lock now enters retry mode
             secondLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
+        }
+
+        [Fact]
+        public void Test_that_is_acquired_is_false_when_disposed()
+        {
+            var provider = new RedisDistributedAppLockProvider(_redisMuxer);
+            var theLock = provider.Acquire("this-is-my-lock");
+            theLock.Dispose();
+            Assert.False(theLock.IsActive);
         }
     }
 }

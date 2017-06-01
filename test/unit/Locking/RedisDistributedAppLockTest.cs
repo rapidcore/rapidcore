@@ -10,61 +10,87 @@ namespace RapidCore.Redis.UnitTests.Locking
 {
     public class RedisDistributedAppLockTest
     {
-        [Fact]
-        public async Task Does_acquire_lock_using_redisclient()
+        private readonly string _defaultLockName;
+        private IDatabase _client;
+        private IConnectionMultiplexer _manager;
+
+        public RedisDistributedAppLockTest()
         {
-            var lockName = "the-lock";
-            var client = A.Fake<IDatabase>(o => o.Strict());
-            var manager = A.Fake<IConnectionMultiplexer>(o => o.Strict());
-            A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
-            A.CallTo(() => client.LockTake(
-                A<RedisKey>.That.Matches(str => str == lockName),
+            _defaultLockName = "the-lock";
+            
+            _client = A.Fake<IDatabase>(o => o.Strict());
+            _manager = A.Fake<IConnectionMultiplexer>(o => o.Strict());
+            A.CallTo(() => _manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(_client);
+            A.CallTo(() => _client.LockTake(
+                A<RedisKey>.That.Matches(str => str == _defaultLockName),
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
                 A<CommandFlags>.Ignored)).Returns(true);
+            A.CallTo(() => _client.LockRelease(
+                A<RedisKey>.That.Matches(str => str == _defaultLockName),
+                A<RedisValue>.Ignored,
+                A<CommandFlags>.Ignored
+            )).Returns(true);
+        }
+        [Fact]
+        public async Task Does_acquire_lock_using_redisclient()
+        {
+            var handle = new RedisDistributedAppLock(_manager);
+            await handle.AcquireLockAsync(_defaultLockName);
 
-            var handle = new RedisDistributedAppLock(manager);
-
-            await handle.AcquireLockAsync(lockName);
-
-            A.CallTo(() => client.LockTake(
-                    A<RedisKey>.That.Matches(str => str == lockName),
+            A.CallTo(() => _client.LockTake(
+                    A<RedisKey>.That.Matches(str => str == _defaultLockName),
                     A<RedisValue>.Ignored,
                     A<TimeSpan>.Ignored,
                     A<CommandFlags>.Ignored))
                 .MustHaveHappened();
 
-            Assert.Equal(lockName, handle.Name);
+            Assert.Equal(_defaultLockName, handle.Name);
         }
 
         [Fact]
         public async Task Does_dispose_of_underlying_resources()
         {
-            var lockName = "the-lock";
+            var handle = new RedisDistributedAppLock(_manager);
 
-            var client = A.Fake<IDatabase>();
-            var manager = A.Fake<IConnectionMultiplexer>();
-            A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
-            A.CallTo(() => client.LockTake(
-                A<RedisKey>.That.Matches(str => str == lockName),
-                A<RedisValue>.Ignored,
-                A<TimeSpan>.Ignored,
-                A<CommandFlags>.Ignored)).Returns(true);
-
-            var handle = new RedisDistributedAppLock(manager);
-
-            using (await handle.AcquireLockAsync(lockName, TimeSpan.FromSeconds(2)))
+            using (await handle.AcquireLockAsync(_defaultLockName, TimeSpan.FromSeconds(2)))
             {
                 // empty on purpose
             }
 
             // after using scope underlying lock must be released
-            A.CallTo(() => client.LockRelease(
-                A<RedisKey>.That.Matches(str => str == lockName),
+            A.CallTo(() => _client.LockRelease(
+                A<RedisKey>.That.Matches(str => str == _defaultLockName),
                 A<RedisValue>.Ignored,
                 A<CommandFlags>.Ignored)).MustHaveHappened();
         }
 
+        [Fact]
+        public void Does_throw_if_lock_not_active()
+        {
+            var handle = new RedisDistributedAppLock(_manager);
+            var ex = Assert.Throws<InvalidOperationException>(() => handle.ThrowIfNotActiveWithGivenName(_defaultLockName));
+            Assert.Equal(
+                $"Lock precondition mismatch, required IsActive=true with name '{_defaultLockName}' but IsActive=false with name ''",
+                ex.Message);
+        }
+        
+        [Fact]
+        public void Does_throw_if_lock_name_does_not_match()
+        {
+            var handle = new RedisDistributedAppLock(_manager);
+            var ex = Assert.Throws<InvalidOperationException>(() => handle.ThrowIfNotActiveWithGivenName("this-is-the-wrong-name"));
+        }
+        
+        [Fact]
+        public async Task Does_not_throw_when_name_matches_and_lock_is_active()
+        {
+            using (var handle = await new RedisDistributedAppLock(_manager).AcquireLockAsync(_defaultLockName))
+            {
+                handle.ThrowIfNotActiveWithGivenName(_defaultLockName);
+            }
+        }
+        
         [Fact]
         public async Task Properly_traps_redis_client_exceptions()
         {

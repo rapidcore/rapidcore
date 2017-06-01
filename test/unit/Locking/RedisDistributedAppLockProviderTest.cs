@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RapidCore.Redis.UnitTests.Locking
 {
-    public class RedisDistributedAppLockerTest
+    public class RedisDistributedAppLockProviderTest
     {
         [Fact]
         public void Test_does_create_new_redis_client()
@@ -21,7 +21,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
                 A<CommandFlags>.Ignored)).Returns(true);
-            var locker = new RedisDistributedAppLocker(manager);
+            var locker = new RedisDistributedAppLockProvider(manager);
 
             locker.Acquire(lockName);
 
@@ -42,7 +42,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
                 A<CommandFlags>.Ignored)).Returns(true);
-            var locker = new RedisDistributedAppLocker(manager);
+            var locker = new RedisDistributedAppLockProvider(manager);
 
             locker.Acquire(lockName);
 
