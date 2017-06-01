@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using RapidCore.Locking;
 using StackExchange.Redis;
 
-namespace RapidCore.Locking.Redis
+namespace RapidCore.Redis.Locking
 {
     /// <summary>
     /// Implementation of a <see cref="IDistributedAppLocker"/> that utilizes Redis as the backing store for 

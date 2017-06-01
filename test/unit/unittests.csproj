@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <RootNamespace>RapidCore.UnitTests</RootNamespace>
+    <RootNamespace>RapidCore.Redis.UnitTests</RootNamespace>
+    <AssemblyName>RapidCore.Redis.UnitTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fakeiteasy" Version="3.3.2" />

@@ -1,11 +1,10 @@
 using System;
-using System.Threading.Tasks;
 using FakeItEasy;
-using RapidCore.Locking.Redis;
+using RapidCore.Redis.Locking;
 using StackExchange.Redis;
 using Xunit;
 
-namespace RapidCore.UnitTests.Locking.Redis
+namespace RapidCore.Redis.UnitTests.Locking
 {
     public class RedisDistributedAppLockerTest
     {

@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using RapidCore.Locking;
-using RapidCore.Locking.Redis;
+using RapidCore.Redis.Locking;
 using StackExchange.Redis;
 using Xunit;
 
-namespace RapidCore.FunctionalTest.Locking.Redis
+namespace RapidCore.Redis.FunctionalTest.Locking
 {
     public class RedisDistributedAppLockerTest
     {
@@ -57,6 +57,15 @@ namespace RapidCore.FunctionalTest.Locking.Redis
         [Fact]
         public void Test_acquire_lock_with_timeout_works()
         {
+            /*
+            This test flow goes something like:
+            1. acquire firstLock
+            2. Start a new thread that immediately returns and waits for a while
+            3. Try to acquire second lock, but be patient and wait for up to 20 secs while retrying
+            4. thread unlocks first lock after 700 ms
+            5. thread waits 500 ms
+            6. now we expect the second call to acquire to have succeeded, assert that this is true
+             */
             RedisDistributedAppLock firstLock = null;
             RedisDistributedAppLock secondLock = null;
             var lockName = "some-other-lock";
@@ -82,8 +91,6 @@ namespace RapidCore.FunctionalTest.Locking.Redis
 
             // this second lock now enters retry mode
             secondLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
-
-            
         }
     }
 }

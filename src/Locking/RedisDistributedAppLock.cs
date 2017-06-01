@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using RapidCore.Locking;
 using StackExchange.Redis;
 
-namespace RapidCore.Locking.Redis
+namespace RapidCore.Redis.Locking
 {
     public class RedisDistributedAppLock : IDistributedAppLock
     {
