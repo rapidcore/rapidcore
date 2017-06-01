@@ -13,9 +13,21 @@ namespace RapidCore.Locking
         {
         }
 
+        public DistributedAppLockException(string message, DistributedAppLockExceptionReason reason)
+            : base(message)
+        {
+            Reason = reason;
+        }
+
         public DistributedAppLockException(string message, Exception inner)
             : base(message, inner)
         {
+        }
+
+        public DistributedAppLockException(string message, Exception inner, DistributedAppLockExceptionReason reason)
+            : base(message, inner)
+        {
+            Reason = reason;
         }
 
         public DistributedAppLockExceptionReason Reason { get; set; }

@@ -7,7 +7,7 @@ namespace RapidCore.Locking
     /// Provides an abstraction for acquiring a <see cref="IDistributedAppLock"/> instance that ensures locking across
     /// all application pools / dotnet core processes running that tries to acquire a lock of the same name
     /// </summary>
-    public interface IDistributedAppLocker
+    public interface IDistributedAppLockProvider
     {
         /// <summary>
         /// When implemented in a downstream lock class, it will try to acquire the lock in a blocking (sync) manner
