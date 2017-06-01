@@ -11,7 +11,7 @@ namespace RapidCore.Redis.UnitTests.Locking
     public class RedisDistributedAppLockTest
     {
         [Fact]
-        public void Does_acquire_lock_using_redisclient()
+        public async Task Does_acquire_lock_using_redisclient()
         {
             var lockName = "the-lock";
             var client = A.Fake<IDatabase>(o => o.Strict());
@@ -25,7 +25,7 @@ namespace RapidCore.Redis.UnitTests.Locking
 
             var handle = new RedisDistributedAppLock(manager);
 
-            handle.AcquireLockAsync(lockName);
+            await handle.AcquireLockAsync(lockName);
 
             A.CallTo(() => client.LockTake(
                     A<RedisKey>.That.Matches(str => str == lockName),
@@ -35,31 +35,6 @@ namespace RapidCore.Redis.UnitTests.Locking
                 .MustHaveHappened();
 
             Assert.Equal(lockName, handle.Name);
-        }
-
-        [Fact]
-        public void Does_acquire_lock_using_redisclient_w_timeout()
-        {
-            var lockName = "the-lock";
-
-            var client = A.Fake<IDatabase>();
-            var manager = A.Fake<IConnectionMultiplexer>();
-            A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
-            A.CallTo(() => client.LockTake(
-                A<RedisKey>.That.Matches(str => str == lockName),
-                A<RedisValue>.Ignored,
-                A<TimeSpan>.Ignored,
-                A<CommandFlags>.Ignored)).Returns(true);
-
-            var handle = new RedisDistributedAppLock(manager);
-            handle.AcquireLockAsync(lockName, TimeSpan.FromSeconds(2));
-
-            A.CallTo(() => client.LockTake(
-                    A<RedisKey>.That.Matches(str => str == lockName),
-                    A<RedisValue>.Ignored,
-                    A<TimeSpan>.Ignored,
-                    A<CommandFlags>.Ignored))
-                .MustHaveHappened();
         }
 
         [Fact]
@@ -83,7 +58,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                 // empty on purpose
             }
 
-            // after using scope both client and underlying lock must be released
+            // after using scope underlying lock must be released
             A.CallTo(() => client.LockRelease(
                 A<RedisKey>.That.Matches(str => str == lockName),
                 A<RedisValue>.Ignored,
@@ -121,11 +96,12 @@ namespace RapidCore.Redis.UnitTests.Locking
             var manager = A.Fake<IConnectionMultiplexer>();
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
 
+            var exceptionThrownDuringTest = new TimeoutException("test is faking it!");
             A.CallTo(() => client.LockTake(
                  A<RedisKey>.That.Matches(str => str == lockName),
                  A<RedisValue>.Ignored,
                  A<TimeSpan>.Ignored,
-                 A<CommandFlags>.Ignored)).Throws(new TimeoutException("test is faking it!"));
+                 A<CommandFlags>.Ignored)).Throws(exceptionThrownDuringTest);
 
             var handle = new RedisDistributedAppLock(manager);
 
@@ -133,6 +109,9 @@ namespace RapidCore.Redis.UnitTests.Locking
             var ex = await Assert.ThrowsAsync<DistributedAppLockException>(
                 async () => await handle.AcquireLockAsync(lockName, TimeSpan.FromSeconds(2)));
             Assert.Equal(DistributedAppLockExceptionReason.Timeout, ex.Reason);
+            var innerEx = ex.InnerException;
+            Assert.NotNull(innerEx);
+            Assert.Equal(exceptionThrownDuringTest, innerEx);
         }
 
         [Fact]
