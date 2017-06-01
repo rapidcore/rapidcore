@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <RootNamespace>RapidCore</RootNamespace>
+    <RootNamespace>RapidCore.Redis</RootNamespace>
     <Version>0.0.0</Version>
-    <Title>RapidCore</Title>
+    <Title>RapidCore.Redis</Title>
     <Authors>nover</Authors>
     <Description>RapidCore.Redis is redis dependend code for the RapidCore library</Description>
     <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;redis;lock;locking;distributed locking;</PackageTags>
@@ -18,5 +17,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="RapidCore" Version="0.7.0" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="../stylecop.json" />
+    <AdditionalFiles Include="../stylecop.json" />
+  </ItemGroup>
 </Project>

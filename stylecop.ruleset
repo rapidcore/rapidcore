@@ -21,5 +21,6 @@
     <Rule Id="SA1009" Action="None" /> <!-- Closing parenthesis must be spaced correctly, Does not work with valuetuples -->
     <Rule Id="SA1101" Action="None" /> <!-- Prefix local calls with this -->
     <Rule Id="SA1111" Action="None" /> <!-- Closing parenthesis must be on line of last parameter -->
+    <Rule Id="SA1028" Action="None" /> <!-- Code must not contain trailing whitespace -->
   </Rules>
 </RuleSet>
