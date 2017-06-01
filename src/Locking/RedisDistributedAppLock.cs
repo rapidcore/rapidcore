@@ -49,8 +49,8 @@ namespace RapidCore.Redis.Locking
             try
             {
                 LockHandle = Guid.NewGuid().ToString("N");
-                var noTimeoutProvided = timeout == null;
-                if (noTimeoutProvided)
+                var timeoutProvided = timeout.HasValue;
+                if (!timeoutProvided)
                 {
                     timeout = TimeSpan.Zero;
                 }
@@ -61,7 +61,7 @@ namespace RapidCore.Redis.Locking
                 {
                     var lockWasAcquired = _redisDb.LockTake(lockName, LockHandle, TimeSpan.FromDays(1));
 
-                    if (!lockWasAcquired && noTimeoutProvided)
+                    if (!lockWasAcquired && !timeoutProvided)
                     {
                         throw new DistributedAppLockException("Unable to acquire lock")
                         {
