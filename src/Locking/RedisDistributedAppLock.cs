@@ -20,17 +20,14 @@ namespace RapidCore.Redis.Locking
         {
             _redisMuxer = redisMuxer;
         }
-
+        
         /// <summary>
         /// The name of the lock acquired
         /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Determines whether the lock has actually been acquired with the underlying Redis database
-        /// </summary>
-        public bool HasAcquiredLock { get; protected set; }
-
+        public bool IsActive { get; set; }
+        
         /// <summary>
         /// A unique lock handle for this instance of the lock
         /// </summary>
@@ -76,13 +73,13 @@ namespace RapidCore.Redis.Locking
                     }
 
                     // Lock was acquired, we're happy
-                    HasAcquiredLock = true;
+                    IsActive = true;
                     Name = lockName;
                     break;
                 } 
                 while (stopWatch.Elapsed.TotalSeconds < timeout.Value.TotalSeconds);
 
-                if (!HasAcquiredLock)
+                if (!IsActive)
                 {
                     throw new DistributedAppLockException("Timeout while acquiring lock")
                     {
@@ -122,6 +119,27 @@ namespace RapidCore.Redis.Locking
         }
 
         /// <summary>
+        /// Determines whether the current lock instance is <see cref="IsActive"/> and has a name that matches the given
+        /// parameter
+        /// </summary>
+        /// <param name="name">The name of the lock to asssert that is currently taken</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void ThrowIfNotActiveWithGivenName(string name)
+        {
+            if (!IsActive)
+            {
+                throw new InvalidOperationException(
+                    $"Lock precondition mismatch, required IsActive=true with name '{name}' but IsActive=false with name '{this.Name}'");
+            }
+
+            if (!Name.Equals(name))
+            {
+                throw new InvalidOperationException(
+                    $"Lock precondition mismatch, required IsActive=true with name '{name}' but IsActive=true with name '{this.Name}'");
+            }
+        }
+        
+        /// <summary>
         /// Dispose of the lock instance and release the lock with the underlying Redis system
         /// </summary>
         public void Dispose()
@@ -141,9 +159,10 @@ namespace RapidCore.Redis.Locking
             {
                 // DISPOSE THE UNDERLYING REDIS STUFF
                 // TODO Lock release can return false!!! So deal with that biatch..
-                _redisDb.LockRelease(Name, LockHandle);
+                _redisDb?.LockRelease(Name, LockHandle);
                 Name = default(string);
                 LockHandle = default(string);
+                IsActive = false;
             }
 
             _disposedValue = true;
