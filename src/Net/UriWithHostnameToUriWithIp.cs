@@ -14,6 +14,11 @@ namespace RapidCore.Net
             this.resolver = resolver;
         }
 
+        protected UriWithHostnameToUriWithIp()
+        {
+            // To allow mocking
+        }
+
         /// <summary>
         /// This extension method takes in a uri that contains a hostname, resolves the ip and returns the correspoding uri with the ip injected
         ///
@@ -24,7 +29,7 @@ namespace RapidCore.Net
         /// </summary>
         /// <param name="uriString">The uri with a hostname to fix</param>
         /// <returns>The patched uri with an ip instead of a hostname</returns>
-        public async Task<string> ConvertAsync(string uriString)
+        public virtual async Task<string> ConvertAsync(string uriString)
         {
             if (!uriString.Contains("://"))
             {
