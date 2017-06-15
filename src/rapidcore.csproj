@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>RapidCore</RootNamespace>
@@ -28,5 +28,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Environment" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.NameResolution" />
   </ItemGroup>
 </Project>
