@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
-using RapidCore.Net;
+using RapidCore.Network;
 using Xunit;
 
-namespace RapidCore.UnitTests.Net
+namespace RapidCore.UnitTests.Network
 {
     public class UriWithHostnameToUriWithIpTest
     {
@@ -27,8 +24,21 @@ namespace RapidCore.UnitTests.Net
         {
             var fixer = new UriWithHostnameToUriWithIp(_resolver);
 
-            var fixx = await fixer.ConvertAsync(toFix);
-            Assert.Equal(expectedFix, fixx);
+            var actual = await fixer.ConvertAsync(toFix);
+            Assert.Equal(expectedFix, actual);
+        }
+
+        [Theory]
+        [InlineData("mongodb://my-mongo:27017", "mongodb://127.0.0.1:27017")]
+        [InlineData("redis://the-redis:27017", "redis://127.0.0.1:27017")]
+        [InlineData("the-redis:27017", "127.0.0.1:27017")]
+        [InlineData("mongodb://user:pass@my-mongo:27017", "mongodb://user:pass@127.0.0.1:27017")]
+        public void HostnameToIp_works_sync_too(string toFix, string expectedFix)
+        {
+            var fixer = new UriWithHostnameToUriWithIp(_resolver);
+
+            var actual = fixer.Convert(toFix);
+            Assert.Equal(expectedFix, actual);
         }
     }
 }
