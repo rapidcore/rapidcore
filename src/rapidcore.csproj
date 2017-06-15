@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>RapidCore</RootNamespace>
@@ -20,6 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.*" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.3.0" />
   </ItemGroup>
   <ItemGroup>
