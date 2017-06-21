@@ -33,6 +33,17 @@ namespace RapidCore.UnitTests.Globalization
             Assert.Equal(208, actual.CodeNumeric);
             Assert.Equal("Denmark", actual.NameEnglish);
         }
+
+        [Fact]
+        public void Get_numeric_sentInAsString()
+        {
+            var actual = countries.Get("208");
+            
+            Assert.Equal("DK", actual.CodeAlpha2);
+            Assert.Equal("DNK", actual.CodeAlpha3);
+            Assert.Equal(208, actual.CodeNumeric);
+            Assert.Equal("Denmark", actual.NameEnglish);
+        }
         
         [Fact]
         public void Get_numeric()

@@ -265,11 +265,17 @@ namespace RapidCore.Globalization
         /// <summary>
         /// Get country by either alpha-2 or alpha-3 code
         /// </summary>
-        /// <param name="alpha2OrAlpha3">Country code in either alpha-2 or alpha-3</param>
+        /// <param name="alpha2OrAlpha3OrNumeric">Country code in either alpha-2, alpha-3 or numeric</param>
         /// <returns>The matching country or null</returns>
-        public virtual CountryIso3166 Get(string alpha2OrAlpha3)
+        public virtual CountryIso3166 Get(string alpha2OrAlpha3OrNumeric)
         {
-            var uppered = alpha2OrAlpha3.ToUpper();
+            // the input could be numeric, but sent in as a string
+            if (int.TryParse(alpha2OrAlpha3OrNumeric, out int numeric))
+            {
+                return Get(numeric);
+            }
+
+            var uppered = alpha2OrAlpha3OrNumeric.ToUpper();
 
             if (uppered.Length == 2)
             {
