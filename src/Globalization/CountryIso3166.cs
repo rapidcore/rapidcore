@@ -27,5 +27,21 @@ namespace RapidCore.Globalization
         /// The english name of the country
         /// </summary>
         public virtual string NameEnglish { get; set; }
+
+        /// <summary>
+        /// Does this country have the given country code
+        /// </summary>
+        /// <param name="alpha2OrAlpha3OrNumeric">Country code to check as either alpha-2, alpha-3 or numeric</param>
+        public virtual bool Is(string alpha2OrAlpha3OrNumeric)
+        {
+            if (int.TryParse(alpha2OrAlpha3OrNumeric, out int numeric))
+            {
+                return numeric == CodeNumeric;
+            }
+
+            var uppered = alpha2OrAlpha3OrNumeric.ToUpper();
+
+            return CodeAlpha2.Equals(uppered) || CodeAlpha3.Equals(uppered);
+        }
     }
 }

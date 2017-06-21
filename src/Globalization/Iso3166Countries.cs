@@ -265,11 +265,17 @@ namespace RapidCore.Globalization
         /// <summary>
         /// Get country by either alpha-2 or alpha-3 code
         /// </summary>
-        /// <param name="alpha2OrAlpha3">Country code in either alpha-2 or alpha-3</param>
+        /// <param name="alpha2OrAlpha3OrNumeric">Country code in either alpha-2, alpha-3 or numeric</param>
         /// <returns>The matching country or null</returns>
-        public virtual CountryIso3166 Get(string alpha2OrAlpha3)
+        public virtual CountryIso3166 Get(string alpha2OrAlpha3OrNumeric)
         {
-            var uppered = alpha2OrAlpha3.ToUpper();
+            // the input could be numeric, but sent in as a string
+            if (int.TryParse(alpha2OrAlpha3OrNumeric, out int numeric))
+            {
+                return Get(numeric);
+            }
+
+            var uppered = alpha2OrAlpha3OrNumeric.ToUpper();
 
             if (uppered.Length == 2)
             {
@@ -287,6 +293,24 @@ namespace RapidCore.Globalization
         public virtual CountryIso3166 Get(int numericCountryCode)
         {
             return countries.FirstOrDefault(x => x.CodeNumeric == numericCountryCode);
+        }
+
+        /// <summary>
+        /// Check whether two given country codes refer to the same country
+        /// </summary>
+        /// <param name="aAlpha2OrAlpha3OrNumeric">Country A</param>
+        /// <param name="bAlpha2OrAlpha3OrNumeric">Country B</param>
+        /// <returns>Whether or not the country codes refer to the same country. If one or both country codes are invalid, <c>false</c> is returned.</returns>
+        public virtual bool Matches(string aAlpha2OrAlpha3OrNumeric, string bAlpha2OrAlpha3OrNumeric)
+        {
+            var a = Get(aAlpha2OrAlpha3OrNumeric);
+
+            if (a == default(CountryIso3166))
+            {
+                return false;
+            }
+
+            return a.Is(bAlpha2OrAlpha3OrNumeric);
         }
     }
 }
