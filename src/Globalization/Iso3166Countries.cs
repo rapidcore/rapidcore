@@ -294,5 +294,23 @@ namespace RapidCore.Globalization
         {
             return countries.FirstOrDefault(x => x.CodeNumeric == numericCountryCode);
         }
+
+        /// <summary>
+        /// Check whether two given country codes refer to the same country
+        /// </summary>
+        /// <param name="aAlpha2OrAlpha3OrNumeric">Country A</param>
+        /// <param name="bAlpha2OrAlpha3OrNumeric">Country B</param>
+        /// <returns>Whether or not the country codes refer to the same country. If one or both country codes are invalid, <c>false</c> is returned.</returns>
+        public virtual bool Matches(string aAlpha2OrAlpha3OrNumeric, string bAlpha2OrAlpha3OrNumeric)
+        {
+            var a = Get(aAlpha2OrAlpha3OrNumeric);
+
+            if (a == default(CountryIso3166))
+            {
+                return false;
+            }
+
+            return a.Is(bAlpha2OrAlpha3OrNumeric);
+        }
     }
 }
