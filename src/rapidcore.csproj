@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <RootNamespace>RapidCore</RootNamespace>
     <Version>0.12.0</Version>
     <Title>RapidCore</Title>

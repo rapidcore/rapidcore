@@ -1,3 +1,5 @@
+#if NETSTANDARD1_6
+
 using System;
 using Microsoft.Extensions.Configuration;
 
@@ -32,3 +34,4 @@ namespace RapidCore.Configuration
         }
     }
 }
+#endif
