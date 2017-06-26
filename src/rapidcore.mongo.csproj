@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <RootNamespace>RapidCore.Mongo</RootNamespace>
-    <Version>0.9.1</Version>
+    <Version>0.13.0</Version>
     <Title>RapidCore.Mongo</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
