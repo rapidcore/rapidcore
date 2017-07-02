@@ -34,7 +34,7 @@ namespace RapidCore.Network
                 throw new MockRapidHttpClientException("Could not find a suitable test-case for the request.", request);
             }
 
-            return Task.FromResult(testCase.GetResponse(request));
+            return testCase.GetResponseAsync(request);
         }
 
         /// <summary>

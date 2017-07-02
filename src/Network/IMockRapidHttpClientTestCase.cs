@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace RapidCore.Network
 {
@@ -17,9 +18,12 @@ namespace RapidCore.Network
 
         /// <summary>
         /// Get the mock response for the given request.
+        ///
+        /// This method is async, to allow for cases where you want
+        /// to delay the response or some other clever thing :)
         /// </summary>
         /// <param name="request">The request to "respond" to</param>
         /// <returns>The response</returns>
-        HttpResponseMessage GetResponse(HttpRequestMessage request);
+        Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request);
     }
 }

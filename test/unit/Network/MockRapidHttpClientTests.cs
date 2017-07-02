@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 using FakeItEasy;
 using RapidCore.Network;
 using Xunit;
@@ -63,7 +64,7 @@ namespace RapidCore.UnitTests.Network
             A.CallTo(() => testCase3.IsMatch(request)).Returns(true);
             
             var response = new HttpResponseMessage();
-            A.CallTo(() => testCase2.GetResponse(request)).Returns(response);
+            A.CallTo(() => testCase2.GetResponseAsync(request)).Returns(Task.FromResult(response));
             
             var actual = await client.SendAsync(request);
             
