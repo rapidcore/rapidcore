@@ -24,5 +24,10 @@ namespace RapidCore.Mongo
         public string Name { get; set; }
         public int Order { get; set; } = 0;
         public bool Sparse { get; set; } = false;
+        
+        /// <summary>
+        /// Determines whether the index is a unique index constraint
+        /// </summary>
+        public bool Unique { get; set; } = false;
     }
 }

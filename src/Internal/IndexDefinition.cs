@@ -33,6 +33,11 @@ namespace RapidCore.Mongo.Internal
         public virtual bool Sparse { get; set; } = false;
 
         /// <summary>
+        /// Whether to make a unique index
+        /// </summary>
+        public virtual bool Unique { get; set; } = false;
+
+        /// <summary>
         /// The keys of the index
         /// </summary>
         public virtual IList<IndexKey> Keys { get; set; } = new List<IndexKey>();
@@ -47,6 +52,11 @@ namespace RapidCore.Mongo.Internal
             if (attribute.Sparse)
             {
                 Sparse = true;
+            }
+
+            if (attribute.Unique)
+            {
+                Unique = true;
             }
 
             Keys.Add(new IndexKey { Name = field, Order = attribute.Order });
@@ -67,11 +77,13 @@ namespace RapidCore.Mongo.Internal
         /// </summary>
         public virtual CreateIndexOptions GetOptions()
         {
-            var options = new CreateIndexOptions();
-
-            options.Background = true;
-            options.Sparse = Sparse;
-            options.Name = Name;
+            var options = new CreateIndexOptions
+            {
+                Background = true,
+                Sparse = Sparse,
+                Name = Name,
+                Unique = Unique,
+            };
 
             return options;
         }
