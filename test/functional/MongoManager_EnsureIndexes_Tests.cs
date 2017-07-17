@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using RapidCore.Mongo.Internal;
 using RapidCore.Mongo.Testing;
+using ServiceStack.Text;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests
@@ -65,6 +66,15 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(new BsonDocument().Add("Nested.OnNested", 1), actual["Nested.OnNested_1"].GetElement("key").Value);
         }
 
+        [Fact]
+        public void CreatesUniqueIndexes()
+        {
+            var actual = CreateAndGetIndexes<Unique>();
+            Assert.Equal(3, actual.Count); // the auto-generated "_id_" and our own
+            
+            var idxUnique = actual["IDX_Unique"];
+            Assert.True(idxUnique["unique"].AsBoolean);
+        }
         [Fact]
         public void DropsAndReCreatesExistingIndexes_WhenIndexOptionsHaveChanged()
         {
@@ -212,5 +222,17 @@ namespace RapidCore.Mongo.FunctionalTests
             public string OnNested { get; set; }
         }
         #endregion
+        
+        #region Unique indexes
+
+        private class Unique
+        {
+            [Index(Unique = true, Name = "IDX_Unique")]
+            public string IAmUnique { get; set; }
+            
+            [Index(Name = "IDX_NotSoMuch")]
+            public string NotSoMuch { get; set; }
+        }
+        #endregion 
     }
 }
