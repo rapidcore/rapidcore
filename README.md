@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/0a9kh4v7a6py068e?svg=true)](https://ci.appveyor.com/project/nover/rapidcore.xunit/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/0a9kh4v7a6py068e?svg=true)](https://ci.appveyor.com/project/nover/rapidcore-xunit/branch/master)
 [![nuget version][nuget-image]][nuget-url]
 
 # RapidCore xunit
