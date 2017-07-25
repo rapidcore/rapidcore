@@ -9,12 +9,14 @@ namespace RapidCore.Mongo.Internal
         {
             //
             // index already exists, but with different options
+            // Check using the error code - all error codes are defined here and have been stable over time, with only new codes added:
+            // https://github.com/mongodb/mongo/blob/v3.4/src/mongo/base/error_codes.err
             //
-            if (ex.Message.Equals($"Command createIndexes failed: Index with name: {index.Name} already exists with different options."))
+            if (ex.Code == 86)
             {
                 return true;
             }
-
+            
             //
             // index already exists
             //
