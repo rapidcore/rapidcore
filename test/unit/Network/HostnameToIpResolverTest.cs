@@ -20,7 +20,11 @@ namespace RapidCore.UnitTests.Network
         public async Task HostnameToIpResolve_can_fail()
         {
             var resolver = new HostnameToIpResolver();
-            await Assert.ThrowsAsync<SocketException>(async () => await resolver.ResolveToIpv4Async("this-host-is-invalid"));
+            var exception =
+                await Record.ExceptionAsync(async () => await resolver.ResolveToIpv4Async("this-host-is-invalid"));
+            Assert.NotNull(exception);
+            
+            Assert.IsAssignableFrom<SocketException>(exception);
         }
     }
 }
