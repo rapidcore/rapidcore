@@ -48,7 +48,6 @@ namespace RapidCore.UnitTests.Environment
             }
 
             Assert.True(actual.Count > 0, "There should be at least 1 variable defined");
-            Assert.True(actual.ContainsKey("DOTNET_CLI_TELEMETRY_SESSIONID"), "As a minimum 'DOTNET_CLI_TELEMETRY_SESSIONID' should be defined");
         }
     }
 }
