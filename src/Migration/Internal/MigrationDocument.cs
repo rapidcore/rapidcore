@@ -11,6 +11,8 @@ namespace RapidCore.Mongo.Migration.Internal
     /// </summary>
     public class MigrationDocument
     {
+        [BsonIgnore] public static string CollectionName = "__RapidCoreMigrations";
+
         [BsonIgnoreIfDefault]
         public ObjectId Id { get; set; }
 
@@ -29,7 +31,7 @@ namespace RapidCore.Mongo.Migration.Internal
         /// <value>
         /// The steps completed.
         /// </value>
-        public List<string> StepsCompleted { get; set; }
+        public List<string> StepsCompleted { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets a value indicating whether [migration completed].
@@ -38,5 +40,21 @@ namespace RapidCore.Mongo.Migration.Internal
         ///   <c>true</c> if [migration completed]; otherwise, <c>false</c>.
         /// </value>
         public bool MigrationCompleted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total migration time in ms.
+        /// </summary>
+        /// <value>
+        /// The total migration time in ms.
+        /// </value>
+        public long TotalMigrationTimeInMs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the completed at date and time in UTC.
+        /// </summary>
+        /// <value>
+        /// The completed at.
+        /// </value>
+        public DateTimeOffset CompletedAt { get; set; }
     }
 }
