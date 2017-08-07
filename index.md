@@ -1,5 +1,5 @@
 ---
-title: Rapid Core Documentation
+title: RapidCore Documentation
 keywords: sample homepage
 tags: [getting_started]
 sidebar: mydoc_sidebar
