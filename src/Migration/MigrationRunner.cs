@@ -67,7 +67,7 @@ namespace RapidCore.Mongo.Migration
 
                 var context = GetContext();
                 
-                foreach (var migration in await migrationManager.FindMigrationsForUpgradeAsync())
+                foreach (var migration in await migrationManager.FindMigrationsForUpgradeAsync(context))
                 {
                     try
                     {

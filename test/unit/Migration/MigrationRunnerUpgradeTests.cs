@@ -57,26 +57,33 @@ namespace RapidCore.Mongo.UnitTests.Migration
         [Fact]
         public async void Upgrade_GetMigrationsFromManager()
         {
+            MigrationContext actual = null;
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Invokes(x => actual = (MigrationContext) x.Arguments[0]);
+            
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).MustHaveHappened();
+            Assert.NotNull(actual);
+            Assert.Same(logger, actual.Logger);
+            Assert.Same(connectionProvider, actual.ConnectionProvider);
+            Assert.Same(container, actual.Container);
+            Assert.Same(environment, actual.Environment);
         }
         
         [Fact]
         public async void Upgrade_CallUpgradeOnAllMigrations()
         {
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
             
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
-            A.CallTo(() => migration2.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
+            A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>._)).MustHaveHappened();
+            A.CallTo(() => migration2.UpgradeAsync(A<MigrationContext>._)).MustHaveHappened();
         }
         
         [Fact]
         public async void Upgrade_CallUpgrade_withCorrectContext()
         {
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             
             MigrationContext actual = null;
             A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>._)).Invokes(x => actual = (MigrationContext) x.Arguments[0]);
@@ -93,7 +100,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
         [Fact]
         public async void Upgrade_MarkMigrationAsComplete()
         {
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             
             await runner.UpgradeAsync();
 
@@ -104,7 +111,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
         public async void Upgrade_ifError_doNotMarkAsComplete_wrapThrownException()
         {
             var innerException = new Exception("DIE!");
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>.Ignored)).ThrowsAsync(innerException);
 
             var actual = await Record.ExceptionAsync(async () => await runner.UpgradeAsync());

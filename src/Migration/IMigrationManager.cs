@@ -11,8 +11,9 @@ namespace RapidCore.Mongo.Migration
         /// <summary>
         /// Find migrations that have yet to be run
         /// </summary>
+        /// <param name="context">The context of the migration</param>
         /// <returns>A list of unrun migrations ordered by how they should be run</returns>
-        Task<IList<IMigration>> FindMigrationsForUpgradeAsync();
+        Task<IList<IMigration>> FindMigrationsForUpgradeAsync(MigrationContext context);
 
         /// <summary>
         /// Mark a migration as having been completed.
