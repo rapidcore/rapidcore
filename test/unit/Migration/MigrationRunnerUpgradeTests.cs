@@ -12,6 +12,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
     public class MigrationRunnerUpgradeTests
     {
         private readonly MigrationRunner runner;
+        private readonly ILogger<MigrationRunner> logger;
         private readonly IContainerAdapter container;
         private readonly IMigrationEnvironment environment;
         private readonly IConnectionProvider connectionProvider;
@@ -23,6 +24,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
 
         public MigrationRunnerUpgradeTests()
         {
+            logger = A.Fake<ILogger<MigrationRunner>>();
             container = A.Fake<IContainerAdapter>();
             environment = A.Fake<IMigrationEnvironment>();
             connectionProvider = A.Fake<IConnectionProvider>();
@@ -35,7 +37,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
             A.CallTo(() => appLocker.AcquireAsync("RapidCoreMigrations", A<TimeSpan>._)).Returns(Task.FromResult(appLock));
             
             runner = new MigrationRunner(
-                A.Fake<ILogger<MigrationRunner>>(),
+                logger,
                 container,
                 environment,
                 connectionProvider,
@@ -69,6 +71,23 @@ namespace RapidCore.Mongo.UnitTests.Migration
 
             A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
             A.CallTo(() => migration2.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
+        }
+        
+        [Fact]
+        public async void Upgrade_CallUpgrade_withCorrectContext()
+        {
+            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            
+            MigrationContext actual = null;
+            A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>._)).Invokes(x => actual = (MigrationContext) x.Arguments[0]);
+            
+            await runner.UpgradeAsync();
+
+            Assert.NotNull(actual);
+            Assert.Same(logger, actual.Logger);
+            Assert.Same(connectionProvider, actual.ConnectionProvider);
+            Assert.Same(container, actual.Container);
+            Assert.Same(environment, actual.Environment);
         }
         
         [Fact]

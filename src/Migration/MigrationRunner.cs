@@ -40,6 +40,17 @@ namespace RapidCore.Mongo.Migration
             return "RapidCoreMigrations";
         }
 
+        protected virtual MigrationContext GetContext()
+        {
+            return new MigrationContext
+            {
+                Logger = logger,
+                ConnectionProvider = connectionProvider,
+                Container =  container,
+                Environment = environment
+            };
+        }
+
         /// <summary>
         /// Upgrade the enviroment
         /// </summary>
@@ -53,11 +64,9 @@ namespace RapidCore.Mongo.Migration
             {
                 logger.LogInformation($"Lock {GetLockName()} acquired");
                 var sw = new Stopwatch();
-                var context = new MigrationContext
-                {
-                    Logger = logger,
-                    ConnectionProvider = connectionProvider
-                };
+
+                var context = GetContext();
+                
                 foreach (var migration in await migrationManager.FindMigrationsForUpgradeAsync())
                 {
                     try
