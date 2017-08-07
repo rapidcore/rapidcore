@@ -29,6 +29,18 @@ namespace RapidCore.Mongo.UnitTests.Migration
         }
         
         [Fact]
+        public void Resolve_type_ReturnsInstanceOfRegisteredClass()
+        {
+            Assert.IsAssignableFrom<MyClass>(container.Resolve(typeof(MyClass)));
+        }
+        
+        [Fact]
+        public void Resolve_type_returnsNull_ifNotRegistered()
+        {
+            Assert.Null(container.Resolve(typeof(Unregistered)));
+        }
+        
+        [Fact]
         public void Resolve_named_ReturnsInstanceOfRegisteredClass()
         {
             Assert.IsAssignableFrom<MyClass>(container.Resolve<MyClass>("hephey"));

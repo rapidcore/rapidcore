@@ -26,5 +26,10 @@ namespace RapidCore.Mongo.Migration
             // so just do a normal resolve
             return Resolve<T>();
         }
+
+        public object Resolve(Type type)
+        {
+            return serviceProvider.GetService(type);
+        }
     }
 }
