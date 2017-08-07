@@ -6,13 +6,13 @@ output: web
 topnav_title: RapidCore Documentation
 # this appears on the top navigation bar next to the home button
 
-site_title: Jekyll theme for documentation
+site_title: RapidCore documentation
 # this appears in the html browser tab for the site title (seen mostly by search engines, not users)
 
-company_name: Your company
+company_name: RapidCore
 # this appears in the footer
 
-github_editme_path: rapidcore/docs
+github_editme_path: rapidcore/docs/blob/master
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
 #disqus_shortname: idrbwjekyll
