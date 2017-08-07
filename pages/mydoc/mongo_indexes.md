@@ -1,3 +1,12 @@
+---
+title: Mongo Indexes
+tags: [getting_started]
+keywords:
+summary: "Mongo summary is here."
+sidebar: mydoc_sidebar
+permalink: mongo_indexes.html
+folder: mydoc
+---
 Indexes
 =======
 

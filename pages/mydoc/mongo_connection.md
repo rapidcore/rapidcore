@@ -1,3 +1,12 @@
+---
+title: Mongo Connection
+tags: [getting_started]
+keywords:
+summary: "Mongo connection is here."
+sidebar: mydoc_sidebar
+permalink: mongo_connection.html
+folder: mydoc
+---
 Connecting to MongoDB
 =====================
 

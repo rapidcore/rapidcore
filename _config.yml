@@ -72,7 +72,7 @@ defaults:
       layout: "page"
       comments: false
       search: true
-#      sidebar: home_sidebar
+      sidebar: home_sidebar
       topnav: topnav
   -
     scope:
