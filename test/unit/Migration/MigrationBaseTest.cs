@@ -92,16 +92,16 @@ namespace RapidCore.Mongo.UnitTests.Migration
                     MigrationDocument.CollectionName,
                     A<MigrationDocument>.Ignored,
                     A<Expression<Func<MigrationDocument, bool>>>.Ignored))
-                .Invokes(call => upsertedDocument = (MigrationDocument) call.Arguments[1]);
+                .Invokes(call => upsertedDocument = (MigrationDocument)call.Arguments[1]);
 
-            var connectionProvider = A.Fake<IConnectionProvider>(opts=>opts.Strict());
+            var connectionProvider = A.Fake<IConnectionProvider>(opts => opts.Strict());
             A.CallTo(() => connectionProvider.Default()).Returns(mongoDbConnection);
 
             var step1Invoked = false;
             var step2Invoked = false;
             A.CallTo(() => _migration.ConfigureUpgrade(A<MigrationBuilder>.Ignored)).Invokes(call =>
             {
-                var builder = (MigrationBuilder) call.Arguments[0];
+                var builder = (MigrationBuilder)call.Arguments[0];
                 builder
                     .WithStep("step1", () => step1Invoked = true)
                     .WithStep("step2", () => step2Invoked = true);
@@ -121,6 +121,49 @@ namespace RapidCore.Mongo.UnitTests.Migration
             Assert.True(stepsCompleted.Count == 2, "upsertedDocument.StepsCompleted.Count == 2");
             Assert.Contains("step1", stepsCompleted);
             Assert.Contains("step2", stepsCompleted);
+        }
+
+        [Fact]
+        public async Task MigrationBase_upgrade_async_saves_partial_state_on_exceptions()
+        {
+            var mongoDbConnection = A.Fake<MongoDbConnection>(opts => opts.Strict());
+            A.CallTo(() => mongoDbConnection.FirstOrDefaultAsync(MigrationDocument.CollectionName,
+                    A<Expression<Func<MigrationDocument, bool>>>.Ignored))
+                .Returns(Task.FromResult(default(MigrationDocument)));
+
+            MigrationDocument upsertedDocument = null;
+            A.CallTo(() => mongoDbConnection.UpsertAsync(
+                    MigrationDocument.CollectionName,
+                    A<MigrationDocument>.Ignored,
+                    A<Expression<Func<MigrationDocument, bool>>>.Ignored))
+                .Invokes(call => upsertedDocument = (MigrationDocument)call.Arguments[1]);
+
+            var connectionProvider = A.Fake<IConnectionProvider>(opts => opts.Strict());
+            A.CallTo(() => connectionProvider.Default()).Returns(mongoDbConnection);
+
+            var step1Invoked = false;
+            A.CallTo(() => _migration.ConfigureUpgrade(A<MigrationBuilder>.Ignored)).Invokes(call =>
+            {
+                var builder = (MigrationBuilder)call.Arguments[0];
+                builder
+                    .WithStep("step1", () => step1Invoked = true)
+                    .WithStep("step2", () => throw new NotSupportedException("Breaking 'cause I can!"));
+            });
+
+            // ReSharper disable once PossibleNullReferenceException
+            var migrationException = await Record.ExceptionAsync(async () =>
+            await _migration.UpgradeAsync(new MigrationContext
+            {
+                ConnectionProvider = connectionProvider,
+            }));
+            Assert.NotNull(migrationException);
+
+            Assert.True(step1Invoked);
+
+            Assert.NotNull(upsertedDocument);
+            var stepsCompleted = upsertedDocument.StepsCompleted;
+            Assert.True(stepsCompleted.Count == 1, "upsertedDocument.StepsCompleted.Count == 1");
+            Assert.Contains("step1", stepsCompleted);
         }
     }
 }
