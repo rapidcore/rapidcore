@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RapidCore.Mongo.Migration.Internal
 {
@@ -11,5 +12,18 @@ namespace RapidCore.Mongo.Migration.Internal
         /// <param name="action">The action to execute which is the actual migration code to run.</param>
         /// <returns></returns>
         IMigrationBuilder WithStep(string name, Action action);
+
+        /// <summary>
+        /// Get the corresponding action for a step with the given name
+        /// </summary>
+        /// <param name="stepName"></param>
+        /// <returns></returns>
+        Action GetActionForMigrationStep(string stepName);
+
+        /// <summary>
+        /// Returns a list of all the steps that have been added to the migration
+        /// </summary>
+        /// <returns></returns>
+        IList<string> GetAllStepNames();
     }
 }

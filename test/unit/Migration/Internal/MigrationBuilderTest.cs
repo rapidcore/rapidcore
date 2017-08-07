@@ -58,7 +58,26 @@ namespace RapidCore.Mongo.UnitTests.Migration.Internal
         [Fact]
         public void MigrationBuilder_add_step_in_chains_work()
         {
-            throw new NotImplementedException("Write this test");
+            _builder
+                .WithStep("this-step", _defaultAction)
+                .WithStep("that-step", _defaultAction)
+                .WithStep("also-this", _defaultAction);
+
+            Assert.True(_builder.MigrationSteps.Count == 3, "builder.MigrationSteps.Count == 3");
+        }
+        [Fact]
+        public void MigrationBuilder_get_all_step_names()
+        {
+            _builder
+                .WithStep("this-step", _defaultAction)
+                .WithStep("that-step", _defaultAction)
+                .WithStep("also-this", _defaultAction);
+
+            var addedSteps = _builder.GetAllStepNames();
+            Assert.True(addedSteps.Count == 3, "addedSteps.Count == 3");
+            Assert.Contains("this-step", addedSteps);
+            Assert.Contains("that-step", addedSteps);
+            Assert.Contains("also-this", addedSteps);
         }
 
         [Fact]

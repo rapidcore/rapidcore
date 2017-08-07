@@ -52,12 +52,13 @@ namespace RapidCore.Mongo.Migration.Internal
             return this;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Gets the action for the migration step.
         /// </summary>
         /// <param name="stepName">Name of the step.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException">stepName</exception>
+        /// <exception cref="!:ArgumentException">stepName</exception>
         public Action GetActionForMigrationStep(string stepName)
         {
             var step = MigrationSteps.SingleOrDefault(q => q.Name == stepName);
@@ -68,6 +69,15 @@ namespace RapidCore.Mongo.Migration.Internal
                     nameof(stepName));
             }
             return step.Action;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public IList<string> GetAllStepNames()
+        {
+            return MigrationSteps.Select(s => s.Name).ToList();
         }
     }
 }
