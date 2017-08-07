@@ -49,7 +49,7 @@ namespace RapidCore.Mongo.Migration
             // 2. Find migrations
             // 3. Run each migration
             
-            using (await appLocker.AcquireAsync(GetLockName()))
+            using (await appLocker.AcquireAsync(GetLockName(), TimeSpan.FromSeconds(30)))
             {
                 logger.LogInformation($"Lock {GetLockName()} acquired");
                 var sw = new Stopwatch();
