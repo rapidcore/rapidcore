@@ -53,14 +53,18 @@ namespace RapidCore.Mongo.Migration
             {
                 logger.LogInformation($"Lock {GetLockName()} acquired");
                 var sw = new Stopwatch();
-                
+                var context = new MigrationContext
+                {
+                    Logger = logger,
+                    ConnectionProvider = connectionProvider
+                };
                 foreach (var migration in await migrationManager.FindMigrationsForUpgradeAsync())
                 {
                     try
                     {
                         logger.LogInformation($"Attempt to run migration {migration.Name}");
                         sw.Restart();
-                        await migration.UpgradeAsync();
+                        await migration.UpgradeAsync(context);
                         sw.Stop();
                         logger.LogInformation($"Succeeded in running {migration.Name}. It took {sw.ElapsedMilliseconds} milliseconds.");
                         

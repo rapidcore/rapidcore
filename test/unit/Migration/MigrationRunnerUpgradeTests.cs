@@ -67,8 +67,8 @@ namespace RapidCore.Mongo.UnitTests.Migration
             
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migration1.UpgradeAsync()).MustHaveHappened();
-            A.CallTo(() => migration2.UpgradeAsync()).MustHaveHappened();
+            A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
+            A.CallTo(() => migration2.UpgradeAsync(A<MigrationContext>.Ignored)).MustHaveHappened();
         }
         
         [Fact]
@@ -86,7 +86,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
         {
             var innerException = new Exception("DIE!");
             A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync()).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
-            A.CallTo(() => migration1.UpgradeAsync()).ThrowsAsync(innerException);
+            A.CallTo(() => migration1.UpgradeAsync(A<MigrationContext>.Ignored)).ThrowsAsync(innerException);
 
             var actual = await Record.ExceptionAsync(async () => await runner.UpgradeAsync());
             

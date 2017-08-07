@@ -10,12 +10,12 @@ namespace RapidCore.Mongo.Migration
         /// <summary>
         /// Code that is run when upgrading the environment
         /// </summary>
-        Task UpgradeAsync();
+        Task UpgradeAsync(MigrationContext context);
         
         /// <summary>
         /// Code that is run when downgrading (or rolling back) the environment
         /// </summary>
-        Task DowngradeAsync();
+        Task DowngradeAsync(MigrationContext context);
 
         string Name { get; }
     }
