@@ -17,7 +17,7 @@ Creating an instance
 
 ```csharp
 var client = new MongoDB.Driver.MongoClient("mongodb://localhost:27017");
-var connection = new MongoDbConnection(client);
+var connection = new MongoDbConnection(client.GetDatabase("the_name_of_your_db"));
 ```
 
 Inserting a document
