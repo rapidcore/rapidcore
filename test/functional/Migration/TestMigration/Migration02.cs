@@ -18,7 +18,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
                     .Find(_ => true)
                     .ToCursor();
 
-                cursor.ForEachAsync(doc =>
+                return cursor.ForEachAsync(doc =>
                 {
                     var filter = Builders<MigrationTests.KewlEntityUpdated>.Filter.Eq(x => x.Id, doc.Id);
                     var update = Builders<MigrationTests.KewlEntityUpdated>.Update.Set("Reference", doc.Reference.ToString());

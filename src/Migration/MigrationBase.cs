@@ -34,7 +34,7 @@ namespace RapidCore.Mongo.Migration
             {
                 // Retrieve the migration action and apply it
                 var actionForMigrationStep = builder.GetActionForMigrationStep(step);
-                actionForMigrationStep();
+                await actionForMigrationStep();
 
                 // Add the completion to the database to ensure that we can reenter if later steps fail
                 doc.StepsCompleted.Add(step);

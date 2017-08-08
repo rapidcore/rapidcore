@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using RapidCore.Mongo.Migration.Internal;
 using Xunit;
 
@@ -7,16 +8,17 @@ namespace RapidCore.Mongo.UnitTests.Migration.Internal
     public class MigrationBuilderTest
     {
         private readonly MigrationBuilder _builder;
-        private readonly Action _defaultAction;
+        private readonly Func<Task> _defaultAction;
 
         public MigrationBuilderTest()
         {
             _builder = new MigrationBuilder();
-            _defaultAction = () =>
+            _defaultAction = async () =>
             {
 #pragma warning disable 219
                 var that = 1 + 1;
 #pragma warning restore 219
+                await Task.CompletedTask;
             };
         }
 

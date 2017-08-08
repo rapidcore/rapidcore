@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace RapidCore.Mongo.Migration.Internal
 {
@@ -7,13 +8,13 @@ namespace RapidCore.Mongo.Migration.Internal
     /// </summary>
     public class MigrationStep
     {
-        public MigrationStep(string name, Action action)
+        public MigrationStep(string name, Func<Task> action)
         {
             Name = name;
             Action = action;
         }
 
         public string Name { get; }
-        public Action Action { get; }
+        public Func<Task> Action { get; }
     }
 }

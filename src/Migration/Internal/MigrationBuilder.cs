@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RapidCore.Mongo.Migration.Internal
 {
@@ -22,6 +23,28 @@ namespace RapidCore.Mongo.Migration.Internal
         /// </exception>
         /// <exception cref="T:System.ArgumentException">stepName</exception>
         public virtual IMigrationBuilder Step(string stepName, Action action)
+        {
+            return Step(stepName, async () =>
+            {
+                action();
+                await Task.CompletedTask;
+            });
+        }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Add a migration with the given step name and the actual migration action to run
+        /// </summary>
+        /// <param name="stepName">Name of the step.</param>
+        /// <param name="action">The action to invoke for applying the migration.</param>
+        /// <returns><c>this</c> to allow method chaining</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// stepName - Please provide a non null non whitespace name for your step
+        /// or
+        /// action - Please provided a non null action for your migration step
+        /// </exception>
+        /// <exception cref="T:System.ArgumentException">stepName</exception>
+        public virtual IMigrationBuilder Step(string stepName, Func<Task> action)
         {
             if (string.IsNullOrWhiteSpace(stepName))
             {
@@ -56,7 +79,7 @@ namespace RapidCore.Mongo.Migration.Internal
         /// </summary>
         /// <param name="stepName">Name of the step.</param>
         /// <exception cref="!:ArgumentException">stepName</exception>
-        public virtual Action GetActionForMigrationStep(string stepName)
+        public virtual Func<Task> GetActionForMigrationStep(string stepName)
         {
             var step = MigrationSteps.SingleOrDefault(q => q.Name == stepName);
             if (step == null)
