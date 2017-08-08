@@ -26,6 +26,9 @@ Using your text editor of choice, navigate to the markdown file you intend to co
 
 ### 3. Submit
 After making your changes, commit, push, and make a pull Request on the [documentation page](https://github.com/rapidcore/docs/).
+
+---------------------
+
 ## Build the Theme
 
 Follow these instructions to build the theme.
