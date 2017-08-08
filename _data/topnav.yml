@@ -18,6 +18,8 @@ topnav_dropdowns:
           url: /mongo.html
         - title: RapidCore.Redis
           url: /redis.html
+        - title: RapidCore.Xunit
+          url: /xunit.html
     - title: Contribute
       folderitems:
         - title: Contribute locally
