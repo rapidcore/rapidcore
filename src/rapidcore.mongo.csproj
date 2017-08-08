@@ -25,7 +25,7 @@
     <PackageReference Include="RapidCore" Version="0.*" />
     <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.*" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="../stylecop.json" />
