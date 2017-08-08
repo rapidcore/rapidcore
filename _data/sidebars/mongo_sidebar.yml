@@ -38,3 +38,6 @@ entries:
     - title: Indexes
       url: /mongo_indexes.html
       output: web, pdf
+    - title: Migrations
+      url: /mongo_migrations.html
+      output: web, pdf
