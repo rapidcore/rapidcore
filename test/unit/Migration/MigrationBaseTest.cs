@@ -102,8 +102,8 @@ namespace RapidCore.Mongo.UnitTests.Migration
             {
                 var builder = (MigrationBuilder)call.Arguments[0];
                 builder
-                    .WithStep("step1", () => step1Invoked = true)
-                    .WithStep("step2", () => step2Invoked = true);
+                    .Step("step1", () => step1Invoked = true)
+                    .Step("step2", () => step2Invoked = true);
             });
 
             await _migration.UpgradeAsync(new MigrationContext
@@ -145,8 +145,8 @@ namespace RapidCore.Mongo.UnitTests.Migration
             {
                 var builder = (MigrationBuilder)call.Arguments[0];
                 builder
-                    .WithStep("step1", () => step1Invoked = true)
-                    .WithStep("step2", () => throw new NotSupportedException("Breaking 'cause I can!"));
+                    .Step("step1", () => step1Invoked = true)
+                    .Step("step2", () => throw new NotSupportedException("Breaking 'cause I can!"));
             });
 
             // ReSharper disable once PossibleNullReferenceException

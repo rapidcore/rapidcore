@@ -21,7 +21,7 @@ namespace RapidCore.Mongo.Migration.Internal
         /// action - Please provided a non null action for your migration step
         /// </exception>
         /// <exception cref="T:System.ArgumentException">stepName</exception>
-        public virtual IMigrationBuilder WithStep(string stepName, Action action)
+        public virtual IMigrationBuilder Step(string stepName, Action action)
         {
             if (string.IsNullOrWhiteSpace(stepName))
             {
@@ -62,7 +62,7 @@ namespace RapidCore.Mongo.Migration.Internal
             if (step == null)
             {
                 throw new ArgumentException(
-                    $"No step with the given name: '{stepName}' - did you add it to your migration using WithStep(...) ?",
+                    $"No step with the given name: '{stepName}' - did you add it to your migration using {nameof(IMigrationBuilder.Step)}(...) ?",
                     nameof(stepName));
             }
             return step.Action;

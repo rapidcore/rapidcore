@@ -10,7 +10,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
         {
             var db = Context.ConnectionProvider.Default();
             
-            builder.WithStep("Change Reference from int to string", () =>
+            builder.Step("Change Reference from int to string", () =>
             {
                 var collection = db.GetCollection<MigrationTests.KewlEntity>(MigrationTests.KewlEntity.Collection);
 

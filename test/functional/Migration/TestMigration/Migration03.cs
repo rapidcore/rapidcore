@@ -10,7 +10,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
         {
             var db = Context.ConnectionProvider.Default();
             
-            builder.WithStep("Add 'Mucho' to 'five'", () =>
+            builder.Step("Add 'Mucho' to 'five'", () =>
             {
                 var filter = Builders<MigrationTests.KewlEntityUpdated>.Filter.Eq(x => x.Reference, "5");
                 
@@ -20,7 +20,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
                 db.GetCollection<MigrationTests.KewlEntityUpdated>(MigrationTests.KewlEntityUpdated.Collection).UpdateMany(filter, update);
             });
             
-            builder.WithStep("Add 'Mucho' to 'seven'", () =>
+            builder.Step("Add 'Mucho' to 'seven'", () =>
             {
                 var filter = Builders<MigrationTests.KewlEntityUpdated>.Filter.Eq(x => x.Reference, "7");
                 

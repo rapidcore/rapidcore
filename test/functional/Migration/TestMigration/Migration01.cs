@@ -8,7 +8,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
     {
         public override void ConfigureUpgrade(IMigrationBuilder builder)
         {
-            builder.WithStep("Throw!!", () => throw new InvalidOperationException("I should not be picked up and run"));
+            builder.Step("Throw!!", () => throw new InvalidOperationException("I should not be picked up and run"));
         }
 
         public override void ConfigureDowngrade(IMigrationBuilder builder)

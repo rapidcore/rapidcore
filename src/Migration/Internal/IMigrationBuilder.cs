@@ -10,6 +10,6 @@ namespace RapidCore.Mongo.Migration.Internal
         /// <param name="name">The name of the migration test.</param>
         /// <param name="action">The action to execute which is the actual migration code to run.</param>
         /// <returns></returns>
-        IMigrationBuilder WithStep(string name, Action action);
+        IMigrationBuilder Step(string name, Action action);
     }
 }
