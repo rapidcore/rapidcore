@@ -77,7 +77,7 @@ namespace RapidCore.Mongo.Migration
                         sw.Stop();
                         logger.LogInformation($"Succeeded in running {migration.Name}. It took {sw.ElapsedMilliseconds} milliseconds.");
                         
-                        await migrationManager.MarkAsCompleteAsync(migration, sw.ElapsedMilliseconds);
+                        await migrationManager.MarkAsCompleteAsync(migration, sw.ElapsedMilliseconds, context);
                     }
                     catch (Exception ex)
                     {

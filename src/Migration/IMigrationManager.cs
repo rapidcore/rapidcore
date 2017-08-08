@@ -20,6 +20,7 @@ namespace RapidCore.Mongo.Migration
         /// </summary>
         /// <param name="migration">The migration</param>
         /// <param name="milliseconds">How long the run took in milliseconds</param>
-        Task MarkAsCompleteAsync(IMigration migration, long milliseconds);
+        /// <param name="context">The context of the migration</param>
+        Task MarkAsCompleteAsync(IMigration migration, long milliseconds, MigrationContext context);
     }
 }

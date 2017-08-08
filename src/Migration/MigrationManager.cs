@@ -59,9 +59,27 @@ namespace RapidCore.Mongo.Migration
         }
         #endregion
         
-        public Task MarkAsCompleteAsync(IMigration migration, long milliseconds)
+        #region Mark as complete
+        public async Task MarkAsCompleteAsync(IMigration migration, long milliseconds, MigrationContext context)
         {
-             throw new NotImplementedException();
+            var db = context.ConnectionProvider.Default();
+
+            var doc = await db.FirstOrDefaultAsync<MigrationDocument>(MigrationDocument.CollectionName, x => x.Name == migration.Name);
+
+            if (doc == default(MigrationDocument))
+            {
+                doc = new MigrationDocument
+                {
+                    Name = migration.Name
+                };
+            }
+            
+            doc.CompletedAt = DateTimeOffset.UtcNow;
+            doc.MigrationCompleted = true;
+            doc.TotalMigrationTimeInMs = milliseconds;
+
+            await db.UpsertAsync<MigrationDocument>(MigrationDocument.CollectionName, doc, x => x.Name == doc.Name);
         }
+        #endregion
     }
 }

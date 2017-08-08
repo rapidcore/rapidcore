@@ -101,10 +101,16 @@ namespace RapidCore.Mongo.UnitTests.Migration
         public async void Upgrade_MarkMigrationAsComplete()
         {
             A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<MigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            MigrationContext actual = null;
+            A.CallTo(() => migrationManager.MarkAsCompleteAsync(A<IMigration>._, A<long>._, A<MigrationContext>._)).Invokes(x => actual = (MigrationContext) x.Arguments[2]);
             
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migrationManager.MarkAsCompleteAsync(migration1, A<long>._)).MustHaveHappened();
+            Assert.NotNull(actual);
+            Assert.Same(logger, actual.Logger);
+            Assert.Same(connectionProvider, actual.ConnectionProvider);
+            Assert.Same(container, actual.Container);
+            Assert.Same(environment, actual.Environment);
         }
         
         [Fact]
@@ -118,7 +124,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
             
             Assert.NotNull(actual);
             Assert.Same(innerException, actual.InnerException);
-            A.CallTo(() => migrationManager.MarkAsCompleteAsync(A<IMigration>._, A<long>._)).MustNotHaveHappened();
+            A.CallTo(() => migrationManager.MarkAsCompleteAsync(A<IMigration>._, A<long>._, A<MigrationContext>._)).MustNotHaveHappened();
         }
     }
 }
