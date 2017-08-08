@@ -1,0 +1,40 @@
+entries:
+- title: Sidebar
+  product: RapidCore.Mongo
+  version: 0.1
+  folders:
+
+  - title:
+    output: pdf
+    type: frontmatter
+    folderitems:
+    - title:
+      url: /titlepage
+      output: pdf
+      type: frontmatter
+    - title:
+      url: /tocpage
+      output: pdf
+      type: frontmatter
+
+  - title: Getting Started
+    output: web, pdf
+    folderitems:
+    - title: RapidCore.Mongo
+      url: /mongo.html
+      output: web
+    - title: Why RapidCore.Mongo
+      url: /mongo_why.html
+      output: web
+
+  - title: Features
+    output: web, pdf
+    folderitems:
+
+    - title: Connection
+      url: /mongo_connection.html
+      output: web, pdf
+
+    - title: Indexes
+      url: /mongo_indexes.html
+      output: web, pdf
