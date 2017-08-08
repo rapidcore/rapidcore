@@ -94,7 +94,7 @@ namespace RapidCore.Mongo.Migration
         /// </summary>
         public virtual async Task DowngradeAsync()
         {
-            await Task.FromException(new NotImplementedException("Downgrade has not been implemented yet"));
+            await Task.FromException(new NotImplementedException("Downgrade has not been implemented yet. Provide your input in https://github.com/rapidcore/issues/issues/14"));
         }
     }
 }
