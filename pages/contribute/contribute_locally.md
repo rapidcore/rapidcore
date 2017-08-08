@@ -29,7 +29,7 @@ After making your changes, commit, push, and make a pull Request on the [documen
 
 ---------------------
 
-## Build the Theme
+## Via Building the Theme
 
 Follow these instructions to build the theme.
 
