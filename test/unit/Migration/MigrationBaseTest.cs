@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using FakeItEasy;
 using RapidCore.Mongo.Migration;
@@ -30,7 +29,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
             var connectionProvider = A.Fake<IConnectionProvider>();
 
             A.CallTo(() => connectionProvider.Default()).Returns(mongoDbConnection);
-            var builder = A.Fake<IMigrationBuilder>();
+            var builder = A.Fake<MigrationBuilder>();
             A.CallTo(() => builder.GetAllStepNames()).Returns(new List<string>
             {
                 "step1",
@@ -64,7 +63,7 @@ namespace RapidCore.Mongo.UnitTests.Migration
             var connectionProvider = A.Fake<IConnectionProvider>();
 
             A.CallTo(() => connectionProvider.Default()).Returns(mongoDbConnection);
-            var builder = A.Fake<IMigrationBuilder>();
+            var builder = A.Fake<MigrationBuilder>();
             A.CallTo(() => builder.GetAllStepNames()).Returns(new List<string>
             {
                 "step1",

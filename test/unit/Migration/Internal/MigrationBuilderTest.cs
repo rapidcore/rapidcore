@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using RapidCore.Mongo.Migration.Internal;
 using Xunit;
 
@@ -16,7 +14,9 @@ namespace RapidCore.Mongo.UnitTests.Migration.Internal
             _builder = new MigrationBuilder();
             _defaultAction = () =>
             {
+#pragma warning disable 219
                 var that = 1 + 1;
+#pragma warning restore 219
             };
         }
 

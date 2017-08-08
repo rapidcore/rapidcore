@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using RapidCore.Mongo.Migration;
 using RapidCore.Mongo.Migration.Internal;
 
 namespace RapidCore.Mongo.Migration
@@ -81,7 +78,7 @@ namespace RapidCore.Mongo.Migration
         /// <param name="builder">The migration builder instance</param>
         /// <param name="connectionProvider">The current connection provder</param>
         /// <returns>A list of the pending steps as well as an instantiataed <see cref="MigrationDocument"/></returns>
-        public async Task<(IList<string>, MigrationDocument)> GetPendingStepsAsync(IMigrationBuilder builder, IConnectionProvider connectionProvider)
+        public async Task<(IList<string>, MigrationDocument)> GetPendingStepsAsync(MigrationBuilder builder, IConnectionProvider connectionProvider)
         {
             var allStepNames = builder.GetAllStepNames();
             var connection = connectionProvider.Default();

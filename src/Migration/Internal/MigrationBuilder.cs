@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace RapidCore.Mongo.Migration.Internal
 {
     public class MigrationBuilder : IMigrationBuilder
     {
-        public IList<MigrationStep> MigrationSteps { get; } = new List<MigrationStep>();
+        public virtual IList<MigrationStep> MigrationSteps { get; } = new List<MigrationStep>();
 
         /// <inheritdoc />
         /// <summary>
@@ -22,7 +21,7 @@ namespace RapidCore.Mongo.Migration.Internal
         /// action - Please provided a non null action for your migration step
         /// </exception>
         /// <exception cref="T:System.ArgumentException">stepName</exception>
-        public IMigrationBuilder WithStep(string stepName, Action action)
+        public virtual IMigrationBuilder WithStep(string stepName, Action action)
         {
             if (string.IsNullOrWhiteSpace(stepName))
             {
@@ -52,14 +51,12 @@ namespace RapidCore.Mongo.Migration.Internal
             return this;
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Gets the action for the migration step.
         /// </summary>
         /// <param name="stepName">Name of the step.</param>
-        /// <returns></returns>
         /// <exception cref="!:ArgumentException">stepName</exception>
-        public Action GetActionForMigrationStep(string stepName)
+        public virtual Action GetActionForMigrationStep(string stepName)
         {
             var step = MigrationSteps.SingleOrDefault(q => q.Name == stepName);
             if (step == null)
@@ -71,11 +68,10 @@ namespace RapidCore.Mongo.Migration.Internal
             return step.Action;
         }
 
-        /// <inheritdoc />
         /// <summary>
+        /// Returns a list of all the steps that have been added to the migration
         /// </summary>
-        /// <returns></returns>
-        public IList<string> GetAllStepNames()
+        public virtual IList<string> GetAllStepNames()
         {
             return MigrationSteps.Select(s => s.Name).ToList();
         }
