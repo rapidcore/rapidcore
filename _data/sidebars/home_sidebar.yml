@@ -17,3 +17,12 @@ entries:
     - title: RapidCore.Mongo
       url: /mongo.html
       output: web
+  - title: Contribute
+    output: web
+    folderitems:
+    - title: Contribute online
+      url: /contribute_online.html
+      output: web
+    - title: Contribute locally
+      url: /contribute_locally.html
+      output: web
