@@ -35,3 +35,6 @@ entries:
     - title: Reflection
       url: /rapidcore_reflection.html
       output: web, pdf
+    - title: FileSystemProvider
+      url: /rapidcore_filesystemprovider.html
+      output: web, pdf
