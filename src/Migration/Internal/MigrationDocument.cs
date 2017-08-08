@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -55,6 +54,6 @@ namespace RapidCore.Mongo.Migration.Internal
         /// <value>
         /// The completed at.
         /// </value>
-        public DateTimeOffset CompletedAt { get; set; }
+        public DateTime CompletedAt { get; set; }
     }
 }

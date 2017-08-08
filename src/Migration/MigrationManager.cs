@@ -74,7 +74,7 @@ namespace RapidCore.Mongo.Migration
                 };
             }
             
-            doc.CompletedAt = DateTimeOffset.UtcNow;
+            doc.CompletedAt = DateTime.UtcNow;
             doc.MigrationCompleted = true;
             doc.TotalMigrationTimeInMs = milliseconds;
 
