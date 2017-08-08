@@ -1,0 +1,12 @@
+[submodule "rapidcore.mongo"]
+	path = rapidcore.mongo
+	url = git@github.com:rapidcore/rapidcore.mongo.git
+[submodule "rapidcore.redis"]
+	path = rapidcore.redis
+	url = git@github.com:rapidcore/rapidcore.redis.git
+[submodule "rapidcore"]
+	path = rapidcore
+	url = git@github.com:rapidcore/rapidcore.git
+[submodule "rapidcore.xunit"]
+	path = rapidcore.xunit
+	url = git@github.com:rapidcore/rapidcore.xunit.git
