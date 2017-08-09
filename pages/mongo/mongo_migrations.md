@@ -1,8 +1,7 @@
 ---
 title: Mongo Migrations
 tags: [migration, getting_started]
-keywords:
-summary: "Mongo Migrations is here."
+keywords: [migration]
 sidebar: mongo_sidebar
 permalink: mongo_migrations.html
 folder: mongo
