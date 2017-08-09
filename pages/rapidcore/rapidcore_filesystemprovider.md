@@ -9,9 +9,9 @@ folder: mongo
 ---
 Register your preferred FileSystemProvider in your container:
 ```
-                x.For<IFileSystemProvider>().Use(new DotNetFileSystemProvider());
-                /// or
-                x.For<IFileSystemProvider>().Use(new SftpFileSystemProvider(sftpHost, sftpUsername, sftpPassword));
+    x.For<IFileSystemProvider>().Use(new DotNetFileSystemProvider());
+    /// or
+    x.For<IFileSystemProvider>().Use(new SftpFileSystemProvider(sftpHost, sftpUsername, sftpPassword));
 
 ```
 
