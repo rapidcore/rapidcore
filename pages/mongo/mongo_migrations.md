@@ -156,74 +156,31 @@ public static void Main(string[] args)
 }
 ```
 
-Now we need to ensure that the container can actually fulfill the request for a `Migrator`, so let us move over to `Startup` so we can register the stuff we need. Update the file to look like the following.
-
+Now we need to ensure that the container can actually fulfill the request for a `Migrator`, so let us move over to `Startup` so we can register the stuff we need. `ConfigureServices` should look something like this.
 
 ```csharp
-using System;
-using System.Collections.Generic;
-using System.Linq;
+public void ConfigureServices(IServiceCollection services)
+{
+    // Add framework services.
+    services.AddMvc();
+
+    services.AddSingleton<MigrationRunner>(container => {
+        return new YoloMigrationRunner(
+            container,
+            "testing", // <--- your environment name
+            "mongodb://localhost:27017", // <--- mongo connection string
+            "rapidcore_migrations", // <--- mongo database name
+            new NoopDistributedAppLockProvider(),
+            typeof(Startup).GetTypeInfo().Assembly
+        );
+    });
+}
+```
+
+Also, add the following usings to `Startup`.
+
+```csharp
 using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using RapidCore.Locking;
 using RapidCore.Mongo;
-
-namespace rapidcore_migrations
-{
-    public class Startup
-    {
-        private readonly IHostingEnvironment env;
-        public Startup(IHostingEnvironment env)
-        {
-            this.env = env;
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
-
-        public IConfigurationRoot Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Add framework services.
-            services.AddMvc();
-
-            services.AddSingleton<MigrationRunner>();
-            services.AddSingleton<IContainerAdapter>(container => new ServiceProviderContainerAdapter(container));
-            services.AddSingleton<IMigrationEnvironment>(_ => new MigrationEnvironment(env.EnvironmentName));
-            services.AddTransient<MongoDbConnection>(container =>
-            {
-                var client = new MongoDB.Driver.MongoClient("mongodb://localhost:27017");
-                return new MongoDbConnection(client.GetDatabase("rapidcore_migrations"));
-            });
-            services.AddSingleton<IConnectionProvider>(container => {
-                var db = container.GetService(typeof(MongoDbConnection));
-                var provider = new ConnectionProvider();
-                provider.Add("main", db, true);
-
-                return provider;
-            });
-            services.AddSingleton<IMigrationManager>(_ => new MigrationManager(new List<Assembly> { typeof(Startup).GetTypeInfo().Assembly }));
-            services.AddTransient<IDistributedAppLockProvider, NoopDistributedAppLockProvider>();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            app.UseMvc();
-        }
-    }
-}
 ```
