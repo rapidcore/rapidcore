@@ -10,17 +10,11 @@ namespace RapidCore.IO.FileSystem
 {
     public class SftpFileSystemProvider : IFileSystemProvider, IDisposable
     {
-        private string _host;
-        private string _username;
-        private string _password;
+        private ISftpClient _sftpClient;
 
-        private SftpClient _sftpClient;
-
-        public SftpFileSystemProvider(string host, string username, string password)
+        public SftpFileSystemProvider(ISftpClient sftpClient)
         {
-            _host = host;
-            _username = username;
-            _password = password;
+            _sftpClient = sftpClient;
         }
 
         /// <summary>
@@ -38,7 +32,7 @@ namespace RapidCore.IO.FileSystem
         public IEnumerable<string> List(string path, string searchPattern)
         {
             var regex = new Regex(searchPattern);
-            return List(path).Where(file => regex.IsMatch(file));
+            return List(path)?.Where(file => regex.IsMatch(file));
         }
 
         /// <summary>
@@ -53,7 +47,7 @@ namespace RapidCore.IO.FileSystem
         public IEnumerable<string> List(string path)
         {
             var response = new List<string>();
-            var sftpFiles = GetSftpClient().ListDirectory(path);
+            var sftpFiles = _sftpClient.ListDirectory(path);
             foreach (var f in sftpFiles)
             {
                 response.Add(f.Name);
@@ -70,7 +64,7 @@ namespace RapidCore.IO.FileSystem
         /// </returns>
         public string Cwd()
         {
-            return GetSftpClient().WorkingDirectory;
+            return _sftpClient.GetWorkingDirectory();
         }
 
         /// <summary>
@@ -84,7 +78,7 @@ namespace RapidCore.IO.FileSystem
         /// </param>
         public void Move(string sourceFile, string destFile)
         {
-            GetSftpClient().RenameFile(sourceFile, destFile);
+            _sftpClient.RenameFile(sourceFile, destFile);
         }
 
         /// <summary>
@@ -100,7 +94,7 @@ namespace RapidCore.IO.FileSystem
         {
             using (Stream s = GenerateStreamFromStrings(contents))
             {
-                GetSftpClient().BeginUploadFile(s, path);
+                _sftpClient.BeginUploadFile(s, path);
             }
         }
 
@@ -118,7 +112,7 @@ namespace RapidCore.IO.FileSystem
         /// </returns>
         public string CombinePath(string path1, string path2)
         {
-            return Path.Combine(path1, path2).Replace("\\", "/");
+            return Path.Combine(path1, path2);
         }
 
         /// <summary>
@@ -132,7 +126,7 @@ namespace RapidCore.IO.FileSystem
         /// </returns>
         public Stream OpenReadFile(string path)
         {
-            return GetSftpClient().OpenRead(path);
+            return _sftpClient.OpenRead(path);
         }
 
         /// <summary>
@@ -146,7 +140,7 @@ namespace RapidCore.IO.FileSystem
         /// </returns>
         public string LoadContent(string filePath)
         {
-            return GetSftpClient().ReadAllText(filePath);
+            return _sftpClient.ReadAllText(filePath);
         }
 
         /// <summary>
@@ -164,7 +158,7 @@ namespace RapidCore.IO.FileSystem
 
         public bool DirectoryExists(string path)
         {
-            return GetSftpClient().Exists(path);
+            return _sftpClient.Exists(path);
         }
 
         /// <summary>
@@ -176,7 +170,7 @@ namespace RapidCore.IO.FileSystem
         /// </param>
         public void CreateDirectory(string path)
         {
-            GetSftpClient().CreateDirectory(path);
+            _sftpClient.CreateDirectory(path);
         }
 
         public void Dispose()
@@ -204,28 +198,5 @@ namespace RapidCore.IO.FileSystem
             stream.Position = 0;
             return stream;
         }
-
-        /// <summary>
-        /// authenticates and returns an sftp client connection
-        /// via ssh.NET
-        /// </summary>
-        /// <returns>
-        /// the sftp client
-        /// </returns>
-        private SftpClient GetSftpClient()
-        {
-            if (_sftpClient == null || !_sftpClient.IsConnected)
-            {
-                var connectionInfo = new ConnectionInfo(
-                    _host,
-                    _username,
-                    new PasswordAuthenticationMethod(_username, _password));
-
-                _sftpClient = new SftpClient(connectionInfo);
-                _sftpClient.Connect();
-            }
-
-            return _sftpClient;
-        }
-    }
+  }
 }
