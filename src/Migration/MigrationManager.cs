@@ -17,6 +17,10 @@ namespace RapidCore.Mongo.Migration
             this.assemblies = assemblies;
         }
 
+        public MigrationManager(Assembly assembly) : this(new List<Assembly> {assembly})
+        {
+        }
+
         #region FindMigrationsForUpgradeAsync
         public async Task<IList<IMigration>> FindMigrationsForUpgradeAsync(MigrationContext context)
         {
