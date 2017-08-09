@@ -1,6 +1,6 @@
 function Test-UpdateStrategy {
     Param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$UpdateStrategy
     )
     
@@ -11,13 +11,41 @@ function Test-UpdateStrategy {
     }
 }
 
-function Get-AppVeyorBuildCompletionStatus {
+function Test-TagName {
     ##############################
-    # Query the AppVeyor Build API for the build status on RapidCore for a given tag name
+    #.SYNOPSIS Test the given tag name for validity
     ##
     #
     #.DESCRIPTION
-    #Long description
+    # Tests the given tag name for whether it starts with v which it should!
+    #
+    #.PARAMETER tagName
+    # The tag to test
+    #
+    #.EXAMPLE
+    # Test-TagName "v1.0" => $true
+    # Test-TagName "1.0" => $false
+    #
+    #.NOTES
+    #
+    ##############################
+    Param(
+        [Parameter(Mandatory = $true)]
+        [string]$tagName
+    )
+    
+    if (! ($tagName -match "^v") ) {
+        throw -join ("Tag names should start with 'v' - you provided: ", $tagName)
+    }
+}
+
+function Test-AppVeyorBuildCompletionStatus {
+    ##############################
+    #.SYNOPSIS Query the AppVeyor Build API for the build status on RapidCore for a given tag name
+    ##
+    #
+    #.DESCRIPTION
+    #
     #
     #.PARAMETER tagName
     #The tag, e.g "v0.16.0" to check for build completion
@@ -35,8 +63,8 @@ function Get-AppVeyorBuildCompletionStatus {
         [bool]$debugOutput
     )
 
-    if($debugOutput -eq $true) {
-        Write-Host (-join("Build status for ", $tagName, " ")) -NoNewline -ForegroundColor Cyan
+    if ($debugOutput -eq $true) {
+        Write-Host ( -join ("Build status for ", $tagName, " ")) -NoNewline -ForegroundColor Cyan
     }
 
     # Get the last 5 builds from AppVeyor on RapidCore...
