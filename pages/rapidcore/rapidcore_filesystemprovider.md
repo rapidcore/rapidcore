@@ -7,14 +7,6 @@ sidebar: rapidcore_sidebar
 permalink: rapidcore_filesystemprovider.html
 folder: mongo
 ---
-Register your preferred FileSystemProvider in your container:
-```
-    x.For<IFileSystemProvider>().Use(new DotNetFileSystemProvider());
-    /// or
-    x.For<IFileSystemProvider>().Use(new SftpFileSystemProvider(sftpHost, sftpUsername, sftpPassword));
-
-```
-
 ## Available implementations of IFileSystemProvider
 
 The following implementations of IFileSystemProvider are available in `RapidCore.IO.FileSystem`.
@@ -26,6 +18,70 @@ For proxy usage of the `System.IO` from .NET Standard.
 ### SftpFileSystemProvider
 
 For usage of a file system available through SFTP.
+
+## Example Usage for .NET Core MVC
+Create an empty webapi project:
+```
+> dotnet new webapi
+```
+
+Install the `RapidCore` package:
+```
+dotnet add package RapidCore
+```
+
+Register your preferred FileSystemProvider in your container:
+```
+...
+using RapidCore.IO.FileSystem;
+
+namespace sampleRapidCore
+{
+    public class Startup
+    {
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddTransient<IFileSystemProvider, DotNetFileSystemProvider>();
+            services.AddMvc();
+        }
+...
+...
+...
+```
+
+Inject the `IFileSystemProvider` to a MVC Controller:
+```
+public class ValuesController: Controller {
+        private readonly IFileSystemProvider _fileSystemProvider;
+
+        public ValuesController(IFileSystemProvider fileSystemProvider)
+        {
+            _fileSystemProvider = fileSystemProvider;
+        }
+```
+
+Call a method from the `IFileSystemProvider`:
+```
+public IEnumerable<string> Get()
+        {
+            var files = _fileSystemProvider.List(".");
+
+            return files;
+        }
+```
+
+Start the application:
+```
+> dotnet restore && dotnet build && dotnet run
+```
+
+Navigate in your browser to `http://localhost:5000/api/values/`:
+
+which yields the reponse:
+```
+[".\\appsettings.Development.json",".\\appsettings.json",".\\Program.cs",".\\sampleRapidCore.csproj",".\\Startup.cs"]
+```
 
 ## Methods
 
