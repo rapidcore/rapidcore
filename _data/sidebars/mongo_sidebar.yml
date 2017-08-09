@@ -1,7 +1,6 @@
 entries:
 - title: Sidebar
   product: RapidCore.Mongo
-  version: 0.1
   folders:
 
   - title:
@@ -17,27 +16,31 @@ entries:
       output: pdf
       type: frontmatter
 
-  - title: Getting Started
+  - title: Basics
     output: web, pdf
     folderitems:
     - title: RapidCore.Mongo
-      url: /mongo.html
+      url: /mongo
       output: web
-    - title: Why RapidCore.Mongo
-      url: /mongo_why.html
-      output: web
+    
+    - title: MongoDbConnection
+      url: /mongo_basics_mongodbconnection
+      output: web, pdf
 
-  - title: Features
+  - title: Indexes
     output: web, pdf
     folderitems:
+      - title: Introduction
+        output: web, pdf
+        url: /mongo_indexes_intro
 
-    - title: Connection
-      url: /mongo_connection.html
-      output: web, pdf
+  - title: Migration
+    output: web, pdf
+    folderitems:
+      - title: Getting started
+        output: web, pdf
+        url: /mongo_migration_getting_started
 
-    - title: Indexes
-      url: /mongo_indexes.html
-      output: web, pdf
-    - title: Migrations
-      url: /mongo_migrations.html
-      output: web, pdf
+      - title: Introduction
+        output: web, pdf
+        url: /mongo_migration_intro

@@ -1,14 +1,11 @@
 ---
-title: Mongo Connection
+title: MongoDbConnection
 tags: [getting_started]
 keywords:
-summary: "Mongo connection is here."
 sidebar: mongo_sidebar
-permalink: mongo_connection.html
+permalink: mongo_basics_mongodbconnection
 folder: mongo
 ---
-Connecting to MongoDB
-=====================
 
 `RapidCore.Mongo.MongoDbConnection` is a high-level connection class.
 
@@ -17,7 +14,7 @@ Creating an instance
 
 ```csharp
 var client = new MongoDB.Driver.MongoClient("mongodb://localhost:27017");
-var connection = new MongoDbConnection(client);
+var connection = new MongoDbConnection(client.GetDatabase("the_name_of_your_db"));
 ```
 
 Inserting a document
