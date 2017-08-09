@@ -1,16 +1,14 @@
 ---
-title: Mongo Migrations
+title: Getting started with Mongo and data migrations
+summary: Create a brand new project with a migration
 tags: [migration, getting_started]
 keywords: [migration]
 sidebar: mongo_sidebar
-permalink: mongo_migrations.html
+permalink: /mongo_migration_getting_started
 folder: mongo
 ---
 
-Getting started with Mongo and data migrations
-==============================================
-
-Beware: This functionality is still very new and subject to change.
+**Beware**: This functionality is still very new and subject to change.
 
 When we say `migration` we mean _code that moves the environment from state `A` to state `B`_.
 
@@ -22,6 +20,7 @@ We will go through the following steps:
 2. Add business logic
 3. Add migration for db seeding
 4. Setup `MigrationRunner` so we can run stuff
+5. Run it
 
 This guide assumes that you are on Linux.
 
@@ -165,3 +164,37 @@ using System.Reflection;
 using RapidCore.Locking;
 using RapidCore.Mongo;
 ```
+
+## 5. Run it
+
+Now it is time to see this baby go.
+
+```shell
+$ dotnet run
+```
+
+Let's see what we have
+
+```shell
+$ mongo rapidcore_migrations
+> show collections
+__RapidCoreMigrations
+Quote
+```
+
+You now have 2 collections:
+1. `__RapidCoreMigrations` which is where `MigrationRunner` keeps track of things
+2. `Quote` which is where we are storing our quotes
+
+```shell
+$ mongo rapidcore_migrations
+> db.Quote.find()
+{ "_id": ObjectId(....), "Who": "Red", "Said": "..." }
+{ "_id": ObjectId(....), "Who": "Tyrion Lannister", "Said": "..." }
+```
+
+We can also see that we have our initial set of quotes, so our migration must have run :)
+
+## Now what
+
+Now you should play around with migrations a bit. When you are ready, you should head over to [the introduction](mongo_migration_intro).

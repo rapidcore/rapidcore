@@ -1,14 +1,11 @@
 ---
-title: Mongo Indexes
-tags: [getting_started]
-keywords:
-summary: "Mongo summary is here."
+title: Indexes
+tags: [mongo, getting_started]
+keywords: [indexes]
 sidebar: mongo_sidebar
-permalink: mongo_indexes.html
+permalink: mongo_indexes_intro
 folder: mongo
 ---
-Indexes
-=======
 
 Having indexes is crucial to query performance. With `RapidCore.Mongo` you can define your indexes using attributes on your entity POCOs.
 

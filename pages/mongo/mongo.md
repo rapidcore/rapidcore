@@ -6,4 +6,5 @@ toc: true
 permalink: mongo.html
 folder: mongo
 ---
-RapidCore classes that depend on MongoDB.
+
+These are the features or implementations of stuff from `RapidCore` that depend on `MongoDb`.

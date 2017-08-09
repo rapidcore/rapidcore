@@ -1,14 +1,11 @@
 ---
-title: Mongo Connection
+title: MongoDbConnection
 tags: [getting_started]
 keywords:
-summary: "Mongo connection is here."
 sidebar: mongo_sidebar
-permalink: mongo_connection.html
+permalink: mongo_basics_mongodbconnection
 folder: mongo
 ---
-Connecting to MongoDB
-=====================
 
 `RapidCore.Mongo.MongoDbConnection` is a high-level connection class.
 
