@@ -1,11 +1,11 @@
 # The user must specify an -updatestrategy when invoking the script
 param ($UpdateStrategy = $(throw "Update strategy parameter is required!"))   
 
-# Check that it's an allowed value
-$validStrategy = $UpdateStrategy -match "^major|minor|patch$"
-if ($validStrategy -ne $true) {
-    throw "Invalid update strategy, must be one of: major, minor, patch"
-}
+# Include the utility functions
+. .\Utils.ps1
+
+# Check that it's an allowed value - function throws if stuff is amiss
+Test-UpdateStrategy -updatestrategy $UpdateStrategy
 
 function Update-Clone {
     # $path: the path to navigate to, where we should update versions and all that
