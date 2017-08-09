@@ -30,3 +30,35 @@ The `MigrationRunner` is "just" an orchestrator that can be hooked in to your de
 The `IMigrationManager` is responsible for finding migrations to run and storing the state of migrations. Our default implementation (`MigrationManager`) looks for classes implementing the `IMigration` interface. It then filters out the migrations that have already been completed.
 
 We have implemented an abstract base class called `MigrationBase` which provides a framework for splitting the individual migrations into steps that are run and tracked individually, making it possible to continue a migration even though an earlier run failed. This would make sense in cases where it was not a code error that made the migration work - or in cases where your migration fails due to a bug in the code that you then fix and deploy.
+
+## The interfaces and our defaults
+
+### `IContainerAdapter`
+
+Simple adapter to abstract away hard dependencies on specific container implementations. We do however provide an implementation for `System.IServiceProvider` (aka the default container used by .Net Core) called `RapidCore.Mongo.Migration.ServiceProviderContainerAdapter`.
+
+### `IMigrationEnvironment`
+
+Carries useful information about the executing environment. We chose this abstraction instead of relying on the ASP.NET Core MVC `IHostingEnvironment` as your migrations might be needed in a non-web context - or you simply do not use ASP.NET Core MVC.
+
+The default implementation is called `RapidCore.Mongo.Migration.MigrationEnvironment`.
+
+### `IConnectionProvider`
+
+We wanted to support cases where you have multiple databases (and therefore multiple connections) in play in your system. Therefore we added `IConnectionProvider` which in its default implementation (`RapidCore.Mongo.Migration.ConnectionProvider`) is a simple wrapper around a dictionary of named connections.
+
+The migration stack itself will always use the `.Default()` connection.
+
+### `IMigrationManager`
+
+Finds and keeps track of migrations. The default implementation `RapidCore.Mongo.Migration.MigrationManager` uses reflection to find implementations of `IMigration` in a list of given assemblies.
+
+### `IDistributedAppLockProvider`
+
+To ensure that only 1 thread can run migrations at a time, we use the distributed app lock stack from `RapidCore.Locking`.
+
+### `IMigration`
+
+This is what it is all about. Your migration code should implement this interface - or even better - implement our abstract `RapidCore.Mongo.Migration.MigrationBase` class.
+
+It defines the methods run when upgrading or downgrading.
