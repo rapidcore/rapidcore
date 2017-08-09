@@ -21,7 +21,7 @@ Many will argue that you do not need migrations when you use MongoDB as Mongo it
 
 As we see it, your data is still following a schema - it is merely enforced by the application rather than the database. Either you will have to support multiple versions of your "schema" in your application or you can write code that transforms the data from your previous schema to the new schema.
 
-A migration should also take of the data itself and not only be about the structure of the data.
+A migration should also take care of the data itself and not only be about the structure of the data.
 
 ## How does it work?
 
