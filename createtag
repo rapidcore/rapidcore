@@ -39,6 +39,8 @@ folder: tags
 {% include links.html %}
 EOF
 
+  echo "\n  - ${tag}" >> "_data/tags.yml"
+
   done
 
 else
