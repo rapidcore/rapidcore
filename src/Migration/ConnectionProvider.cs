@@ -13,15 +13,15 @@ namespace RapidCore.Mongo.Migration
 
         public MongoDbConnection Named(string name)
         {
-            return connections[name.ToLower()];
+            return connections[name.ToLowerInvariant()];
         }
 
         public void Add(string name, MongoDbConnection connection, bool useAsDefault)
         {
-            connections.Add(name.ToLower(), connection);
+            connections.Add(name.ToLowerInvariant(), connection);
             if (useAsDefault)
             {
-                connections.Add("UseAsDefault".ToLower(), connection);
+                connections.Add("UseAsDefault".ToLowerInvariant(), connection);
             }
         }
     }
