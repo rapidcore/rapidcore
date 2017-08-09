@@ -130,7 +130,8 @@ public static void Main(string[] args)
         .UseStartup<Startup>()
         .Build();
 
-    host.Services.GetService(typeof(MigrationRunner)).UpgradeAsync().AwaitSync(); // <--- new
+    var runner = (MigrationRunner)host.Services.GetService(typeof(MigrationRunner)); // <--- new
+    runner.UpgradeAsync().AwaitSync(); // <--- new
 
     host.Run();
 }
@@ -163,6 +164,7 @@ Also, add the following usings to `Startup`.
 using System.Reflection;
 using RapidCore.Locking;
 using RapidCore.Mongo;
+using RapidCore.Mongo.Migration;
 ```
 
 ## 5. Run it
