@@ -73,24 +73,17 @@ function Test-AppVeyorBuildCompletionStatus {
     }
     $response = Invoke-RestMethod -Uri 'https://ci.appveyor.com/api/projects/nover/rapidcore/history?recordsNumber=5' -Headers $headers -Method Get
 
-    #if ($debugOutput) {
-    #    Write-Host "Have the following builds... " -ForegroundColor cyan
-    #    foreach ($obj in $response.builds) {
-    #        Write-Host ( $obj ) -ForegroundColor cyan
-    #    }
-    #}
-    
     # Send all fetched builds into the pipeline and select the one where AppVeyor is building / has built the given tag
     # Where returns a $null object if it can't find a match...
     # The $_ operator means "the current object we are working on"
-    $daBuild = $response.builds | Where-Object {$_.tag -eq $tagName}
+    $build = $response.builds | Where-Object {$_.tag -eq $tagName}
 
     # Is that build even there? 
-    if ($daBuild -eq $null) {
+    if ($build -eq $null) {
         return $false
     }
 
     # Okay, tag is there, but was it successful?
-    $buildComplete = $daBuild.status -match "success"
+    $buildComplete = $build.status -match "success"
     return $buildComplete
 }
