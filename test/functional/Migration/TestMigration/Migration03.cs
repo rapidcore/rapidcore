@@ -12,22 +12,22 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
             
             builder.Step("Add 'Mucho' to 'five'", async () =>
             {
-                var filter = Builders<MigrationTests.KewlEntityUpdated>.Filter.Eq(x => x.Reference, "5");
+                var filter = Builders<KewlEntityUpdated>.Filter.Eq(x => x.Reference, "5");
                 
-                var update = Builders<MigrationTests.KewlEntityUpdated>.Update
+                var update = Builders<KewlEntityUpdated>.Update
                     .Set("Mucho", "Ulla Henriksen");
 
-                await db.GetCollection<MigrationTests.KewlEntityUpdated>(MigrationTests.KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
+                await db.GetCollection<KewlEntityUpdated>(KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
             });
             
             builder.Step("Add 'Mucho' to 'seven'", async () =>
             {
-                var filter = Builders<MigrationTests.KewlEntityUpdated>.Filter.Eq(x => x.Reference, "7");
+                var filter = Builders<KewlEntityUpdated>.Filter.Eq(x => x.Reference, "7");
                 
-                var update = Builders<MigrationTests.KewlEntityUpdated>.Update
+                var update = Builders<KewlEntityUpdated>.Update
                     .Set("Mucho", "Bubbly");
 
-                await db.GetCollection<MigrationTests.KewlEntityUpdated>(MigrationTests.KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
+                await db.GetCollection<KewlEntityUpdated>(KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
             });
         }
 
