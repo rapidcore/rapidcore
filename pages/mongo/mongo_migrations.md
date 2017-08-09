@@ -1,6 +1,6 @@
 ---
 title: Mongo Migrations
-tags: [migration]
+tags: [migration, getting_started]
 keywords:
 summary: "Mongo Migrations is here."
 sidebar: mongo_sidebar
@@ -24,10 +24,12 @@ We will go through the following steps:
 3. Add migration for db seeding
 4. Setup `MigrationRunner` so we can run stuff
 
+This guide assumes that you are on Linux.
+
 
 ## 1. Create .Net Core project
 
-This guide assumes that you are on linux.
+We will create a simple web API using standard .Net Core.
 
 ```shell
 $ cd ~
@@ -43,7 +45,7 @@ You should now have a directory in your home folder containing a basic web api w
 
 ## 2. Add business logic
 
-Add a class in the root called `Message`.
+Our "business" logic will be a list of quotes. We will represent those with the `Quote` class in the root namespace.
 
 ```csharp
 using MongoDB.Bson;
@@ -51,54 +53,57 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace rapidcore_migrations
 {
-    public class Message
+    public class Quote
     {
         [BsonIgnoreIfDefault]
         public ObjectId Id { get; set; }
 
-        public string Say { get; set; }
+        public string Who { get; set; }
+
+        public string Said { get; set; }
     }
 }
 ```
 
-This will serve our very simple purpose of saying stuff in the db :)
-
 
 ## 3. Add migration for db seeding
 
+We will add a migration that initializes the system with a pre-defined set of quotes.
+
+First we create a new namespace for our migrations, so they are easy to keep track of.
+
 ```shell
-$ mkdir Migrations
+$ mkdir ~/rapidcore-migrations/Migrations
 ```
 
-Add a class in `Migrations` called `Migration_20170808125300`.
+Then we create our first migration by adding a class in `Migrations` called `Migration_20170808125300_Initial_seeding`. The name includes a timestamp, as we need to ensure that migrations are always run in the same order as they were created. The system sorts the migrations alphabetically by name, so including the timestamp is an excellent pattern. It also includes a short description (`Initial_seeding`) to make it easier to identify migrations once you have a bunch of them.
 
 ```csharp
 using MongoDB.Driver;
 using RapidCore.Mongo.Migration;
-using RapidCore.Mongo.Migration.Internal;
 
 namespace rapidcore_migrations.Migrations
 {
-    public class Migration_20170808125300 : MigrationBase
+    public class Migration_20170808125300_Initial_seeding : MigrationBase
     {
         public override void ConfigureUpgrade(IMigrationBuilder builder)
         {
-            builder.Step("Say hello", () =>
+            builder.Step("Real russians and proverbs", () =>
             {
-                Context
+                base.Context
                     .ConnectionProvider
                     .Default()
-                    .GetCollection<Message>("Message")
-                    .InsertOne(new Message { Say = "Hello" });
+                    .GetCollection<Quote>("Quote")
+                    .InsertOne(new Quote { Who = "Red", Said = "Real russians don't have proverbs - only Vodka and misery."});
             });
 
-            builder.Step("Say bye", () =>
+            builder.Step("It's tough to be drunk", () =>
             {
-                Context
+                base.Context
                     .ConnectionProvider
                     .Default()
-                    .GetCollection<Message>("Message")
-                    .InsertOne(new Message { Say = "Bye" });
+                    .GetCollection<Quote>("Quote")
+                    .InsertOne(new Quote { Who = "Tyrion Lannister", Said = "It's not easy being drunk all the time. If it were easy, everyone would do it." });
             });
         }
 
@@ -112,35 +117,12 @@ namespace rapidcore_migrations.Migrations
 
 ## 4. Setup `MigrationRunner` so we can run stuff
 
-In the root, create a new class called `Migrator`.
-
-```csharp
-using Microsoft.Extensions.Logging;
-using RapidCore.Mongo.Migration;
-using RapidCore.Threading;
-
-namespace rapidcore_migrations
-{
-    public class Migrator
-    {
-        private readonly MigrationRunner runner;
-
-        public Migrator(MigrationRunner runner)
-        {
-            this.runner = runner;
-        }
-
-        public void RunMigrations()
-        {
-            runner.UpgradeAsync().AwaitSync();
-        }
-    }
-}
-```
-
 We need to add a way to initiate running the migrations. For this guide we will simply run new migrations on every application boot. Open up `Program` and ensure that `Main` looks similar to the following.
 
 ```csharp
+using RapidCore.Mongo.Migration; // <--- new
+using RapidCore.Threading; // <--- new
+
 public static void Main(string[] args)
 {
     var host = new WebHostBuilder()
@@ -150,13 +132,13 @@ public static void Main(string[] args)
         .UseStartup<Startup>()
         .Build();
 
-    host.Services.GetService(typeof(Migrator)).RunMigrations(); // <--- this is the new stuff
+    host.Services.GetService(typeof(MigrationRunner)).UpgradeAsync().AwaitSync(); // <--- new
 
     host.Run();
 }
 ```
 
-Now we need to ensure that the container can actually fulfill the request for a `Migrator`, so let us move over to `Startup` so we can register the stuff we need. `ConfigureServices` should look something like this.
+Now we need to ensure that the container can actually fulfill the request for a `MigrationRunner`, so let us move over to `Startup` so we can register the stuff we need. `ConfigureServices` should look something like this.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
