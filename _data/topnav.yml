@@ -10,7 +10,7 @@ topnav:
 topnav_dropdowns:
 - title: Topnav dropdowns
   folders:
-    - title: Products
+    - title: Features
       folderitems:
         - title: RapidCore.RapidCore
           url: /rapidcore.html
