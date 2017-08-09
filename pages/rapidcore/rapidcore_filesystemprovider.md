@@ -5,7 +5,7 @@ keywords:
 summary: "RapidCore FileSystemProvider is here."
 sidebar: rapidcore_sidebar
 permalink: rapidcore_filesystemprovider.html
-folder: mongo
+folder: rapidcore
 ---
 ## Available implementations of IFileSystemProvider
 
