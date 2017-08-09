@@ -1,6 +1,5 @@
 ﻿using MongoDB.Driver;
 using RapidCore.Mongo.Migration;
-using RapidCore.Mongo.Migration.Internal;
 
 namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
 {

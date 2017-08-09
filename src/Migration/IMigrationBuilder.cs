@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace RapidCore.Mongo.Migration.Internal
+namespace RapidCore.Mongo.Migration
 {
     public interface IMigrationBuilder
     {
