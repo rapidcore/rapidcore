@@ -14,7 +14,7 @@ function Get-Version {
     return $currentVersion
 }
 
-function Validate-Version {
+function Test-Version {
     # $path: the path to navigate to, where we should update versions and all that
     # $goTo: where to navigate after we are done
     Param ([string]$path, [string]$goTo, [string]$version)
