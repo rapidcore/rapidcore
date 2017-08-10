@@ -6,19 +6,19 @@ using Renci.SshNet.Sftp;
 
 namespace RapidCore.IO.FileSystem
 {
-    public class SftpClient : ISftpClient
-    {
-      private Renci.SshNet.SftpClient _client;
+  public class SftpClient : ISftpClient
+  {
+    private Renci.SshNet.SftpClient _client;
     private readonly string _host;
     private readonly string _username;
     private readonly string _password;
 
     public SftpClient(string host, string username, string password)
-      {
-        _host = host;
-        _username = username;
-        _password = password;
-      }
+    {
+      _host = host;
+      _username = username;
+      _password = password;
+    }
 
     public string GetWorkingDirectory()
     {
@@ -36,21 +36,28 @@ namespace RapidCore.IO.FileSystem
     }
 
     public void Dispose()
-      {
-          _client?.Dispose();
-      }
+    {
+      _client?.Dispose();
+    }
 
     public bool Exists(string path)
     {
       return GetSftpClient().Exists(path);
     }
 
-    public IEnumerable<SftpFile> ListDirectory(string path, Action<int> listCallback = null)
+    public IEnumerable<ISftpFile> ListDirectory(string path, Action<int> listCallback = null)
     {
-      return GetSftpClient().ListDirectory(path);
+      var realSftpFiles = GetSftpClient().ListDirectory(path);
+      var result = new List<ISftpFile>();
+
+      foreach(var file in realSftpFiles)
+      {
+        result.Add((ISftpFile) file);
+      }
+      return result;
     }
 
-    public SftpFileStream OpenRead(string path)
+    public Stream OpenRead(string path)
     {
       return GetSftpClient().OpenRead(path);
     }
@@ -73,19 +80,19 @@ namespace RapidCore.IO.FileSystem
     /// the sftp client
     /// </returns>
     private Renci.SshNet.SftpClient GetSftpClient()
-        {
-            if (_client == null || !_client.IsConnected)
-            {
-                var connectionInfo = new ConnectionInfo(
-                    _host,
-                    _username,
-                    new PasswordAuthenticationMethod(_username, _password));
+    {
+      if (_client == null || !_client.IsConnected)
+      {
+        var connectionInfo = new ConnectionInfo(
+            _host,
+            _username,
+            new PasswordAuthenticationMethod(_username, _password));
 
-                _client = new Renci.SshNet.SftpClient(connectionInfo);
-                _client.Connect();
-            }
+        _client = new Renci.SshNet.SftpClient(connectionInfo);
+        _client.Connect();
+      }
 
-            return _client;
-        }
+      return _client;
     }
+  }
 }

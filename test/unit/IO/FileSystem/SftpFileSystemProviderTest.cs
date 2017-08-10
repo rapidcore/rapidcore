@@ -6,6 +6,7 @@ using Xunit;
 using System.IO;
 using System.Reflection;
 using FakeItEasy;
+using System.Linq;
 
 namespace RapidCore.UnitTests.IO.FileSystem
 {
@@ -24,8 +25,7 @@ namespace RapidCore.UnitTests.IO.FileSystem
         private string _localFilesFolder;
         // textFile1.txt
         private string _textFileName;
-        // CsvFile1.csv
-        private string _csvFileName;
+        
         // FileToMove.txt
         private string _fileToMoveName;
 
@@ -33,7 +33,6 @@ namespace RapidCore.UnitTests.IO.FileSystem
         {
             _assemblyPath = Path.GetDirectoryName(typeof(DotNetFileSystemProviderTest).GetTypeInfo().Assembly.Location);
             _textFileName = "TextFile1.txt";
-            _csvFileName = "CsvFile1.csv";
             _fileToMoveName = "FileToMove.txt";
 
             _localFilesFolder = $"IO{Path.DirectorySeparatorChar}FileSystem{Path.DirectorySeparatorChar}Files";
@@ -42,7 +41,20 @@ namespace RapidCore.UnitTests.IO.FileSystem
 
             _fakeSftpClient = A.Fake<ISftpClient>();
             A.CallTo(() => _fakeSftpClient.GetWorkingDirectory()).Returns("not empty");
-            var fakeStrings = new List<string>{"string1", "string2"};
+            var fakeSftpFile = A.Fake<ISftpFile>();
+            fakeSftpFile.Name = "111111";
+
+            var fakeSftpFile2 = A.Fake<ISftpFile>();
+            fakeSftpFile2.Name = "111111.csv";
+
+            var fakeSftpFiles = new List<ISftpFile>{fakeSftpFile, fakeSftpFile2};
+            A.CallTo(() => _fakeSftpClient.ListDirectory(_filesPath, null)).Returns(fakeSftpFiles);
+
+            A.CallTo(() => _fakeSftpClient.OpenRead(Path.Combine(_filesPath, _textFileName))).Returns(new MemoryStream(Encoding.UTF8.GetBytes("my content")));
+            A.CallTo(() => _fakeSftpClient.ReadAllText(Path.Combine(_filesPath, _textFileName))).Returns("my content");
+            A.CallTo(() => _fakeSftpClient.Exists(_filesPath)).Returns(true);
+
+            
             _fileSystem = new SftpFileSystemProvider(_fakeSftpClient);
         }
 
@@ -58,18 +70,22 @@ namespace RapidCore.UnitTests.IO.FileSystem
       [Fact]
         public void Can_ListDirectory()
         {
-            var files = _fileSystem.List(_filesPath);
+            var files = _fileSystem.List(_filesPath).ToList();
 
             A.CallTo(() => _fakeSftpClient.ListDirectory(_filesPath, null)).MustHaveHappened(Repeated.Exactly.Once);
-
+            Assert.Equal(2, files.Count);
+            Assert.Equal("111111", files.First());
+            Assert.Equal("111111.csv", files.Last());
         }
 
         [Fact]
         public void Can_ListDirectoryWithSearchPattern()
         {
-            var files = _fileSystem.List(_filesPath, @".*\.csv$");
+            var files = _fileSystem.List(_filesPath, @".*\.csv$").ToList();
 
             A.CallTo(() => _fakeSftpClient.ListDirectory(_filesPath, null)).MustHaveHappened(Repeated.Exactly.Once);
+            Assert.Equal(1, files.Count);
+            Assert.Equal("111111.csv", files.First());
         }
 
         [Fact]
@@ -92,18 +108,21 @@ namespace RapidCore.UnitTests.IO.FileSystem
         public void Can_OpenReadAFile()
         {
             var fileContent = "my content";
-
             var stream = _fileSystem.OpenReadFile(Path.Combine(_filesPath, _textFileName));
-
+            string content = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+        
             A.CallTo(() => _fakeSftpClient.OpenRead(Path.Combine(_filesPath, _textFileName))).MustHaveHappened(Repeated.Exactly.Once);
+            Assert.Equal(content, fileContent);
         }
 
         [Fact]
         public void Can_LoadContentOfAFile()
         {
-            var fileContent = "my content";
             var returnedContent = _fileSystem.LoadContent(Path.Combine(_filesPath, _textFileName));
-            A.CallTo(() => _fakeSftpClient.ReadAllText(Path.Combine(_filesPath, _textFileName))).MustHaveHappened(Repeated.Exactly.Once);  
+            A.CallTo(() => _fakeSftpClient.ReadAllText(Path.Combine(_filesPath, _textFileName))).MustHaveHappened(Repeated.Exactly.Once);
+
+            var fileContent = "my content";
+            Assert.Equal(returnedContent, fileContent);
         }
 
         [Fact]
@@ -118,8 +137,9 @@ namespace RapidCore.UnitTests.IO.FileSystem
         [Fact]
         public void Can_DetermineIfDirectoryExists()
         {
-            _fileSystem.DirectoryExists(_filesPath);
+            Assert.True(_fileSystem.DirectoryExists(_filesPath));
             A.CallTo(() => _fakeSftpClient.Exists(_filesPath)).MustHaveHappened(Repeated.Exactly.Once);
+            
         }
 
         [Fact]

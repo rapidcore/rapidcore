@@ -21,7 +21,7 @@ namespace RapidCore.IO.FileSystem
         /// <exception cref="SftpPermissionDeniedException">Permission to list the contents of the directory was denied by the remote host. <para>-or-</para> A SSH command was denied by the server.</exception>
         /// <exception cref="SshException">A SSH error where <see cref="Exception.Message" /> is the message from the remote host.</exception>
         /// <exception cref="ObjectDisposedException">The method was called after the client was disposed.</exception>
-        IEnumerable<SftpFile> ListDirectory(string path, Action<int> listCallback = null);
+        IEnumerable<ISftpFile> ListDirectory(string path, Action<int> listCallback = null);
 
         /// <summary>
         /// Renames remote file from old path to new path.
@@ -64,12 +64,12 @@ namespace RapidCore.IO.FileSystem
         /// </summary>
         /// <param name="path">The file to be opened for reading.</param>
         /// <returns>
-        /// A read-only <see cref="SftpFileStream"/> on the specified path.
+        /// A read-only <see cref="Stream"/> on the specified path.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is <b>null</b>.</exception>
         /// <exception cref="SshConnectionException">Client is not connected.</exception>
         /// <exception cref="ObjectDisposedException">The method was called after the client was disposed.</exception>
-        SftpFileStream OpenRead(string path);
+        Stream OpenRead(string path);
 
         /// <summary>
         /// Creates remote directory specified by path.

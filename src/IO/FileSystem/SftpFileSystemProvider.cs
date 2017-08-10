@@ -151,6 +151,7 @@ namespace RapidCore.IO.FileSystem
         /// </param>
         /// <returns>
         /// the filename
+        /// </returns>
         public string GetFileName(string path)
         {
             return Path.GetFileName(path);
