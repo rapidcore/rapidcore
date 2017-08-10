@@ -19,7 +19,7 @@ Issues should be reported in [rapidcore/issues](https://github.com/rapidcore/iss
 
 ### RapidCore.Redis
 
-[![Build status](https://ci.appveyor.com/api/projects/status/bbbp2vpe1xeol2er/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore-redis/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/rapidcore/rapidcore.redis?svg=true)](https://ci.appveyor.com/project/nover/rapidcore-redis/branch/master)
 [![nuget version][redis-nuget-image]][redis-nuget-url]
 
 [redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
