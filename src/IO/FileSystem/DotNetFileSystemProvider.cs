@@ -143,12 +143,14 @@ namespace RapidCore.IO.FileSystem
         /// <param name="path">
         /// the path to create the directory in
         /// </param>
-        /// <returns>
-        /// the directory info
-        /// </returns>
-        public FileSystemInfo CreateDirectory(string path)
+        public void CreateDirectory(string path)
         {
-            return Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
+        }
+
+        public void WriteAllLines(string path, IEnumerable<string> contents)
+        {
+            File.WriteAllLines(path, contents);
         }
     }
 }
