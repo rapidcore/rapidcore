@@ -34,8 +34,8 @@ function Test-Version {
 $currentVersion = Get-Version -path .\rapidcore\src -goTo ..\..\
 Write-Host "Current rapidcore version is " $currentVersion -ForegroundColor Green
 
-Validate-Version -path .\rapidcore.mongo\src -goTo ..\..\ -version $currentVersion 
-Validate-Version -path .\rapidcore.redis\src -goTo ..\..\ -version $currentVersion
-Validate-Version -path .\rapidcore.xunit\src -goTo ..\..\ -version $currentVersion
+Test-Version -path .\rapidcore.mongo\src -goTo ..\..\ -version $currentVersion 
+Test-Version -path .\rapidcore.redis\src -goTo ..\..\ -version $currentVersion
+Test-Version -path .\rapidcore.xunit\src -goTo ..\..\ -version $currentVersion
 
 Write-Host "All ok" -ForegroundColor Green
