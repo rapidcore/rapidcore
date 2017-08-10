@@ -1,13 +1,12 @@
 using System.Reflection;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using RapidCore.Mongo.FunctionalTests.MongoManagerTests;
 using RapidCore.Mongo.Internal;
 using Xunit;
 
-namespace RapidCore.Mongo.FunctionalTests
+namespace RapidCore.Mongo.FunctionalTests.MongoManagerTests
 {
-    public class MongoManager_EnsureIndexes_Tests : MongoManagerTestsBase
+    public class EnsureIndexesOnTypeTests : MongoManagerTestsBase
     {
         [Fact]
         public void CanCreateSimpleIndexes()
