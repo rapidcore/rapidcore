@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <RootNamespace>RapidCore.Mongo</RootNamespace>
@@ -21,7 +21,7 @@
     <PackageReference Include="MongoDB.Bson" Version="2.4.4" />
     <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
-    <PackageReference Include="RapidCore" Version="0.16.0" />
+    <PackageReference Include="RapidCore" Version="0.16.1" />
     <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
     <PackageReference Include="System.ValueTuple" Version="4.3.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
