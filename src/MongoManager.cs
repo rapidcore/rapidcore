@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using RapidCore.Mongo.Internal;
 using RapidCore.Reflection;
@@ -16,7 +15,7 @@ namespace RapidCore.Mongo
             // get types flagged with [Entity]
             var types = assembly
                 .DefinedTypes
-                .Where(t => t.HasAttribute(typeof(EntityAttribute)))
+                .Where(t => t.HasAttribute(typeof(EntityAttribute)) && t.Namespace == entityNamespace)
                 .Select(t => t);
 
             foreach (var type in types)

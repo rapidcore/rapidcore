@@ -1,24 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using RapidCore.Mongo.FunctionalTests.MongoManagerTests;
 using RapidCore.Mongo.Internal;
-using RapidCore.Mongo.Testing;
-using ServiceStack.Text;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests
 {
-    public class MongoManager_EnsureIndexes_Tests : MongoConnectedTestBase
+    public class MongoManager_EnsureIndexes_Tests : MongoManagerTestsBase
     {
-        private readonly MongoManager manager;
-
-        public MongoManager_EnsureIndexes_Tests()
-        {
-            manager = new MongoManager();
-        }
-
         [Fact]
         public void CanCreateSimpleIndexes()
         {
@@ -131,43 +121,6 @@ namespace RapidCore.Mongo.FunctionalTests
             Assert.Equal(new BsonDocument().Add("Int", 1), afterSecondRun["Int_1"].GetElement("key").Value);
         }
 
-        #region Create and get indexes
-        private IDictionary<string, BsonDocument> CreateAndGetIndexes<TDocument>(bool doDrop = true)
-        {
-            var collectionName = typeof(TDocument).GetTypeInfo().GetCollectionName();
-
-            if (doDrop)
-            {
-                GetDb().DropCollection(collectionName);
-                GetDb().CreateCollection(collectionName);
-            }
-
-            manager.EnsureIndexes(
-                GetDb(),
-                typeof(TDocument)
-            );
-
-            return GetIndexes<TDocument>(collectionName);
-        }
-        #endregion
-
-        #region GetIndexes
-        private IDictionary<string, BsonDocument> GetIndexes<TDocument>(string collectionName)
-        {
-            var actual = GetDb().GetCollection<TDocument>(collectionName).Indexes.List();
-            actual.MoveNext();
-            
-            var indexes = new Dictionary<string, BsonDocument>();
-
-            foreach (var index in actual.Current)
-            {
-                indexes[index.GetElement("name").Value.AsString] = index;
-            }
-
-            return indexes;
-        }
-        #endregion
-
         #region Simple indexes
         [Entity]
         private class SimpleIndexes
@@ -224,7 +177,6 @@ namespace RapidCore.Mongo.FunctionalTests
         #endregion
         
         #region Unique indexes
-
         private class Unique
         {
             [Index(Unique = true, Name = "IDX_Unique")]
