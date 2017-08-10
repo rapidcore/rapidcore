@@ -17,6 +17,16 @@ namespace RapidCore.Mongo
         {
             this.mongoDb = mongoDb;
         }
+        
+        /// <summary>
+        /// Get the underlying database
+        /// </summary>
+        public virtual IMongoDatabase Database => mongoDb;
+        
+        /// <summary>
+        /// Get the underlying client
+        /// </summary>
+        public virtual IMongoClient Client => mongoDb.Client;
 
         /// <summary>
         /// Straight up first or default with filter
