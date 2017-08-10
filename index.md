@@ -2,6 +2,7 @@
 title: RapidCore Documentation
 sidebar: home_sidebar
 toc: false
+permalink: index.html
 ---
 # Welcome to the RapidCore Documentation
 
