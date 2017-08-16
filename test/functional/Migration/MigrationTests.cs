@@ -3,7 +3,9 @@ using System.Reflection;
 using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RapidCore.DependencyInjection;
 using RapidCore.Locking;
+using RapidCore.Migration;
 using RapidCore.Mongo.FunctionalTests.Migration.TestMigration;
 using RapidCore.Mongo.Migration;
 using RapidCore.Mongo.Migration.Internal;
@@ -27,15 +29,18 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
             var connectionProvider = new ConnectionProvider();
             connectionProvider.Add("x", db, true);
             
-            var migrationManager = new MigrationManager(new List<Assembly> {typeof(MigrationTests).GetAssembly()});
+            var storage = new MongoMigrationStorage();
+
+            var context = new MongoMigrationContext {ConnectionProvider = connectionProvider};
             
             var runner = new MigrationRunner(
                 new LoggerFactory().CreateLogger<MigrationRunner>(),
-                new ServiceProviderContainerAdapter(services.BuildServiceProvider()), 
+                new ServiceProviderRapidContainerAdapter(services.BuildServiceProvider()), 
                 new MigrationEnvironment("staging"), 
-                connectionProvider,
-                migrationManager,
-                A.Fake<IDistributedAppLockProvider>()
+                A.Fake<IDistributedAppLockProvider>(),
+                new MongoMigrationContextFactory(connectionProvider),
+                new ReflectionMigrationFinder(new List<Assembly> {typeof(MigrationTests).GetAssembly()}),
+                storage
             );
             
             // setup some state
@@ -45,7 +50,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
             await db.InsertAsync<KewlEntity>(KewlEntity.Collection, seven);
             
             // let's say that migration01 has already been completed
-            await migrationManager.MarkAsCompleteAsync(new Migration01(), 123, new MigrationContext { ConnectionProvider = connectionProvider });
+            await storage.MarkAsCompleteAsync(context, new Migration01(), 123);
 
             await runner.UpgradeAsync();
             

@@ -2,7 +2,9 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using RapidCore.DependencyInjection;
 using RapidCore.Locking;
+using RapidCore.Migration;
 
 namespace RapidCore.Mongo.Migration
 {
@@ -26,11 +28,12 @@ namespace RapidCore.Mongo.Migration
         )
         : base(
             new LoggerFactory().CreateLogger<MigrationRunner>(),
-            new ServiceProviderContainerAdapter(services), 
+            new ServiceProviderRapidContainerAdapter(services), 
             new MigrationEnvironment(environmentName), 
-            ConnectionProviderFromString(mongoConnectionString, mongoDbName),
-            new MigrationManager(assemblyWithMigrations), 
-            appLocker
+            appLocker,
+            new MongoMigrationContextFactory(ConnectionProviderFromString(mongoConnectionString, mongoDbName)), 
+            new ReflectionMigrationFinder(assemblyWithMigrations),
+            new MongoMigrationStorage()
         )
         {
         }
