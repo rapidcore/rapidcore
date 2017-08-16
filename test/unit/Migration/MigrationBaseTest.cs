@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FakeItEasy;
 using RapidCore.Migration;
 using RapidCore.Migration.Internal;
@@ -12,19 +11,21 @@ namespace RapidCore.UnitTests.Migration
     {
         private readonly ImplMigrationBase migration;
         private readonly IMigrationContext context;
+        private readonly IMigrationStorage storage;
         private readonly MigrationInfo info;
 
         public MigrationBaseTest()
         {
             context = A.Fake<IMigrationContext>();
+            storage = A.Fake<IMigrationStorage>();
             info = A.Fake<MigrationInfo>();
+
+            A.CallTo(() => context.Storage).Returns(storage);
 
             migration = new ImplMigrationBase
             {
                 ConfigureUpgradeAction = A.Fake<Action<IMigrationBuilder>>(),
-                ConfigureDowngradeAction = A.Fake<Action<IMigrationBuilder>>(),
-                GetMigrationInfoFunc = A.Fake<Func<MigrationInfo>>(),
-                UpsertMigrationInfoAction = A.Fake<Action<MigrationInfo>>()
+                ConfigureDowngradeAction = A.Fake<Action<IMigrationBuilder>>()
             };
         }
 
@@ -40,7 +41,7 @@ namespace RapidCore.UnitTests.Migration
         [Fact]
         public async void UpgradeAsync_setsTheMigrationNameOnTheInfo()
         {
-            A.CallTo(() => migration.GetMigrationInfoFunc.Invoke()).Returns(info);
+            A.CallTo(() => storage.GetMigrationInfoAsync(context, A<string>._)).Returns(info);
             
             await migration.UpgradeAsync(context);
 
@@ -59,16 +60,16 @@ namespace RapidCore.UnitTests.Migration
                 builder.Step("two", step2Action);
             });
             
-            A.CallTo(() => migration.GetMigrationInfoFunc.Invoke()).Returns(info);
+            A.CallTo(() => storage.GetMigrationInfoAsync(context, A<string>._)).Returns(info);
             
             await migration.UpgradeAsync(context);
 
             A.CallTo(() => step1Action.Invoke()).MustHaveHappened()
                 .Then(A.CallTo(() => info.AddCompletedStep("one")).MustHaveHappened())
-                .Then(A.CallTo(() => migration.UpsertMigrationInfoAction(info)).MustHaveHappened())
+                .Then(A.CallTo(() => storage.UpsertMigrationInfoAsync(context, info)).MustHaveHappened())
                 .Then(A.CallTo(() => step2Action.Invoke()).MustHaveHappened())
                 .Then(A.CallTo(() => info.AddCompletedStep("two")).MustHaveHappened())
-                .Then(A.CallTo(() => migration.UpsertMigrationInfoAction(info)).MustHaveHappened());
+                .Then(A.CallTo(() => storage.UpsertMigrationInfoAsync(context, info)).MustHaveHappened());
         }
         #endregion
 
@@ -76,11 +77,12 @@ namespace RapidCore.UnitTests.Migration
         [Fact]
         public async void GetPendingStepsAsync_ifNoMigrationInfo_returnsAllSteps_and_newInfo()
         {
+            migration.SetContext(context);
             var expectedAllSteps = new List<string> {"one", "two"};
             var builder = A.Fake<MigrationBuilder>();
             A.CallTo(() => builder.GetAllStepNames()).Returns(expectedAllSteps);
             
-            A.CallTo(() => migration.GetMigrationInfoFunc.Invoke()).Returns(null);
+            A.CallTo(() => storage.GetMigrationInfoAsync(context, nameof(ImplMigrationBase))).Returns((MigrationInfo)null);
             
             (var actualSteps, var actualInfo) = await migration.GetPendingStepsAsync(builder); 
 
@@ -91,11 +93,12 @@ namespace RapidCore.UnitTests.Migration
         [Fact]
         public async void GetPendingStepsAsync_returnsFilteredSteps_andExistingInfo()
         {
+            migration.SetContext(context);
             var allSteps = new List<string> {"one", "two", "three"};
             var builder = A.Fake<MigrationBuilder>();
             A.CallTo(() => builder.GetAllStepNames()).Returns(allSteps);
             
-            A.CallTo(() => migration.GetMigrationInfoFunc.Invoke()).Returns(info);
+            A.CallTo(() => storage.GetMigrationInfoAsync(context, nameof(ImplMigrationBase))).Returns(info);
             A.CallTo(() => info.StepsCompleted).Returns(new List<string> {"one", "two"});
             
             (var actualSteps, var actualInfo) = await migration.GetPendingStepsAsync(builder); 
@@ -118,8 +121,6 @@ namespace RapidCore.UnitTests.Migration
         {
             public Action<IMigrationBuilder> ConfigureUpgradeAction { get; set; }
             public Action<IMigrationBuilder> ConfigureDowngradeAction { get; set; }
-            public Func<MigrationInfo> GetMigrationInfoFunc { get; set; }
-            public Action<MigrationInfo> UpsertMigrationInfoAction { get; set; }
             
             protected override void ConfigureUpgrade(IMigrationBuilder builder)
             {
@@ -131,15 +132,9 @@ namespace RapidCore.UnitTests.Migration
                 ConfigureDowngradeAction(builder);
             }
 
-            protected override async Task<MigrationInfo> GetMigrationInfoAsync()
+            public void SetContext(IMigrationContext context)
             {
-                return await Task.FromResult(GetMigrationInfoFunc());
-            }
-
-            protected override async Task UpsertMigrationInfoAsync(MigrationInfo info)
-            {
-                UpsertMigrationInfoAction(info);
-                await Task.CompletedTask;
+                Context = context;
             }
         }
         #endregion

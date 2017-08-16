@@ -40,7 +40,7 @@ namespace RapidCore.Migration
 
                 // Add the completion to storage to ensure that we can re-enter if later steps fail
                 info.AddCompletedStep(step);
-                await UpsertMigrationInfoAsync(info);
+                await Context.Storage.UpsertMigrationInfoAsync(Context, info);
             }
         }
 
@@ -80,7 +80,7 @@ namespace RapidCore.Migration
         {
             var allStepNames = builder.GetAllStepNames();
 
-            var info = await GetMigrationInfoAsync();
+            var info = await Context.Storage.GetMigrationInfoAsync(Context, Name);
             
             if (info != null)
             {
@@ -89,20 +89,6 @@ namespace RapidCore.Migration
             }
             return (allStepNames, new MigrationInfo());
         }
-
-        /// <summary>
-        /// Get the <see cref="MigrationInfo"/> instance for this migration
-        /// or <c>null</c> if such an instance does not exist yet.
-        /// 
-        /// Tip to implementors: use <see cref="Context"/> and <see cref="Name"/>.
-        /// </summary>
-        protected abstract Task<MigrationInfo> GetMigrationInfoAsync();
-
-        /// <summary>
-        /// Save (insert or update) the given <paramref name="info"/>
-        /// </summary>
-        /// <param name="info">The migration info to save</param>
-        protected abstract Task UpsertMigrationInfoAsync(MigrationInfo info);
 
         /// <summary>
         /// Get the <see cref="Context"/> as a specific type

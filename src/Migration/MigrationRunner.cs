@@ -15,25 +15,28 @@ namespace RapidCore.Migration
         protected readonly ILogger<MigrationRunner> logger;
         protected readonly IRapidContainerAdapter container;
         protected readonly IMigrationEnvironment environment;
-        protected readonly IMigrationManager migrationManager;
         protected readonly IDistributedAppLockProvider appLocker;
         protected readonly IMigrationContextFactory contextFactory;
+        protected readonly IMigrationFinder finder;
+        protected readonly IMigrationStorage storage;
 
         public MigrationRunner(
             ILogger<MigrationRunner> logger,
             IRapidContainerAdapter container,
             IMigrationEnvironment environment,
-            IMigrationManager migrationManager,
             IDistributedAppLockProvider appLocker,
-            IMigrationContextFactory contextFactory
+            IMigrationContextFactory contextFactory,
+            IMigrationFinder finder,
+            IMigrationStorage storage
         )
         {
             this.logger = logger;
             this.container = container;
             this.environment = environment;
-            this.migrationManager = migrationManager;
             this.appLocker = appLocker;
             this.contextFactory = contextFactory;
+            this.finder = finder;
+            this.storage = storage;
         }
 
         protected virtual string GetLockName()
@@ -47,6 +50,7 @@ namespace RapidCore.Migration
             ctx.Logger = logger;
             ctx.Environment = environment;
             ctx.Container = container;
+            ctx.Storage = storage;
 
             return ctx;
         }
@@ -68,7 +72,7 @@ namespace RapidCore.Migration
 
                 var context = GetContext();
                 
-                foreach (var migration in await migrationManager.FindMigrationsForUpgradeAsync(context))
+                foreach (var migration in await finder.FindMigrationsForUpgradeAsync(context))
                 {
                     try
                     {
@@ -78,7 +82,7 @@ namespace RapidCore.Migration
                         sw.Stop();
                         logger.LogInformation($"Succeeded in running {migration.Name}. It took {sw.ElapsedMilliseconds} milliseconds.");
                         
-                        await migrationManager.MarkAsCompleteAsync(migration, sw.ElapsedMilliseconds, context);
+                        await storage.MarkAsCompleteAsync(context, migration, sw.ElapsedMilliseconds);
                     }
                     catch (Exception ex)
                     {

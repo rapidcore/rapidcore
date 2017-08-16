@@ -3,7 +3,7 @@ using RapidCore.Migration;
 
 namespace RapidCore.FunctionalTests.Migration.TheMigrations
 {
-    public class Migration02 : FuncMigrationBase
+    public class Migration02 : MigrationBase
     {
         protected override void ConfigureUpgrade(IMigrationBuilder builder)
         {

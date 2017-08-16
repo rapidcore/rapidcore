@@ -7,24 +7,22 @@ using System.Threading.Tasks;
 namespace RapidCore.Migration
 {
     /// <summary>
-    /// Base class providing "search for migrations" using reflection. It
-    /// looks for classes in the provided assemblies, that implement <see cref="IMigration"/>.
-    /// 
-    /// All storage related functionality is left for the consumer to implement.
+    /// Implementation providing "search for migrations" using reflection. It
+    /// looks for concrete classes in the provided assemblies, that implement <see cref="IMigration"/>.
     /// </summary>
-    public abstract class ReflectionMigrationManagerBase : IMigrationManager
+    public class ReflectionMigrationFinder : IMigrationFinder
     {
         /// <summary>
         /// The assemblies provided at construction
         /// </summary>
         protected readonly IList<Assembly> assemblies;
 
-        protected ReflectionMigrationManagerBase(IList<Assembly> assemblies)
+        public ReflectionMigrationFinder(IList<Assembly> assemblies)
         {
             this.assemblies = assemblies;
         }
 
-        protected ReflectionMigrationManagerBase(Assembly assembly) : this(new List<Assembly> {assembly})
+        public ReflectionMigrationFinder(Assembly assembly) : this(new List<Assembly> {assembly})
         {
         }
 
@@ -40,9 +38,9 @@ namespace RapidCore.Migration
 
                 foreach (var type in types)
                 {
-                    var instance = GetMigrationInstance(type, context);
+                    var instance = GetNewMigrationInstance(type, context);
 
-                    if (!(await HasMigrationBeenFullyCompletedAsync(instance.Name, context)))
+                    if (!(await context.Storage.HasMigrationBeenFullyCompletedAsync(context, instance.Name)))
                     {
                         migrations.Add(instance.Name, instance);
                     }
@@ -52,10 +50,8 @@ namespace RapidCore.Migration
             return migrations.Values;
         }
 
-        public abstract Task MarkAsCompleteAsync(IMigration migration, long milliseconds, IMigrationContext context);
-
         /// <summary>
-        /// Get an instance of an <see cref="IMigration"/>.
+        /// Get a new instance of an <see cref="IMigration"/>.
         /// 
         /// First, this method will attempt to get an instance
         /// from the container defined on the context. If that fails,
@@ -63,7 +59,7 @@ namespace RapidCore.Migration
         /// </summary>
         /// <param name="type">The type of the migration</param>
         /// <param name="context">The migration context</param>
-        protected virtual IMigration GetMigrationInstance(Type type, IMigrationContext context)
+        protected virtual IMigration GetNewMigrationInstance(Type type, IMigrationContext context)
         {
             var x = context.Container.Resolve(type);
 
@@ -74,13 +70,5 @@ namespace RapidCore.Migration
 
             return (IMigration)Activator.CreateInstance(type);
         }
-        
-        /// <summary>
-        /// Check whether or not a migration has been fully completed (i.e. all steps have been run successfully).
-        /// </summary>
-        /// <param name="migrationName">The name of the migration</param>
-        /// <param name="context">The context of the migration</param>
-        /// <returns><c>True</c> if the migration has been fully completed, <c>false</c> otherwise.</returns>
-        protected abstract Task<bool> HasMigrationBeenFullyCompletedAsync(string migrationName, IMigrationContext context);
     }
 }

@@ -10,5 +10,7 @@ namespace RapidCore.Migration
         IRapidContainerAdapter Container { get; set; }
         
         IMigrationEnvironment Environment { get; set; }
+        
+        IMigrationStorage Storage { get; set; }
     }
 }

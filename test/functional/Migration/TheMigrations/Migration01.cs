@@ -1,10 +1,9 @@
 ﻿using System;
-using RapidCore.FunctionalTests.Migration.Implementation;
 using RapidCore.Migration;
 
 namespace RapidCore.FunctionalTests.Migration.TheMigrations
 {
-    public class Migration01 : FuncMigrationBase
+    public class Migration01 : MigrationBase
     {
         protected override void ConfigureUpgrade(IMigrationBuilder builder)
         {
@@ -13,7 +12,7 @@ namespace RapidCore.FunctionalTests.Migration.TheMigrations
 
         protected override void ConfigureDowngrade(IMigrationBuilder builder)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

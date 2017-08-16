@@ -9,6 +9,7 @@ namespace RapidCore.FunctionalTests.Migration.Implementation
         public ILogger Logger { get; set; }
         public IRapidContainerAdapter Container { get; set; }
         public IMigrationEnvironment Environment { get; set; }
+        public IMigrationStorage Storage { get; set; }
         public FuncMigrationDatabase Database { get; set; }
     }
 }

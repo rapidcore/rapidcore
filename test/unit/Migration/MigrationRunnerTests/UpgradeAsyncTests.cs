@@ -16,9 +16,10 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
         private readonly ILogger<MigrationRunner> logger;
         private readonly IRapidContainerAdapter container;
         private readonly IMigrationEnvironment environment;
-        private readonly IMigrationManager migrationManager;
         private readonly IDistributedAppLockProvider appLocker;
         private readonly IMigrationContextFactory contextFactory;
+        private readonly IMigrationFinder finder;
+        private readonly IMigrationStorage storage;
         private readonly IMigrationContext context;
         private readonly IDistributedAppLock appLock;
         private readonly IMigration migration1;
@@ -29,9 +30,10 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
             logger = A.Fake<ILogger<MigrationRunner>>();
             container = A.Fake<IRapidContainerAdapter>();
             environment = A.Fake<IMigrationEnvironment>();
-            migrationManager = A.Fake<IMigrationManager>();
             appLocker = A.Fake<IDistributedAppLockProvider>();
             contextFactory = A.Fake<IMigrationContextFactory>();
+            finder = A.Fake<IMigrationFinder>();
+            storage = A.Fake<IMigrationStorage>();
             context = A.Fake<IMigrationContext>();
             appLock = A.Fake<IDistributedAppLock>();
             migration1 = A.Fake<IMigration>();
@@ -44,9 +46,10 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
                 logger,
                 container,
                 environment,
-                migrationManager,
                 appLocker,
-                contextFactory
+                contextFactory,
+                finder,
+                storage
             );
         }
 
@@ -69,17 +72,17 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
         }
         
         [Fact]
-        public async void Upgrade_GetMigrationsFromManager()
+        public async void Upgrade_GetMigrationsFromFinder()
         {
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(context)).MustHaveHappened();
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(context)).MustHaveHappened();
         }
         
         [Fact]
         public async void Upgrade_CallUpgradeOnAllMigrations()
         {
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
             
             await runner.UpgradeAsync();
 
@@ -90,25 +93,25 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
         [Fact]
         public async void Upgrade_MarkMigrationAsComplete()
         {
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             
             await runner.UpgradeAsync();
 
-            A.CallTo(() => migrationManager.MarkAsCompleteAsync(migration1, A<long>._, context)).MustHaveHappened();
+            A.CallTo(() => storage.MarkAsCompleteAsync(context, migration1, A<long>._)).MustHaveHappened();
         }
         
         [Fact]
         public async void Upgrade_ifError_doNotMarkAsComplete_wrapThrownException()
         {
             var innerException = new Exception("DIE!");
-            A.CallTo(() => migrationManager.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             A.CallTo(() => migration1.UpgradeAsync(A<IMigrationContext>._)).ThrowsAsync(innerException);
 
             var actual = await Record.ExceptionAsync(async () => await runner.UpgradeAsync());
             
             Assert.NotNull(actual);
             Assert.Same(innerException, actual.InnerException);
-            A.CallTo(() => migrationManager.MarkAsCompleteAsync(A<IMigration>._, A<long>._, A<IMigrationContext>._)).MustNotHaveHappened();
+            A.CallTo(() => storage.MarkAsCompleteAsync(A<IMigrationContext>._, A<IMigration>._, A<long>._)).MustNotHaveHappened();
         }
     }
 }

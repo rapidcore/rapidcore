@@ -18,21 +18,21 @@ namespace RapidCore.FunctionalTests.Migration
         public async void RunMigration()
         {
             var db = new FuncMigrationDatabase();
+            var storage = new FuncMigrationStorage();
             var services = new ServiceCollection();
             var contextFactory = A.Fake<IMigrationContextFactory>();
             var context = new FuncMigrationContext {Database = db};
 
             A.CallTo(() => contextFactory.GetContext()).Returns(context);
-
-            var migrationManager = new FuncMigrationManager(new List<Assembly> {typeof(MigrationStackTests).GetTypeInfo().Assembly});
             
             var runner = new MigrationRunner(
                 new LoggerFactory().CreateLogger<MigrationRunner>(),
                 new ServiceProviderRapidContainerAdapter(services.BuildServiceProvider()), 
                 new MigrationEnvironment("staging"), 
-                migrationManager,
                 A.Fake<IDistributedAppLockProvider>(),
-                contextFactory
+                contextFactory,
+                new ReflectionMigrationFinder(new List<Assembly> {typeof(MigrationStackTests).GetTypeInfo().Assembly}),
+                storage
             );
             
             // setup some state
@@ -42,7 +42,7 @@ namespace RapidCore.FunctionalTests.Migration
             db.UpsertKewl(seven);
             
             // let's say that migration01 has already been completed
-            await migrationManager.MarkAsCompleteAsync(new Migration01(), 123, context);
+            await storage.MarkAsCompleteAsync(context, new Migration01(), 123);
 
             await runner.UpgradeAsync();
             
