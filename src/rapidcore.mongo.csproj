@@ -22,7 +22,7 @@
     <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
     <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
   </ItemGroup>
   <ItemGroup>
