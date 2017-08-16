@@ -23,9 +23,9 @@
     <PackageReference Include="SSH.NET" Version="2016.0.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Environment" />
-    <Folder Include="Migration" />
   </ItemGroup>
 </Project>
