@@ -103,6 +103,15 @@ namespace RapidCore.Migration
         /// </summary>
         /// <param name="info">The migration info to save</param>
         protected abstract Task UpsertMigrationInfoAsync(MigrationInfo info);
+
+        /// <summary>
+        /// Get the <see cref="Context"/> as a specific type
+        /// </summary>
+        /// <typeparam name="TContext">The type of context you want</typeparam>
+        protected virtual TContext ContextAs<TContext>() where TContext : IMigrationContext
+        {
+            return (TContext) Context;
+        }
         #endregion Helper methods
 
         #region props
