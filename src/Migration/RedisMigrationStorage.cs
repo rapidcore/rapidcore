@@ -8,6 +8,8 @@ namespace RapidCore.Redis.Migration
 {
     public class RedisMigrationStorage : IMigrationStorage
     {
+        public static string KeyPrefix = "__rapidcore:migrations:";
+        
         private IDatabase GetDatabase(IMigrationContext context)
         {
             return context.Container.Resolve<IConnectionMultiplexer>().GetDatabase();
@@ -15,7 +17,7 @@ namespace RapidCore.Redis.Migration
 
         private string GetKey(string migrationName)
         {
-            return $"migrations:{migrationName}";
+            return $"{KeyPrefix}{migrationName}";
         }
         
         public async Task MarkAsCompleteAsync(IMigrationContext context, IMigration migration, long milliseconds)

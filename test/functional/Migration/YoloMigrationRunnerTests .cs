@@ -74,7 +74,7 @@ namespace RapidCore.Redis.FunctionalTest.Migration
         {
             var infos = new List<MigrationInfo>();
             
-            foreach (var key in redisMuxer.GetServer(hostname).Keys(pattern: "migrations:*"))
+            foreach (var key in redisMuxer.GetServer(hostname).Keys(pattern: $"{RedisMigrationStorage.KeyPrefix}*"))
             {
                 var value = await redisMuxer.GetDatabase().StringGetAsync(key);
                 infos.Add(JsonConvert.DeserializeObject<MigrationInfo>(value.ToString()));
