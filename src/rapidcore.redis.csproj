@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
     <RootNamespace>RapidCore.Redis</RootNamespace>
@@ -26,6 +26,7 @@
   
   
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="RapidCore" Version="0.19.0" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
