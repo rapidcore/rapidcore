@@ -31,7 +31,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
                 typeof(YoloMigrationRunnerTests).GetAssembly()
             );
             
-            var migrationManager = new MigrationManager(typeof(YoloMigrationRunnerTests).GetAssembly());
+            var storage = new MongoMigrationStorage();
             
             var connectionProvider = new ConnectionProvider();
             connectionProvider.Add("x", db, true);
@@ -43,7 +43,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
             await db.InsertAsync<KewlEntity>(KewlEntity.Collection, seven);
             
             // let's say that migration01 has already been completed
-            await migrationManager.MarkAsCompleteAsync(new Migration01(), 123, new MigrationContext { ConnectionProvider = connectionProvider });
+            await storage.MarkAsCompleteAsync(new MongoMigrationContext { ConnectionProvider = connectionProvider }, new Migration01(), 123);
 
             await runner.UpgradeAsync();
             

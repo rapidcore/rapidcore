@@ -54,6 +54,6 @@ namespace RapidCore.Mongo.Migration.Internal
         /// <value>
         /// The completed at.
         /// </value>
-        public DateTime CompletedAt { get; set; }
+        public DateTime CompletedAtUtc { get; set; }
     }
 }

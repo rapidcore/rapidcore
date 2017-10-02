@@ -1,13 +1,14 @@
 ﻿using MongoDB.Driver;
+using RapidCore.Migration;
 using RapidCore.Mongo.Migration;
 
 namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
 {
     public class Migration03 : MigrationBase
     {
-        public override void ConfigureUpgrade(IMigrationBuilder builder)
+        protected override void ConfigureUpgrade(IMigrationBuilder builder)
         {
-            var db = Context.ConnectionProvider.Default();
+            var db = ContextAs<MongoMigrationContext>().ConnectionProvider.Default();
             
             builder.Step("Add 'Mucho' to 'five'", async () =>
             {
@@ -30,7 +31,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
             });
         }
 
-        public override void ConfigureDowngrade(IMigrationBuilder builder)
+        protected override void ConfigureDowngrade(IMigrationBuilder builder)
         {
             throw new System.NotImplementedException();
         }

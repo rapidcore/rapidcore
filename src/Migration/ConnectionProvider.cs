@@ -2,7 +2,7 @@
 
 namespace RapidCore.Mongo.Migration
 {
-    public class ConnectionProvider : IConnectionProvider
+    public class ConnectionProvider
     {
         protected readonly IDictionary<string, MongoDbConnection> connections = new Dictionary<string, MongoDbConnection>();
         
