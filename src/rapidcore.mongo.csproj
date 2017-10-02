@@ -21,14 +21,9 @@
     <PackageReference Include="MongoDB.Bson" Version="2.4.4" />
     <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
+    <PackageReference Include="rapidcore" Version="0.17.0" />
     <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\rapidcore\src\rapidcore.csproj">
-      <Project>{E3B7A6A9-D39F-4224-A9B2-E1B9E528EC98}</Project>
-      <Name>rapidcore</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>
