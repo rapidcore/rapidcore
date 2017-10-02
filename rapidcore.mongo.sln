@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "functionaltests", "test\fun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unittests", "test\unit\unittests.csproj", "{6249341E-B470-462E-89E9-CE76EFAB88AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rapidcore", "..\rapidcore\src\rapidcore.csproj", "{E3B7A6A9-D39F-4224-A9B2-E1B9E528EC98}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
