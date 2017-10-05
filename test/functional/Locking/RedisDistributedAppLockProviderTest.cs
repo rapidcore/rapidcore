@@ -71,10 +71,10 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             var lockName = "some-other-lock";
             // ensure that no stale keys are left
             _redisMuxer.GetDatabase().KeyDelete(lockName);
-            
+
             var locker = new RedisDistributedAppLockProvider(_redisMuxer);
             firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
-            
+
             // Create task to dispose of loclk at some point
             Task.Factory.StartNew(() =>
             {
@@ -100,6 +100,41 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             var theLock = provider.Acquire("this-is-my-lock");
             theLock.Dispose();
             Assert.False(theLock.IsActive);
+        }
+
+        [Fact]
+        public void Test_that_auto_expire_on_lock_works()
+        {
+            /*
+           This test flow goes something like:
+           1. acquire firstLock that auto-expires after 2 seconds 
+           2. Start a new thread that will immediately sleep for 3 seconds to allow the auto-expire to kick in
+           3. Try to acquire second lock which should work after 3 seconds as the lock has to be automatically released
+           4. first thread unlocks after 3 seconds and then we can assert that our lock-states are correct
+            */
+            RedisDistributedAppLock firstLock = null;
+            RedisDistributedAppLock secondLock = null;
+            var lockName = "some-other-lock-that-expire";
+            // ensure that no stale keys are left
+            _redisMuxer.GetDatabase().KeyDelete(lockName);
+
+            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            // Create task to dispose of lock at some point
+            Task.Factory.StartNew(() =>
+            {
+                // delay for a bit more than the auto-expire, and we should be good to go.
+                Task.Delay(TimeSpan.FromMilliseconds(3000));
+                Assert.Equal(lockName, secondLock.Name);
+                Assert.True(secondLock.IsActive);
+                Assert.False(firstLock.IsActive);
+                secondLock.Dispose();
+                firstLock.Dispose();
+            });
+
+            // this second lock now enters retry mode
+            secondLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
         }
     }
 }

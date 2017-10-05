@@ -32,31 +32,37 @@ namespace RapidCore.Redis.Locking
         /// A unique lock handle for this instance of the lock
         /// </summary>
         public string LockHandle { get; protected set; }
-        
+
         /// <summary>
         /// Acquire the lock with the underlying Redis instance
         /// </summary>
         /// <param name="lockName">Name of the lock to acquire</param>
-        /// <param name="timeout">When set, the amount of time to wait for the lock to become available</param>
+        /// <param name="lockWaitTimeout">When set, the amount of time to wait for the lock to become available</param>
+        /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis will auto expire the lock key</param>
         /// <returns><c>this</c> upon successful lock grab (for a fluent interface)</returns>
         /// <exception cref="DistributedAppLockException"></exception>
-        public async Task<IDistributedAppLock> AcquireLockAsync(string lockName, TimeSpan? timeout = null)
+        public async Task<IDistributedAppLock> AcquireLockAsync(string lockName, TimeSpan? lockWaitTimeout = null, TimeSpan? lockAutoExpireTimeout = null)
         {
             var stopWatch = new Stopwatch();
             try
             {
                 LockHandle = Guid.NewGuid().ToString("N");
-                var timeoutProvided = timeout.HasValue;
+                var timeoutProvided = lockWaitTimeout.HasValue;
                 if (!timeoutProvided)
                 {
-                    timeout = TimeSpan.Zero;
+                    lockWaitTimeout = TimeSpan.Zero;
                 }
 
+                if (lockAutoExpireTimeout == null)
+                {
+                    lockAutoExpireTimeout = TimeSpan.FromDays(1);
+                }
+                
                 _redisDb = _redisMuxer.GetDatabase();
                 stopWatch.Start();
                 do
                 {
-                    var lockWasAcquired = _redisDb.LockTake(lockName, LockHandle, TimeSpan.FromDays(1));
+                    var lockWasAcquired = _redisDb.LockTake(lockName, LockHandle, lockAutoExpireTimeout.Value);
 
                     if (!lockWasAcquired && !timeoutProvided)
                     {
@@ -77,7 +83,7 @@ namespace RapidCore.Redis.Locking
                     Name = lockName;
                     break;
                 } 
-                while (stopWatch.Elapsed.TotalSeconds < timeout.Value.TotalSeconds);
+                while (stopWatch.Elapsed.TotalSeconds < lockWaitTimeout.Value.TotalSeconds);
 
                 if (!IsActive)
                 {
@@ -93,7 +99,7 @@ namespace RapidCore.Redis.Locking
             {
                 var ex = new DistributedAppLockException($"Unable to acquire lock: '{lockName}'", tex)
                 {
-                    Reason = timeout == null
+                    Reason = lockWaitTimeout == null
                         ? DistributedAppLockExceptionReason.LockAlreadyAcquired
                         : DistributedAppLockExceptionReason.Timeout,
                 };
