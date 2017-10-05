@@ -49,6 +49,22 @@ namespace RapidCore.Redis.UnitTests.Locking
         }
 
         [Fact]
+        public async Task Does_acquire_lock_with_ttl_if_passed()
+        {
+            var handle = new RedisDistributedAppLock(_manager);
+            await handle.AcquireLockAsync(_defaultLockName, TimeSpan.MaxValue, TimeSpan.FromSeconds(2));
+            
+            A.CallTo(() => _client.LockTake(
+                    A<RedisKey>.That.Matches(str => str == _defaultLockName),
+                    A<RedisValue>.Ignored,
+                    TimeSpan.FromSeconds(2),
+                    A<CommandFlags>.Ignored))
+                .MustHaveHappened();
+
+            Assert.Equal(_defaultLockName, handle.Name);
+
+        }
+        [Fact]
         public async Task Does_dispose_of_underlying_resources()
         {
             var handle = new RedisDistributedAppLock(_manager);
