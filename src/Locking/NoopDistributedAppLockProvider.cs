@@ -14,12 +14,14 @@ namespace RapidCore.Locking
     [Obsolete("This should not be used in real systems", false)]
     public class NoopDistributedAppLockProvider : IDistributedAppLockProvider
     {
-        public virtual IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = null)
+        public virtual IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = null,
+            TimeSpan? lockAutoExpireTimeout = null)
         {
-            return AcquireAsync(lockName, lockWaitTimeout).AwaitSync();
+            return AcquireAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout).AwaitSync();
         }
 
-        public virtual async Task<IDistributedAppLock> AcquireAsync(string lockName, TimeSpan? lockWaitTimeout = null)
+        public virtual async Task<IDistributedAppLock> AcquireAsync(string lockName, TimeSpan? lockWaitTimeout = null,
+            TimeSpan? lockAutoExpireTimeout = null)
         {
             return await Task.FromResult(new NoopDistributedAppLock
             {

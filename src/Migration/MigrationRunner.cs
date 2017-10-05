@@ -65,7 +65,7 @@ namespace RapidCore.Migration
             // 3. Run each migration
             // 4. Mark successfully run migrations as completed
             
-            using (await appLocker.AcquireAsync(GetLockName(), TimeSpan.FromSeconds(30)))
+            using (await appLocker.AcquireAsync(GetLockName(), TimeSpan.FromSeconds(30), TimeSpan.MaxValue))
             {
                 logger.LogInformation($"Lock {GetLockName()} acquired");
                 var sw = new Stopwatch();

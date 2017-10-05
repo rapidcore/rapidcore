@@ -39,9 +39,10 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
             migration1 = A.Fake<IMigration>();
             migration2 = A.Fake<IMigration>();
 
-            A.CallTo(() => appLocker.AcquireAsync("RapidCoreMigrations", A<TimeSpan>._)).Returns(Task.FromResult(appLock));
+            A.CallTo(() => appLocker.AcquireAsync("RapidCoreMigrations", A<TimeSpan>._, A<TimeSpan>._))
+                .Returns(Task.FromResult(appLock));
             A.CallTo(() => contextFactory.GetContext()).Returns(context);
-            
+
             runner = new MigrationRunner(
                 logger,
                 container,
@@ -58,7 +59,8 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
         {
             await runner.UpgradeAsync();
 
-            A.CallTo(() => appLocker.AcquireAsync("RapidCoreMigrations", A<TimeSpan>.That.Matches(x => x == TimeSpan.FromSeconds(30)))).MustHaveHappened();
+            A.CallTo(() => appLocker.AcquireAsync("RapidCoreMigrations",
+                A<TimeSpan>.That.Matches(x => x == TimeSpan.FromSeconds(30)), TimeSpan.MaxValue)).MustHaveHappened();
         }
 
         [Fact]
@@ -70,7 +72,7 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
             A.CallToSet(() => context.Environment).To(environment).MustHaveHappened();
             A.CallToSet(() => context.Logger).To(logger).MustHaveHappened();
         }
-        
+
         [Fact]
         public async void Upgrade_GetMigrationsFromFinder()
         {
@@ -78,40 +80,44 @@ namespace RapidCore.UnitTests.Migration.MigrationRunnerTests
 
             A.CallTo(() => finder.FindMigrationsForUpgradeAsync(context)).MustHaveHappened();
         }
-        
+
         [Fact]
         public async void Upgrade_CallUpgradeOnAllMigrations()
         {
-            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
-            
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._))
+                .Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1, migration2}));
+
             await runner.UpgradeAsync();
 
             A.CallTo(() => migration1.UpgradeAsync(context)).MustHaveHappened();
             A.CallTo(() => migration2.UpgradeAsync(context)).MustHaveHappened();
         }
-        
+
         [Fact]
         public async void Upgrade_MarkMigrationAsComplete()
         {
-            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
-            
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._))
+                .Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+
             await runner.UpgradeAsync();
 
             A.CallTo(() => storage.MarkAsCompleteAsync(context, migration1, A<long>._)).MustHaveHappened();
         }
-        
+
         [Fact]
         public async void Upgrade_ifError_doNotMarkAsComplete_wrapThrownException()
         {
             var innerException = new Exception("DIE!");
-            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._)).Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
+            A.CallTo(() => finder.FindMigrationsForUpgradeAsync(A<IMigrationContext>._))
+                .Returns(Task.FromResult<IList<IMigration>>(new List<IMigration> {migration1}));
             A.CallTo(() => migration1.UpgradeAsync(A<IMigrationContext>._)).ThrowsAsync(innerException);
 
             var actual = await Record.ExceptionAsync(async () => await runner.UpgradeAsync());
-            
+
             Assert.NotNull(actual);
             Assert.Same(innerException, actual.InnerException);
-            A.CallTo(() => storage.MarkAsCompleteAsync(A<IMigrationContext>._, A<IMigration>._, A<long>._)).MustNotHaveHappened();
+            A.CallTo(() => storage.MarkAsCompleteAsync(A<IMigrationContext>._, A<IMigration>._, A<long>._))
+                .MustNotHaveHappened();
         }
     }
 }
