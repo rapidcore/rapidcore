@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -46,5 +47,19 @@ namespace RapidCore.Network
             testCases.Add(testCase);
             return this;
         }
+        
+        /// <summary>
+        /// The base address of Uniform Resource Identifier (URI) of the Internet resource used when sending requests.
+        /// 
+        /// <see cref="HttpClient.BaseAddress"/>
+        /// </summary>
+        public virtual Uri BaseAddress { get; set; }
+
+        /// <summary>
+        /// The timespan to wait before the request times out.
+        /// 
+        /// <see cref="HttpClient.Timeout"/>
+        /// </summary>
+        public virtual TimeSpan Timeout { get; set; }
     }
 }

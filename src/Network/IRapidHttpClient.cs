@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RapidCore.Network
@@ -15,5 +16,19 @@ namespace RapidCore.Network
         /// <param name="request">The request</param>
         /// <returns>The response</returns>
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
+        
+        /// <summary>
+        /// The base address of Uniform Resource Identifier (URI) of the Internet resource used when sending requests.
+        /// 
+        /// <see cref="HttpClient.BaseAddress"/>
+        /// </summary>
+        Uri BaseAddress { get; set; }
+
+        /// <summary>
+        /// The timespan to wait before the request times out.
+        /// 
+        /// <see cref="HttpClient.Timeout"/>
+        /// </summary>
+        TimeSpan Timeout { get; set; }
     }
 }
