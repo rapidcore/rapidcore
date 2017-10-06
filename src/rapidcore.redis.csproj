@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
     <RootNamespace>RapidCore.Redis</RootNamespace>
     <Version>0.18.0</Version>
     <Title>RapidCore.Redis</Title>
@@ -17,8 +17,17 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_6</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45'">
+    <DefineConstants>NET45;NETFULL</DefineConstants>
+  </PropertyGroup>
+  
+  
   <ItemGroup>
-    <PackageReference Include="RapidCore" Version="0.18.0" />
+    <PackageReference Include="RapidCore" Version="0.19.0" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
