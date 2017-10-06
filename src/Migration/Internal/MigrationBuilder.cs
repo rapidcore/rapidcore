@@ -24,11 +24,19 @@ namespace RapidCore.Migration.Internal
         /// <exception cref="T:System.ArgumentException">stepName</exception>
         public virtual IMigrationBuilder Step(string stepName, Action action)
         {
+#if NET45
+            return Step(stepName, async () =>
+            {
+                action();
+                await Task.FromResult(0);
+            });
+#else
             return Step(stepName, async () =>
             {
                 action();
                 await Task.CompletedTask;
             });
+#endif
         }
         
         /// <inheritdoc />
