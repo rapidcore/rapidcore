@@ -15,7 +15,6 @@
     <PackageId>RapidCore.Redis</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
@@ -27,13 +26,9 @@
   
   
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="RapidCore" Version="0.19.0" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001" PrivateAssets="All" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="../stylecop.json" />
-    <AdditionalFiles Include="../stylecop.json" />
   </ItemGroup>
 </Project>
