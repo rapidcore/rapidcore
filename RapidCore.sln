@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xunit", "xunit", "{769C5005
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rapidcore.xunit", "src\xunit\main\rapidcore.xunit.csproj", "{77ACBE2E-4DA8-46A3-955F-B901F3247DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unit", "src\xunit\test-unit\unit.csproj", "{E46535C7-A2DB-4525-9EB2-4A05DBCA3775}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unit", "src\xunit\test-unit\unittests.csproj", "{E46535C7-A2DB-4525-9EB2-4A05DBCA3775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
