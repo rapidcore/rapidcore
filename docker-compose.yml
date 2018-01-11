@@ -5,3 +5,7 @@ services:
     image: "mongo:3.4"
     ports:
       - "27017:27017"
+  redis:
+    image: redis:3.2
+    ports:
+      - "6379:6379"
