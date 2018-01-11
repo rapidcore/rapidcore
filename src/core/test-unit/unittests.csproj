@@ -12,9 +12,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.*" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\rapidcore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
   <ItemGroup>
@@ -30,5 +27,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Environment" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\main\rapidcore.csproj" />
   </ItemGroup>
 </Project>
