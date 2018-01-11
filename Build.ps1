@@ -31,6 +31,14 @@ $revision = "{0:D4}" -f [convert]::ToInt32($revision, 10)
 
 exec { & dotnet build }
 
-exec { & dotnet test .\test\unit\unittests.csproj -c Release }
+exec { & dotnet test '.\src\core\test-unit\unittests.csproj' -c Release }
+exec { & dotnet test '.\src\mongo\test-unit\unittests.csproj' -c Release }
+exec { & dotnet test '.\src\redis\test-unit\unittests.csproj' -c Release }
+exec { & dotnet test '.\src\xunit\test-unit\unittests.csproj' -c Release }
 
-exec { & dotnet pack .\src\rapidcore.mongo.csproj -c Release -o ..\artifacts --include-source }
+
+# TODO - replace csproj references with nuget references to the libraries
+exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source }
+exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source }
+exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source }
+exec { & dotnet pack .\src\xunit\main\rapidcore.xunit.csproj -c Release -o ..\..\..\artifacts --include-source }
