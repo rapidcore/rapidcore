@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
+    <RootNamespace>RapidCore.Mongo</RootNamespace>
+    <Version>0.17.0</Version>
+    <Title>RapidCore.Mongo</Title>
+    <Authors>nover</Authors>
+    <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
+    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;mongo</PackageTags>
+    <PackageProjectUrl>https://github.com/rapidcore/rapidcore.mongo/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore.mongo/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rapidcore/rapidcore.mongo/</RepositoryUrl>
+    <PackageId>RapidCore.Mongo</PackageId>
+    <Company>SKARP ApS</Company>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
+    <PackageReference Include="MongoDB.Bson" Version="2.4.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
+    <PackageReference Include="rapidcore" Version="0.17.0" />
+    <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
+  </ItemGroup>
+</Project>
