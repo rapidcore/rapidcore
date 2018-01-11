@@ -27,8 +27,12 @@
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="RapidCore" Version="0.19.0" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
+  </ItemGroup>
+  
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
   </ItemGroup>
 </Project>
