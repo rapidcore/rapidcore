@@ -62,7 +62,7 @@ Use-NuGetReference .\src\xunit\main\rapidcore.xunit.csproj $version
 ##
 # Pack each package
 ##
-exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source }
-exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source }
-exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source }
-exec { & dotnet pack .\src\xunit\main\rapidcore.xunit.csproj -c Release -o ..\..\..\artifacts --include-source }
+exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+exec { & dotnet pack .\src\xunit\main\rapidcore.xunit.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
