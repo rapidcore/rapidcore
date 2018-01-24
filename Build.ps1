@@ -22,6 +22,17 @@ function Exec
     }
 }
 
+function Use-NuGetReference {
+    # $pathToCsproj: the path to the csproj file we want to update
+    # $version: The version to apply
+    Param ([string]$pathToCsproj, [string]$version)
+
+    $localReference = "<ProjectReference Include=""..\..\core\main\rapidcore.csproj"" />"
+    $nugetReference = "<PackageReference Include=""RapidCore"" Version=""$version"" />"
+
+    (Get-Content $pathToCsproj).replace($localReference, $nugetReference) | Set-Content $pathToCsproj
+}
+
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
 exec { & dotnet restore }
@@ -37,7 +48,20 @@ exec { & dotnet test '.\src\redis\test-unit\unittests.csproj' -c Release }
 exec { & dotnet test '.\src\xunit\test-unit\unittests.csproj' -c Release }
 
 
-# TODO - replace csproj references with nuget references to the libraries
+##
+# Replace local references to RapidCore with NuGet references
+##
+Set-Location .\src\core\main
+$version = & dotnet version --output-format=json | ConvertFrom-Json | Select-Object -ExpandProperty currentVersion
+Set-Location ..\..\..\
+
+Use-NuGetReference .\src\mongo\main\rapidcore.mongo.csproj $version
+Use-NuGetReference .\src\redis\main\rapidcore.redis.csproj $version
+Use-NuGetReference .\src\xunit\main\rapidcore.xunit.csproj $version
+
+##
+# Pack each package
+##
 exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source }
 exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source }
 exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source }
