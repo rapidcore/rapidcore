@@ -28,7 +28,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.1" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
   </ItemGroup>
   
   
