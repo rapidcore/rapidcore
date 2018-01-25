@@ -8,7 +8,7 @@ permalink: index.html
 
 Navigate in the side bar to the left to read the docs or use the search bar at the top.
 
-Issues should be reported in [rapidcore/issues](https://github.com/rapidcore/issues/issues)
+Issues can be found in the [Github repository](https://github.com/rapidcore/rapidcore/issues)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ja3vf8fp1ros6q4t/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore/branch/master)
 
