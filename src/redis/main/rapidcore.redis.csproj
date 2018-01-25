@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
     <RootNamespace>RapidCore.Redis</RootNamespace>
-    <Version>0.19.0</Version>
+    <Version>0.19.1</Version>
     <Title>RapidCore.Redis</Title>
     <Authors>nover</Authors>
     <Description>RapidCore.Redis is redis dependend code for the RapidCore library</Description>
