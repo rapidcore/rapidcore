@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
+    <RootNamespace>RapidCore.Redis</RootNamespace>
+    <Version>0.19.0</Version>
+    <Title>RapidCore.Redis</Title>
+    <Authors>nover</Authors>
+    <Description>RapidCore.Redis is redis dependend code for the RapidCore library</Description>
+    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;redis;lock;locking;distributed locking;</PackageTags>
+    <PackageProjectUrl>https://github.com/rapidcore/rapidcore.redis/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore.redis/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rapidcore/rapidcore.redis/</RepositoryUrl>
+    <PackageId>RapidCore.Redis</PackageId>
+    <Company>SKARP ApS</Company>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_6</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45'">
+    <DefineConstants>NET45;NETFULL</DefineConstants>
+  </PropertyGroup>
+  
+  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.4" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
+  </ItemGroup>
+  
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
+  </ItemGroup>
+</Project>

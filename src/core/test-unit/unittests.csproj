@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <RootNamespace>RapidCore.UnitTests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.*" />
+    <PackageReference Include="xunit" Version="2.2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="IO\FileSystem\Files\CsvFile1.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="IO\FileSystem\Files\TextFile1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="IO\FileSystem\OriginFolder\FileToMove.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Environment" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\main\rapidcore.csproj" />
+  </ItemGroup>
+</Project>

@@ -2,6 +2,9 @@ language: csharp
 dist: trusty
 sudo: required
 mono: none
+services:
+  - mongodb
+  - redis-server
 dotnet: 1.0.4
 script:
   - chmod +x ./Build.sh && ./Build.sh --quiet verify
