@@ -13,6 +13,11 @@ dotnet build -c Release -f netstandard1.6 src/mongo/main/rapidcore.mongo.csproj 
 && dotnet test src/mongo/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
 && dotnet test src/mongo/test-functional/functionaltests.csproj -c Release -f netcoreapp1.1
 
+# Build postgreSql and test
+dotnet build -c Release -f netstandard1.6 src/postgresql/main/rapidcore.postgresql.csproj \
+&& dotnet test src/postgresql/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
+&& dotnet test src/postgresql/test-functional/functionaltests.csproj -c Release -f netcoreapp1.1
+
 # Build redis and test
 dotnet build -c Release -f netstandard1.6 src/redis/main/rapidcore.redis.csproj \
 && dotnet test src/redis/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
