@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
+    <RootNamespace>RapidCore.PostgreSql</RootNamespace>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
-    <ProjectReference Include="..\..\mongo\main\rapidcore.mongo.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.extensions.logging.abstractions\1.1.2\lib\netstandard1.1\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -19,9 +17,5 @@
   <ItemGroup>
     <Folder Include="Internal\" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
 
 </Project>
