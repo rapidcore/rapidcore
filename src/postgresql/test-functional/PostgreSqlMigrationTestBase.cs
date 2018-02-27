@@ -13,7 +13,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         private IDbConnection db;
         private bool isConnected = false;
 
-        protected string ConnectionString { get; set; } = "User ID=postgres;Password=123456;Host=localhost;Port=20099;Database=postgres;";
+        protected string ConnectionString { get; set; } = "User ID=postgres;Password=123456;Host=localhost;Port=5432;Database=postgres;";
         protected IDbConnection GetDb()
         {
             Connect();
