@@ -30,10 +30,11 @@ namespace RapidCore.PostgreSql.FunctionalTests
             }
         }
 
-        protected async Task PrepareMigrationInfoTable()
+        protected async Task DropMigrationInfoTable()
         {
             var db = GetDb();
 
+            await db.ExecuteAsync($"DROP TABLE IF EXISTS {PostgreSqlConstants.CompletedStepsTableName}");
             await db.ExecuteAsync($"DROP TABLE IF EXISTS {PostgreSqlConstants.MigrationInfoTableName}");
         }
 

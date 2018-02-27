@@ -46,31 +46,21 @@ namespace Rapidcore.Postgresql
 
         public async Task UpsertMigrationInfoAsync(IMigrationContext context, MigrationInfo info)
         {
-            // TODO: steps completed
-            // TODO: support update
             var db = GetDb(context);
             if (info.Id != null)
             {
-                int id = Convert.ToInt32(info.Id);
-                string updateQuery = $@"UPDATE {PostgreSqlConstants.MigrationInfoTableName}
-                                       SET
-                                        Name = @Name,
-                                        MigrationCompleted = @MigrationCompleted,
-                                        TotalMigrationTimeInMs = @TotalMigrationTimeInMs,
-                                        CompletedAtUtc = @CompletedAtUtc
-                                       WHERE id=@Id";
-                await db.ExecuteAsync(updateQuery, new
-                {
-                    Id = id,
-                    Name = info.Name,
-                    MigrationCompleted = info.MigrationCompleted,
-                    TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
-                    CompletedAtUtc = info.CompletedAtUtc
-                });
+                await HandleUpdate(info, db);
             }
             else
             {
-                string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
+                await HandleInsert(info, db);
+            }
+        }
+
+        private static async Task HandleInsert(MigrationInfo info, IDbConnection db)
+        {
+            long migrationInfoId = 0;
+            string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
                                         Name,
                                         MigrationCompleted,
                                         TotalMigrationTimeInMs,
@@ -79,18 +69,74 @@ namespace Rapidcore.Postgresql
                                         @Name,
                                         @MigrationCompleted,
                                         @TotalMigrationTimeInMs,
-                                        @CompletedAtUtc)";
+                                        @CompletedAtUtc)
+                                   RETURNING id";
 
-                await db.ExecuteAsync(insertQuery, new
+            using (var reader = await db.ExecuteReaderAsync(insertQuery, new
+            {
+                Name = info.Name,
+                MigrationCompleted = info.MigrationCompleted,
+                TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
+                CompletedAtUtc = info.CompletedAtUtc
+            }))
+            {
+                while (reader.Read())
                 {
-                    Name = info.Name,
-                    MigrationCompleted = info.MigrationCompleted,
-                    TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
-                    CompletedAtUtc = info.CompletedAtUtc
+                    migrationInfoId = reader.GetInt64(0);
+                }
+            }
+            foreach (var stepName in info.StepsCompleted)
+            {
+                string completedStepInsertQuery = $@"INSERT INTO {PostgreSqlConstants.CompletedStepsTableName}(
+                                        StepName,
+                                        MigrationInfoId)
+                                   VALUES (
+                                        @StepName,
+                                        @MigrationInfoId)";
+
+                await db.ExecuteAsync(completedStepInsertQuery, new
+                {
+                    StepName = stepName,
+                    MigrationInfoId = migrationInfoId
                 });
 
+            }
+        }
+
+        private static async Task HandleUpdate(MigrationInfo info, IDbConnection db)
+        {
+            int id = Convert.ToInt32(info.Id);
+            string updateQuery = $@"UPDATE {PostgreSqlConstants.MigrationInfoTableName}
+                                       SET
+                                        Name = @Name,
+                                        MigrationCompleted = @MigrationCompleted,
+                                        TotalMigrationTimeInMs = @TotalMigrationTimeInMs,
+                                        CompletedAtUtc = @CompletedAtUtc
+                                       WHERE id=@Id";
+            await db.ExecuteAsync(updateQuery, new
+            {
+                Id = id,
+                Name = info.Name,
+                MigrationCompleted = info.MigrationCompleted,
+                TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
+                CompletedAtUtc = info.CompletedAtUtc
+            });
+
+            foreach (var stepName in info.StepsCompleted)
+            {
+                string completedStepInsertQuery = $@"UPDATE {PostgreSqlConstants.CompletedStepsTableName}
+                                                    SET
+                                                        StepName = @StepName,
+                                                        MigrationInfoId = @MigrationInfoId";
+
+                await db.ExecuteAsync(completedStepInsertQuery, new
+                {
+                    StepName = stepName,
+                    MigrationInfoId = info.Id
+                });
 
             }
+
         }
 
         public async Task<bool> HasMigrationBeenFullyCompletedAsync(IMigrationContext context, string migrationName)
@@ -107,6 +153,13 @@ namespace Rapidcore.Postgresql
                                     TotalMigrationTimeInMs int8,
                                     CompletedAtUtc timestamp
                                     );");
+
+            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.CompletedStepsTableName} (
+                                        StepName text,
+                                        MigrationInfoId integer references {PostgreSqlConstants.MigrationInfoTableName} (id)
+                                    );");
+
+
 
             var info = await GetMigrationInfoAsync(context, migrationName);
 

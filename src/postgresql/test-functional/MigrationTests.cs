@@ -23,7 +23,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         [Fact]
         public async Task RunMigration()
         {
-            await PrepareMigrationInfoTable();
+            await DropMigrationInfoTable();
             await PrepareCounterTable(new List<Counter>{new Counter{Id = 999, CounterValue = 12}});
 
             var db = GetDb();
