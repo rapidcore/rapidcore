@@ -39,7 +39,6 @@ namespace Rapidcore.Postgresql
             var db = GetDb(context);
             var migrationInfo = await db.QuerySingleOrDefaultAsync<MigrationInfo>($"select * from {PostgreSqlConstants.MigrationInfoTableName} where Name = @MigrationName",
                 new {
-                    TableName = PostgreSqlConstants.MigrationInfoTableName,
                     MigrationName = migrationName
                 });
             return migrationInfo;
@@ -62,7 +61,6 @@ namespace Rapidcore.Postgresql
                                        WHERE id=@Id";
                 await db.ExecuteAsync(updateQuery, new
                 {
-                    TableName = PostgreSqlConstants.MigrationInfoTableName,
                     Id = id,
                     Name = info.Name,
                     MigrationCompleted = info.MigrationCompleted,
@@ -72,19 +70,6 @@ namespace Rapidcore.Postgresql
             }
             else
             {
-                await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
-                                    id serial not null
-                                    constraint migrationinfo_pkey
-                                    primary key,
-                                    Name text,
-                                    MigrationCompleted boolean,
-                                    TotalMigrationTimeInMs int8,
-                                    CompletedAtUtc timestamp
-                                    );",
-                                    new {
-                                        TableName = PostgreSqlConstants.MigrationInfoTableName
-                                    });
-
                 string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
                                         Name,
                                         MigrationCompleted,
@@ -98,8 +83,6 @@ namespace Rapidcore.Postgresql
 
                 await db.ExecuteAsync(insertQuery, new
                 {
-
-                    TableName = PostgreSqlConstants.MigrationInfoTableName,
                     Name = info.Name,
                     MigrationCompleted = info.MigrationCompleted,
                     TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
@@ -112,6 +95,19 @@ namespace Rapidcore.Postgresql
 
         public async Task<bool> HasMigrationBeenFullyCompletedAsync(IMigrationContext context, string migrationName)
         {
+            // this is the de facto entry point via the migration runner, so create the table if it doesn't exist
+            // there might be a better place for this
+            var db = GetDb(context);
+            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
+                                    id serial not null
+                                    constraint migrationinfo_pkey
+                                    primary key,
+                                    Name text,
+                                    MigrationCompleted boolean,
+                                    TotalMigrationTimeInMs int8,
+                                    CompletedAtUtc timestamp
+                                    );");
+
             var info = await GetMigrationInfoAsync(context, migrationName);
 
             return (info != default(MigrationInfo) && info.MigrationCompleted);

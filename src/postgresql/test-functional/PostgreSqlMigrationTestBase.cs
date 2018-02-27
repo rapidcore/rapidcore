@@ -33,22 +33,14 @@ namespace RapidCore.PostgreSql.FunctionalTests
         protected async Task PrepareMigrationInfoTable()
         {
             var db = GetDb();
-            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
-                                    id serial not null
-                                    constraint migrationinfo_pkey
-                                    primary key,
-                                    Name text,
-                                    MigrationCompleted boolean,
-                                    TotalMigrationTimeInMs int8,
-                                    CompletedAtUtc timestamp
-                                    );");
-            await db.ExecuteAsync($"Truncate {PostgreSqlConstants.MigrationInfoTableName};");
+
+            await db.ExecuteAsync($"DROP TABLE IF EXISTS {PostgreSqlConstants.MigrationInfoTableName}");
         }
 
         protected async Task PrepareCounterTable(List<Counter> counters)
         {
             var db = GetDb();
-            await db.ExecuteAsync(@"DROP TABLE IF EXISTS __Counter");
+            await db.ExecuteAsync("DROP TABLE IF EXISTS __Counter");
             await db.ExecuteAsync(@"CREATE TABLE __Counter (
                                     id serial not null
                                     constraint counter_pkey
