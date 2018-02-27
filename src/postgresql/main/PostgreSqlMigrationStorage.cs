@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using RapidCore.Migration;
+using RapidCore.PostgreSql.Internal;
 
 namespace Rapidcore.Postgresql
 {
@@ -36,7 +37,11 @@ namespace Rapidcore.Postgresql
         public async Task<MigrationInfo> GetMigrationInfoAsync(IMigrationContext context, string migrationName)
         {
             var db = GetDb(context);
-            var migrationInfo = await db.QuerySingleOrDefaultAsync<MigrationInfo>("select * from MigrationInfo where Name = @MigrationName", new { MigrationName = migrationName });
+            var migrationInfo = await db.QuerySingleOrDefaultAsync<MigrationInfo>($"select * from {PostgreSqlConstants.MigrationInfoTableName} where Name = @MigrationName",
+                new {
+                    TableName = PostgreSqlConstants.MigrationInfoTableName,
+                    MigrationName = migrationName
+                });
             return migrationInfo;
         }
 
@@ -48,7 +53,7 @@ namespace Rapidcore.Postgresql
             if (info.Id != null)
             {
                 int id = Convert.ToInt32(info.Id);
-                string updateQuery = @"UPDATE MigrationInfo
+                string updateQuery = $@"UPDATE {PostgreSqlConstants.MigrationInfoTableName}
                                        SET
                                         Name = @Name,
                                         MigrationCompleted = @MigrationCompleted,
@@ -57,6 +62,7 @@ namespace Rapidcore.Postgresql
                                        WHERE id=@Id";
                 await db.ExecuteAsync(updateQuery, new
                 {
+                    TableName = PostgreSqlConstants.MigrationInfoTableName,
                     Id = id,
                     Name = info.Name,
                     MigrationCompleted = info.MigrationCompleted,
@@ -66,7 +72,7 @@ namespace Rapidcore.Postgresql
             }
             else
             {
-                await db.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS MigrationInfo (
+                await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
                                     id serial not null
                                     constraint migrationinfo_pkey
                                     primary key,
@@ -74,9 +80,12 @@ namespace Rapidcore.Postgresql
                                     MigrationCompleted boolean,
                                     TotalMigrationTimeInMs int8,
                                     CompletedAtUtc timestamp
-                                    );");
+                                    );",
+                                    new {
+                                        TableName = PostgreSqlConstants.MigrationInfoTableName
+                                    });
 
-                string insertQuery = @"INSERT INTO MigrationInfo(
+                string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
                                         Name,
                                         MigrationCompleted,
                                         TotalMigrationTimeInMs,
@@ -89,6 +98,8 @@ namespace Rapidcore.Postgresql
 
                 await db.ExecuteAsync(insertQuery, new
                 {
+
+                    TableName = PostgreSqlConstants.MigrationInfoTableName,
                     Name = info.Name,
                     MigrationCompleted = info.MigrationCompleted,
                     TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,

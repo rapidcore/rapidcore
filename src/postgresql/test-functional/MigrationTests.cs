@@ -51,7 +51,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
             Assert.Contains(migrationInfos, x => x.Name == nameof(Migration02) && x.MigrationCompleted);
 
             // check the state of the db
-            var counter999 = await db.QuerySingleAsync<Counter>("select * from Counter where Id = 999");
+            var counter999 = await db.QuerySingleAsync<Counter>("select * from __Counter where Id = 999");
             Assert.Equal("sample default value", counter999.Description);
 
         }

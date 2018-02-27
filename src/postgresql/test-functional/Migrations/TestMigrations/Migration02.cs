@@ -13,7 +13,7 @@ namespace functionaltests.Migrations.TestMigrations
             builder.Step("Add description column", async () =>
             {
                 await db.ExecuteAsync(@"
-                    alter table Counter
+                    alter table __Counter
                     add column Description text DEFAULT 'sample default value'
                     ;");
             });

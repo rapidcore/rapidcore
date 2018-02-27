@@ -5,6 +5,7 @@ using Dapper;
 using functionaltests.Migrations;
 using Npgsql;
 using RapidCore.Migration;
+using RapidCore.PostgreSql.Internal;
 
 namespace RapidCore.PostgreSql.FunctionalTests
 {
@@ -32,7 +33,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         protected async Task PrepareMigrationInfoTable()
         {
             var db = GetDb();
-            await db.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS MigrationInfo (
+            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
                                     id serial not null
                                     constraint migrationinfo_pkey
                                     primary key,
@@ -41,14 +42,14 @@ namespace RapidCore.PostgreSql.FunctionalTests
                                     TotalMigrationTimeInMs int8,
                                     CompletedAtUtc timestamp
                                     );");
-            await db.ExecuteAsync("Truncate MigrationInfo;");
+            await db.ExecuteAsync($"Truncate {PostgreSqlConstants.MigrationInfoTableName};");
         }
 
         protected async Task PrepareCounterTable(List<Counter> counters)
         {
             var db = GetDb();
-            await db.ExecuteAsync(@"DROP TABLE IF EXISTS Counter");
-            await db.ExecuteAsync(@"CREATE TABLE Counter (
+            await db.ExecuteAsync(@"DROP TABLE IF EXISTS __Counter");
+            await db.ExecuteAsync(@"CREATE TABLE __Counter (
                                     id serial not null
                                     constraint counter_pkey
                                     primary key,
@@ -64,7 +65,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         protected async Task InsertCounterEntity(Counter entity)
         {
             var db = GetDb();
-            string insertQuery = "INSERT INTO Counter VALUES (@Id, @CounterValue)";
+            string insertQuery = "INSERT INTO __Counter VALUES (@Id, @CounterValue)";
             await db.ExecuteAsync(insertQuery, new
             {
                 Id = entity.Id,
@@ -75,7 +76,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         protected async Task<List<MigrationInfo>> GetAllMigrationInfo()
         {
             var db = GetDb();
-            var migrationInfos = await db.QueryAsync<MigrationInfo>("select * from MigrationInfo");
+            var migrationInfos = await db.QueryAsync<MigrationInfo>($"select * from {PostgreSqlConstants.MigrationInfoTableName}");
             return migrationInfos.AsList();
         }
 

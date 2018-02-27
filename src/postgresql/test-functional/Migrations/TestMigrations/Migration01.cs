@@ -13,7 +13,7 @@ namespace functionaltests.Migrations.TestMigrations
             builder.Step("Add at column", async () =>
             {
                 await db.ExecuteAsync(@"
-                    alter table Counter
+                    alter table __Counter
                     add column At timestamp
                     ;");
             });
