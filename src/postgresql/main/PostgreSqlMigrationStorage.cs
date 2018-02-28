@@ -104,23 +104,7 @@ namespace Rapidcore.Postgresql
         {
             // this is the de facto entry point via the migration runner, so create the table if it doesn't exist
             // there might be a better place for this
-            var db = GetDb(context);
-            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.MigrationInfoTableName} (
-                                    id serial not null
-                                    constraint migrationinfo_pkey
-                                    primary key,
-                                    Name varchar(255) unique,
-                                    MigrationCompleted boolean,
-                                    TotalMigrationTimeInMs int8,
-                                    CompletedAtUtc timestamp
-                                    );");
-
-            await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.CompletedStepsTableName} (
-                                        StepName varchar(255),
-                                        MigrationInfoId integer references {PostgreSqlConstants.MigrationInfoTableName} (id),
-                                        unique (StepName, MigrationInfoId)
-                                    );");
-
+            await PostgreSqlSchemaCreator.CreateSchemaIfNotExists(context);
 
 
             var info = await GetMigrationInfoAsync(context, migrationName);

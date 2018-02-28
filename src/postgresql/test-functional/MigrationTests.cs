@@ -12,7 +12,7 @@ using Rapidcore.Postgresql;
 using RapidCore.DependencyInjection;
 using RapidCore.Locking;
 using RapidCore.Migration;
-using RapidCore.PostgreSql;
+using RapidCore.PostgreSql.Internal;
 using ServiceStack;
 using Xunit;
 
@@ -61,7 +61,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         {
             await DropMigrationInfoTable();
             await PrepareCounterTable(new List<Counter> { new Counter { Id = 999, CounterValue = 12 } });
-
+            
             var db = GetDb();
 
             var services = new ServiceCollection();
@@ -69,12 +69,17 @@ namespace RapidCore.PostgreSql.FunctionalTests
             var provider = new PostgreSqlConnectionProvider();
             provider.Add("yolo", db, true);
 
+            var contextFactory = new PostgreSqlMigrationContextFactory(provider);
+
+            await PostgreSqlSchemaCreator.CreateSchemaIfNotExists(contextFactory.GetContext());
+
+
             var runner = new MigrationRunner(
                 new LoggerFactory().CreateLogger<MigrationRunner>(),
                 new ServiceProviderRapidContainerAdapter(services.BuildServiceProvider()),
                 new MigrationEnvironment("staging"),
                 A.Fake<IDistributedAppLockProvider>(),
-                new PostgreSqlMigrationContextFactory(provider),
+                contextFactory,
                 new ReflectionMigrationFinder(new List<Assembly> { typeof(MigrationTests).GetAssembly() }),
                 new PostgreSqlMigrationStorage()
             );
@@ -90,6 +95,12 @@ namespace RapidCore.PostgreSql.FunctionalTests
 
             // assert all migrations are marked as complete
             var migrationInfos = await GetAllMigrationInfo();
+            Assert.Contains(migrationInfos, x => x.Name == nameof(Migration01) && x.MigrationCompleted);
+            Assert.Contains(migrationInfos, x => x.Name == nameof(Migration02) && x.MigrationCompleted);
+
+            // check the state of the db
+            var counter999 = await db.QuerySingleAsync<Counter>("select * from __Counter where Id = 999");
+            Assert.Equal("sample default value", counter999.Description);
 
         }
     }
