@@ -9,12 +9,20 @@ namespace functionaltests.Migrations.TestMigrations
         protected override void ConfigureUpgrade(IMigrationBuilder builder)
         {
             var db = ContextAs<PostgreSqlMigrationContext>().ConnectionProvider.Default();
-            
+
             builder.Step("Add at column", async () =>
             {
                 await db.ExecuteAsync(@"
                     alter table __Counter
                     add column At timestamp
+                    ;");
+            });
+
+            builder.Step("Add bla column", async () =>
+            {
+                await db.ExecuteAsync(@"
+                    alter table __Counter
+                    add column bla text
                     ;");
             });
         }

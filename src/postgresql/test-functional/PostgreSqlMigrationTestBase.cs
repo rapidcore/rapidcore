@@ -73,5 +73,53 @@ namespace RapidCore.PostgreSql.FunctionalTests
             return migrationInfos.AsList();
         }
 
+        protected async Task InsertMigrationInfo(MigrationInfo info)
+        {
+            var db = GetDb();
+            long migrationInfoId = 0;
+            string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
+                                        Name,
+                                        MigrationCompleted,
+                                        TotalMigrationTimeInMs,
+                                        CompletedAtUtc) 
+                                   VALUES (
+                                        @Name,
+                                        @MigrationCompleted,
+                                        @TotalMigrationTimeInMs,
+                                        @CompletedAtUtc)
+                                   RETURNING id";
+
+            using (var reader = await db.ExecuteReaderAsync(insertQuery, new
+            {
+                Name = info.Name,
+                MigrationCompleted = info.MigrationCompleted,
+                TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
+                CompletedAtUtc = info.CompletedAtUtc
+            }))
+            {
+                while (reader.Read())
+                {
+                    migrationInfoId = reader.GetInt64(0);
+                }
+            }
+            foreach (var stepName in info.StepsCompleted)
+            {
+                string completedStepInsertQuery = $@"INSERT INTO {PostgreSqlConstants.CompletedStepsTableName}(
+                                        StepName,
+                                        MigrationInfoId)
+                                   VALUES (
+                                        @StepName,
+                                        @MigrationInfoId)";
+
+                await db.ExecuteAsync(completedStepInsertQuery, new
+                {
+                    StepName = stepName,
+                    MigrationInfoId = migrationInfoId
+                });
+
+            }
+
+        }
+
     }
 }

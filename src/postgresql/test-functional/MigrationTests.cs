@@ -55,5 +55,42 @@ namespace RapidCore.PostgreSql.FunctionalTests
             Assert.Equal("sample default value", counter999.Description);
 
         }
+
+        [Fact]
+        public async Task MigrationRunnerPicksUpNonCompletedStepsFromPreviousMigrations()
+        {
+            await DropMigrationInfoTable();
+            await PrepareCounterTable(new List<Counter> { new Counter { Id = 999, CounterValue = 12 } });
+
+            var db = GetDb();
+
+            var services = new ServiceCollection();
+
+            var provider = new PostgreSqlConnectionProvider();
+            provider.Add("yolo", db, true);
+
+            var runner = new MigrationRunner(
+                new LoggerFactory().CreateLogger<MigrationRunner>(),
+                new ServiceProviderRapidContainerAdapter(services.BuildServiceProvider()),
+                new MigrationEnvironment("staging"),
+                A.Fake<IDistributedAppLockProvider>(),
+                new PostgreSqlMigrationContextFactory(provider),
+                new ReflectionMigrationFinder(new List<Assembly> { typeof(MigrationTests).GetAssembly() }),
+                new PostgreSqlMigrationStorage()
+            );
+
+            await InsertMigrationInfo(new MigrationInfo
+            {
+                Id = "1",
+                Name = "Migration01",
+                StepsCompleted = new List<string> {"Add at column"}
+            });
+
+            await runner.UpgradeAsync();
+
+            // assert all migrations are marked as complete
+            var migrationInfos = await GetAllMigrationInfo();
+
+        }
     }
 }

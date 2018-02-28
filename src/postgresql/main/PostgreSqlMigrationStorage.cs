@@ -47,18 +47,6 @@ namespace Rapidcore.Postgresql
         public async Task UpsertMigrationInfoAsync(IMigrationContext context, MigrationInfo info)
         {
             var db = GetDb(context);
-            if (info.Id != null)
-            {
-                await HandleUpdate(info, db);
-            }
-            else
-            {
-                await HandleInsert(info, db);
-            }
-        }
-
-        private static async Task HandleInsert(MigrationInfo info, IDbConnection db)
-        {
             long migrationInfoId = 0;
             string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
                                         Name,
@@ -70,6 +58,12 @@ namespace Rapidcore.Postgresql
                                         @MigrationCompleted,
                                         @TotalMigrationTimeInMs,
                                         @CompletedAtUtc)
+                                   ON CONFLICT (name)
+                                   DO UPDATE SET
+                                        Name = @Name,
+                                        MigrationCompleted = @MigrationCompleted,
+                                        TotalMigrationTimeInMs = @TotalMigrationTimeInMs,
+                                        CompletedAtUtc = @CompletedAtUtc
                                    RETURNING id";
 
             using (var reader = await db.ExecuteReaderAsync(insertQuery, new
@@ -92,7 +86,10 @@ namespace Rapidcore.Postgresql
                                         MigrationInfoId)
                                    VALUES (
                                         @StepName,
-                                        @MigrationInfoId)";
+                                        @MigrationInfoId)
+                                   ON CONFLICT (StepName, MigrationInfoId)
+                                   DO NOTHING
+                                    ";
 
                 await db.ExecuteAsync(completedStepInsertQuery, new
                 {
@@ -101,42 +98,6 @@ namespace Rapidcore.Postgresql
                 });
 
             }
-        }
-
-        private static async Task HandleUpdate(MigrationInfo info, IDbConnection db)
-        {
-            int id = Convert.ToInt32(info.Id);
-            string updateQuery = $@"UPDATE {PostgreSqlConstants.MigrationInfoTableName}
-                                       SET
-                                        Name = @Name,
-                                        MigrationCompleted = @MigrationCompleted,
-                                        TotalMigrationTimeInMs = @TotalMigrationTimeInMs,
-                                        CompletedAtUtc = @CompletedAtUtc
-                                       WHERE id=@Id";
-            await db.ExecuteAsync(updateQuery, new
-            {
-                Id = id,
-                Name = info.Name,
-                MigrationCompleted = info.MigrationCompleted,
-                TotalMigrationTimeInMs = info.TotalMigrationTimeInMs,
-                CompletedAtUtc = info.CompletedAtUtc
-            });
-
-            foreach (var stepName in info.StepsCompleted)
-            {
-                string completedStepInsertQuery = $@"UPDATE {PostgreSqlConstants.CompletedStepsTableName}
-                                                    SET
-                                                        StepName = @StepName,
-                                                        MigrationInfoId = @MigrationInfoId";
-
-                await db.ExecuteAsync(completedStepInsertQuery, new
-                {
-                    StepName = stepName,
-                    MigrationInfoId = info.Id
-                });
-
-            }
-
         }
 
         public async Task<bool> HasMigrationBeenFullyCompletedAsync(IMigrationContext context, string migrationName)
@@ -148,15 +109,16 @@ namespace Rapidcore.Postgresql
                                     id serial not null
                                     constraint migrationinfo_pkey
                                     primary key,
-                                    Name text,
+                                    Name varchar(255) unique,
                                     MigrationCompleted boolean,
                                     TotalMigrationTimeInMs int8,
                                     CompletedAtUtc timestamp
                                     );");
 
             await db.ExecuteAsync($@"CREATE TABLE IF NOT EXISTS {PostgreSqlConstants.CompletedStepsTableName} (
-                                        StepName text,
-                                        MigrationInfoId integer references {PostgreSqlConstants.MigrationInfoTableName} (id)
+                                        StepName varchar(255),
+                                        MigrationInfoId integer references {PostgreSqlConstants.MigrationInfoTableName} (id),
+                                        unique (StepName, MigrationInfoId)
                                     );");
 
 
