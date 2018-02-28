@@ -13,6 +13,6 @@ services:
     image: postgres:10.1-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: 
     ports:
       - 5432:5432

@@ -5,6 +5,9 @@ mono: none
 services:
   - mongodb
   - redis-server
+  - postgresql
 dotnet: 1.0.4
+addons:
+  postgresql:  "9.5"
 script:
   - chmod +x ./Build.sh && ./Build.sh --quiet verify
