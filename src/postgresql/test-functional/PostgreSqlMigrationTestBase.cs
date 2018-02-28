@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using functionaltests.Migrations;
 using Npgsql;
 using RapidCore.Migration;
 using RapidCore.PostgreSql.Internal;
+using Xunit;
 
 namespace RapidCore.PostgreSql.FunctionalTests
 {
@@ -120,6 +122,13 @@ namespace RapidCore.PostgreSql.FunctionalTests
             }
 
         }
+
+        protected async Task DropCounterTable()
+        {
+            var db = GetDb();
+            await db.ExecuteAsync("DROP TABLE IF EXISTS __Counter");
+        }
+
 
     }
 }

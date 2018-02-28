@@ -11,6 +11,7 @@ using RapidCore.Locking;
 using Xunit;
 using RapidCore.PostgreSql;
 using RapidCore.PostgreSql.FunctionalTests;
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace functionaltests
 {
@@ -20,7 +21,7 @@ namespace functionaltests
         public async void RunMigrations_Works()
         {
             await DropMigrationInfoTable();
-            await PrepareCounterTable(new List<Counter> { new Counter { Id = 999, CounterValue = 12 } });
+            await PrepareCounterTable(new List<Counter> { new Counter { Id = 123, CounterValue = 12 } });
 
             var db = GetDb();
 
@@ -43,11 +44,10 @@ namespace functionaltests
             Assert.Contains(migrationInfos, x => x.Name == nameof(Migration02) && x.MigrationCompleted);
 
             // check the state of the db
-            var counter999 = await db.QuerySingleAsync<Counter>("select * from __Counter where Id = 999");
+            var counter999 = await db.QuerySingleAsync<Counter>("select * from __Counter where Id = 123");
             Assert.Equal("sample default value", counter999.Description);
 
-
-
+            await DropCounterTable();
         }
     }
 }
