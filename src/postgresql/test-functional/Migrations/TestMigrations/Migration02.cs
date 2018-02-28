@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Rapidcore.Postgresql;
+using RapidCore.PostgreSql;
 using RapidCore.Migration;
 
 namespace functionaltests.Migrations.TestMigrations

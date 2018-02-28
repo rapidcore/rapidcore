@@ -25,7 +25,4 @@
   <ItemGroup>
     <ProjectReference Include="..\main\rapidcore.postgresql.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TestMigrations\" />
-  </ItemGroup>
 </Project>

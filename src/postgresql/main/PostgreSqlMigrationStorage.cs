@@ -7,7 +7,7 @@ using Dapper;
 using RapidCore.Migration;
 using RapidCore.PostgreSql.Internal;
 
-namespace Rapidcore.Postgresql
+namespace RapidCore.PostgreSql
 {
     public class PostgreSqlMigrationStorage : IMigrationStorage
     {

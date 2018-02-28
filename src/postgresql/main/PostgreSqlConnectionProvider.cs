@@ -2,7 +2,7 @@
 using System.Data;
 using Npgsql;
 
-namespace Rapidcore.Postgresql
+namespace RapidCore.PostgreSql
 {
     public class PostgreSqlConnectionProvider
     {

@@ -8,7 +8,7 @@ using RapidCore.DependencyInjection;
 using RapidCore.Locking;
 using RapidCore.Migration;
 
-namespace Rapidcore.Postgresql
+namespace RapidCore.PostgreSql
 {
     /// <summary>
     /// Simplified <see cref="MigrationRunner"/>, which is meant as a

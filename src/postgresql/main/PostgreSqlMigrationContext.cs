@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using RapidCore.DependencyInjection;
 using RapidCore.Migration;
 
-namespace Rapidcore.Postgresql
+namespace RapidCore.PostgreSql
 {
     public class PostgreSqlMigrationContext : IMigrationContext
     {

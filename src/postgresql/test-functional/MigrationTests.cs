@@ -8,7 +8,7 @@ using functionaltests.Migrations.TestMigrations;
 using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rapidcore.Postgresql;
+using RapidCore.PostgreSql;
 using RapidCore.DependencyInjection;
 using RapidCore.Locking;
 using RapidCore.Migration;
@@ -19,9 +19,9 @@ using Xunit;
 namespace RapidCore.PostgreSql.FunctionalTests
 {
     public class MigrationTests : PostgreSqlMigrationTestBase
-    {
+    {   
         [Fact]
-        public async Task RunMigration()
+        public async Task RunMigration_Works()
         {
             await DropMigrationInfoTable();
             await PrepareCounterTable(new List<Counter>{new Counter{Id = 999, CounterValue = 12}});
@@ -57,7 +57,7 @@ namespace RapidCore.PostgreSql.FunctionalTests
         }
 
         [Fact]
-        public async Task MigrationRunnerPicksUpNonCompletedStepsFromPreviousMigrations()
+        public async Task MigrationRunner_PicksUpNonCompletedStepsFromPreviousMigrations()
         {
             await DropMigrationInfoTable();
             await PrepareCounterTable(new List<Counter> { new Counter { Id = 999, CounterValue = 12 } });

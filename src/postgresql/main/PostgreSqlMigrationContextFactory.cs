@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RapidCore.Migration;
 
-namespace Rapidcore.Postgresql
+namespace RapidCore.PostgreSql
 {
     public class PostgreSqlMigrationContextFactory : IMigrationContextFactory
     {
