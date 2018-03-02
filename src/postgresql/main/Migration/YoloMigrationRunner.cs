@@ -26,6 +26,7 @@ namespace RapidCore.PostgreSql.Migration
         /// </summary>
         /// <param name="services">The dependency injection container provided by dotnet Core</param>
         /// <param name="environmentName">The name of the environment you are running in</param>
+        /// <param name="connectionString">The connection string to connect to the db</param>
         /// <param name="appLocker">The locker to use</param>
         /// <param name="assemblyWithMigrations">The assembly containing your migration classes</param>
         public YoloMigrationRunner(
