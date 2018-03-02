@@ -43,8 +43,6 @@ namespace RapidCore.PostgreSql.FunctionalTests.Migrations
             // check the state of the db
             var counter999 = await db.QuerySingleAsync<Counter>("select * from __Counter where Id = 123");
             Assert.Equal("sample default value", counter999.Description);
-
-            await DropCounterTable();
         }
     }
 }

@@ -39,8 +39,8 @@ namespace RapidCore.PostgreSql.FunctionalTests.Migrations
 
         protected async Task PrepareCounterTable(List<Counter> counters)
         {
+            await DropCounterTable();
             var db = GetDb();
-            await db.ExecuteAsync("DROP TABLE IF EXISTS __Counter");
             await db.ExecuteAsync(@"CREATE TABLE __Counter (
                                     id serial not null
                                     constraint counter_pkey
