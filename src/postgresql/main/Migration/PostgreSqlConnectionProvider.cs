@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Npgsql;
 
-namespace RapidCore.PostgreSql
+namespace RapidCore.PostgreSql.Migration
 {
     public class PostgreSqlConnectionProvider
     {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RapidCore.Migration;
+﻿using RapidCore.Migration;
 
-namespace RapidCore.PostgreSql
+namespace RapidCore.PostgreSql.Migration
 {
     public class PostgreSqlMigrationContextFactory : IMigrationContextFactory
     {

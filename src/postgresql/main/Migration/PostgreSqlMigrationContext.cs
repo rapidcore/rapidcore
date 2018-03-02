@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RapidCore.DependencyInjection;
 using RapidCore.Migration;
 
-namespace RapidCore.PostgreSql
+namespace RapidCore.PostgreSql.Migration
 {
     public class PostgreSqlMigrationContext : IMigrationContext
     {

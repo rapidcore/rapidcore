@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using RapidCore.Migration;
 using RapidCore.PostgreSql.Internal;
+using System;
+using System.Data;
+using System.Threading.Tasks;
+using RapidCore.PostgreSql.Migration.Internal;
 
-namespace RapidCore.PostgreSql
+namespace RapidCore.PostgreSql.Migration
 {
     public class PostgreSqlMigrationStorage : IMigrationStorage
     {

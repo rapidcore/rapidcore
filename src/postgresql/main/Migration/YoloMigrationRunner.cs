@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Npgsql;
 using RapidCore.DependencyInjection;
 using RapidCore.Locking;
 using RapidCore.Migration;
+using System;
+using System.Reflection;
 
-namespace RapidCore.PostgreSql
+namespace RapidCore.PostgreSql.Migration
 {
     /// <summary>
     /// Simplified <see cref="MigrationRunner"/>, which is meant as a

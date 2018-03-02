@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RapidCore.PostgreSql.Internal
+﻿namespace RapidCore.PostgreSql.Internal
 {
     public static class PostgreSqlConstants
     {

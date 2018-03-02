@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
-using RapidCore.PostgreSql;
+﻿using Dapper;
 using RapidCore.Migration;
+using RapidCore.PostgreSql.Internal;
+using System.Threading.Tasks;
 
-namespace RapidCore.PostgreSql.Internal
+namespace RapidCore.PostgreSql.Migration.Internal
 {
     public static class PostgreSqlSchemaCreator
     {
