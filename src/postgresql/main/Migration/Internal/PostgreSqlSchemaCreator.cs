@@ -25,7 +25,7 @@ namespace RapidCore.PostgreSql.Migration.Internal
                                         MigrationInfoId integer references {
                     PostgreSqlConstants.MigrationInfoTableName
                 } (id),
-                                        unique (StepName, MigrationInfoId)
+                                        PRIMARY KEY (StepName, MigrationInfoId)
                                     );");
         }
 
