@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace functionaltests.Migrations
+namespace RapidCore.PostgreSql.FunctionalTests
 {
     public class Counter
     {

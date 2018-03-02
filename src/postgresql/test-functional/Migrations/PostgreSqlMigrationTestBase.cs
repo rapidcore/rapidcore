@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 using Dapper;
-using functionaltests.Migrations;
 using Npgsql;
 using RapidCore.Migration;
 using RapidCore.PostgreSql.Internal;
-using Xunit;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
-namespace RapidCore.PostgreSql.FunctionalTests
+namespace RapidCore.PostgreSql.FunctionalTests.Migrations
 {
     public abstract class PostgreSqlMigrationTestBase
     {

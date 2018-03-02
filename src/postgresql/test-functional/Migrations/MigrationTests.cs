@@ -1,22 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
 using Dapper;
-using functionaltests.Migrations;
-using functionaltests.Migrations.TestMigrations;
 using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RapidCore.PostgreSql;
 using RapidCore.DependencyInjection;
 using RapidCore.Locking;
 using RapidCore.Migration;
-using RapidCore.PostgreSql.Internal;
+using RapidCore.PostgreSql.FunctionalTests.Migrations.TestMigrations;
+using RapidCore.PostgreSql.Migration;
+using RapidCore.PostgreSql.Migration.Internal;
 using ServiceStack;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace RapidCore.PostgreSql.FunctionalTests
+namespace RapidCore.PostgreSql.FunctionalTests.Migrations
 {
     public class MigrationTests : PostgreSqlMigrationTestBase
     {   

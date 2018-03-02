@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using Dapper;
-using functionaltests.Migrations;
-using functionaltests.Migrations.TestMigrations;
+﻿using Dapper;
 using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using RapidCore.Locking;
+using RapidCore.PostgreSql.FunctionalTests.Migrations.TestMigrations;
+using RapidCore.PostgreSql.Migration;
+using System.Collections.Generic;
+using System.Reflection;
 using Xunit;
-using RapidCore.PostgreSql;
-using RapidCore.PostgreSql.FunctionalTests;
+
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
-namespace functionaltests
+namespace RapidCore.PostgreSql.FunctionalTests.Migrations
 {
     public class YoloMigrationRunnerTests : PostgreSqlMigrationTestBase
     {

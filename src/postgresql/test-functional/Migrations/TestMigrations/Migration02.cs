@@ -1,8 +1,8 @@
 ﻿using Dapper;
-using RapidCore.PostgreSql;
 using RapidCore.Migration;
+using RapidCore.PostgreSql.Migration;
 
-namespace functionaltests.Migrations.TestMigrations
+namespace RapidCore.PostgreSql.FunctionalTests.Migrations.TestMigrations
 {
     public class Migration02 : MigrationBase
     {
