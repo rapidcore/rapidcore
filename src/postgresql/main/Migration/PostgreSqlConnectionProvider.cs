@@ -12,11 +12,11 @@ namespace RapidCore.PostgreSql.Migration
             return Named("UseAsDefault");
         }
 
-        public IDbConnection Named(string name)
+        public virtual IDbConnection Named(string name)
         {
             return connections[name.ToLowerInvariant()];
         }
-        public void Add(string name, IDbConnection connection, bool useAsDefault)
+        public virtual void Add(string name, IDbConnection connection, bool useAsDefault)
         {
             connections.Add(name.ToLowerInvariant(), connection);
             if (useAsDefault)

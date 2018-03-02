@@ -6,10 +6,10 @@ namespace RapidCore.PostgreSql.Migration
 {
     public class PostgreSqlMigrationContext : IMigrationContext
     {
-        public ILogger Logger { get; set; }
-        public IRapidContainerAdapter Container { get; set; }
-        public IMigrationEnvironment Environment { get; set; }
-        public IMigrationStorage Storage { get; set; }
-        public PostgreSqlConnectionProvider ConnectionProvider { get; set; }
+        public virtual ILogger Logger { get; set; }
+        public virtual IRapidContainerAdapter Container { get; set; }
+        public virtual IMigrationEnvironment Environment { get; set; }
+        public virtual IMigrationStorage Storage { get; set; }
+        public virtual PostgreSqlConnectionProvider ConnectionProvider { get; set; }
     }
 }

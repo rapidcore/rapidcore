@@ -11,7 +11,7 @@ namespace RapidCore.PostgreSql.Migration
             this.connectionProvider = connectionProvider;
         }
 
-        public IMigrationContext GetContext()
+        public virtual IMigrationContext GetContext()
         {
             return new PostgreSqlMigrationContext
             {
