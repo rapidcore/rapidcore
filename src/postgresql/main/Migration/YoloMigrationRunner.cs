@@ -21,8 +21,6 @@ namespace RapidCore.PostgreSql.Migration
         /// <summary>
         /// Bypasses dependency injection almost entirely to give an easy
         /// to get started with migration runner.
-        /// 
-        /// You must register <see cref="IConnectionMultiplexer"/> in <paramref name="services"/>.
         /// </summary>
         /// <param name="services">The dependency injection container provided by dotnet Core</param>
         /// <param name="environmentName">The name of the environment you are running in</param>
