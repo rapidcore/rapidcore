@@ -12,6 +12,7 @@ namespace RapidCore.PostgreSql.Migration
     {
         public virtual async Task MarkAsCompleteAsync(IMigrationContext context, IMigration migration, long milliseconds)
         {
+            var db = await EnsureDbHasBeenInitialized(context);
             var info = await GetMigrationInfoAsync(context, migration.Name);
             if (info == default(MigrationInfo))
             {
@@ -28,14 +29,17 @@ namespace RapidCore.PostgreSql.Migration
             await UpsertMigrationInfoAsync(context, info);
         }
 
-        private IDbConnection GetDb(IMigrationContext context)
+        private async Task<IDbConnection> EnsureDbHasBeenInitialized(IMigrationContext context)
         {
-            return ((PostgreSqlMigrationContext) context).ConnectionProvider.Default();
+            var db = ((PostgreSqlMigrationContext) context).ConnectionProvider.Default();
+            await PostgreSqlSchemaCreator.CreateSchemaIfNotExists(context);
+            return db;
+
         }
 
         public virtual async Task<MigrationInfo> GetMigrationInfoAsync(IMigrationContext context, string migrationName)
         {
-            var db = GetDb(context);
+            var db = await EnsureDbHasBeenInitialized(context);
             var migrationInfo = await db.QuerySingleOrDefaultAsync<MigrationInfo>($"select * from {PostgreSqlConstants.MigrationInfoTableName} where Name = @MigrationName",
                 new {
                     MigrationName = migrationName
@@ -45,7 +49,8 @@ namespace RapidCore.PostgreSql.Migration
 
         public virtual async Task UpsertMigrationInfoAsync(IMigrationContext context, MigrationInfo info)
         {
-            var db = GetDb(context);
+            var db = await EnsureDbHasBeenInitialized(context);
+
             long migrationInfoId = 0;
             string insertQuery = $@"INSERT INTO {PostgreSqlConstants.MigrationInfoTableName}(
                                         Name,
@@ -101,11 +106,7 @@ namespace RapidCore.PostgreSql.Migration
 
         public virtual async Task<bool> HasMigrationBeenFullyCompletedAsync(IMigrationContext context, string migrationName)
         {
-            // this is the de facto entry point via the migration runner, so create the table if it doesn't exist
-            // there might be a better place for this
-            await PostgreSqlSchemaCreator.CreateSchemaIfNotExists(context);
-
-
+            var db = await EnsureDbHasBeenInitialized(context);
             var info = await GetMigrationInfoAsync(context, migrationName);
 
             return (info != default(MigrationInfo) && info.MigrationCompleted);
