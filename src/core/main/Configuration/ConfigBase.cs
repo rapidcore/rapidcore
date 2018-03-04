@@ -14,9 +14,9 @@ namespace RapidCore.Configuration
     /// </summary>
     public abstract class ConfigBase
     {
-        private readonly IConfigurationRoot configuration;
+        private readonly IConfiguration configuration;
 
-        public ConfigBase(IConfigurationRoot configuration)
+        protected ConfigBase(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
