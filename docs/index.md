@@ -19,13 +19,6 @@ Issues can be found in the [Github repository](https://github.com/rapidcore/rapi
 [core-nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg
 [core-nuget-url]: https://www.nuget.org/packages/RapidCore
 
-### RapidCore.Redis
-
-[![nuget version][redis-nuget-image]][redis-nuget-url]
-
-[redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
-[redis-nuget-url]: https://www.nuget.org/packages/RapidCore.Redis
-
 ### RapidCore.Mongo
 
 [![nuget version][mongo-nuget-image]][mongo-nuget-url]
@@ -39,6 +32,13 @@ Issues can be found in the [Github repository](https://github.com/rapidcore/rapi
 
 [postgres-nuget-image]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg
 [postgres-nuget-url]: https://www.nuget.org/packages/RapidCore.PostgreSql
+
+### RapidCore.Redis
+
+[![nuget version][redis-nuget-image]][redis-nuget-url]
+
+[redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
+[redis-nuget-url]: https://www.nuget.org/packages/RapidCore.Redis
 
 ### RapidCore.Xunit
 
