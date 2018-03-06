@@ -7,6 +7,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>

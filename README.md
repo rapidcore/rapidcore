@@ -28,6 +28,12 @@ RapidCore classes that depend on MongoDB.
 
 [![nuget version][nuget-image-mongo]][nuget-url-mongo]
 
+### RapidCore.PostgreSql
+
+RapidCore classes that depend on PostgreSql.
+
+[![nuget version][nuget-image-postgres]][nuget-url-postgres]
+
 ### RapidCore.Redis
 
 RapidCore classes that depend on Redis.
@@ -50,6 +56,9 @@ Current features
 
 [nuget-image-mongo]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
 [nuget-url-mongo]: https://www.nuget.org/packages/RapidCore.Mongo
+
+[nuget-image-postgres]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg
+[nuget-url-postgres]: https://www.nuget.org/packages/RapidCore.PostgreSql
 
 [nuget-image-redis]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
 [nuget-url-redis]: https://www.nuget.org/packages/RapidCore.Redis
