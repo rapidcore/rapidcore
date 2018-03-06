@@ -4,6 +4,18 @@
     <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <RootNamespace>RapidCore.PostgreSql</RootNamespace>
     <Version>0.20.0</Version>
+    <Title>RapidCore.PostgreSql</Title>
+    <Authors>nover</Authors>
+    <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
+    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;postgresql</PackageTags>
+    <PackageProjectUrl>https://github.com/rapidcore/rapidcore/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rapidcore/rapidcore/</RepositoryUrl>
+    <PackageId>RapidCore.PostgreSql</PackageId>
+    <Company>SKARP ApS</Company>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   
   <ItemGroup>
