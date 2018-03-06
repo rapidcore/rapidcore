@@ -8,11 +8,11 @@
     <Authors>nover</Authors>
     <Description>RapidCore.Xunit is a collection of tools to speed up your xunit test coding process</Description>
     <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;test;</PackageTags>
-    <PackageProjectUrl>https://github.com/rapidcore/rapidcore.xunit/</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore.xunit/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rapidcore/rapidcore/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/rapidcore/rapidcore.xunit/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/rapidcore/rapidcore/</RepositoryUrl>
     <PackageId>RapidCore.Xunit</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
