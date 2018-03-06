@@ -33,6 +33,13 @@ Issues can be found in the [Github repository](https://github.com/rapidcore/rapi
 [mongo-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
 [mongo-nuget-url]: https://www.nuget.org/packages/RapidCore.Mongo
 
+### RapidCore.PostgreSql
+
+[![nuget version][postgres-nuget-image]][postgres-nuget-url]
+
+[postgres-nuget-image]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg
+[postgres-nuget-url]: https://www.nuget.org/packages/RapidCore.PostgreSql
+
 ### RapidCore.Xunit
 
 [![nuget version][xunit-nuget-image]][xunit-nuget-url]
