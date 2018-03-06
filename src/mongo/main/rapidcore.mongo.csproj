@@ -7,11 +7,11 @@
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
     <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;mongo</PackageTags>
-    <PackageProjectUrl>https://github.com/rapidcore/rapidcore.mongo/</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore.mongo/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rapidcore/rapidcore/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/rapidcore/rapidcore.mongo/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/rapidcore/rapidcore/</RepositoryUrl>
     <PackageId>RapidCore.Mongo</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
