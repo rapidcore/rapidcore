@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using RapidCore.Globalization;
 using Xunit;
 
@@ -16,11 +14,43 @@ namespace RapidCore.UnitTests.Globalization
         }
 
         [Fact]
+        public void HasNoDuplicate_Alphacodes()
+        {
+            foreach (var currency in currencies.GetAll())
+            {
+                try
+                {
+                    currencies.GetCurrencyByAlphabeticCode(currency.AlphabeticCode);
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Duplicate detected for {currency.AlphabeticCode}");
+                }
+            }
+        }
+        
+        [Fact]
+        public void HasNoDuplicate_Numeric()
+        {
+            foreach (var currency in currencies.GetAll())
+            {
+                try
+                {
+                    currencies.GetCurrencyByNumericCode(currency.NumericCode);
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Duplicate detected for {currency.NumericCode}");
+                }
+            }
+        }
+
+        [Fact]
         public void GetCurrencyByCurrencyName()
         {
             var actual = currencies.GetCurrencyByCurrencyName("malaysian ringgit");
 
-            Assert.Equal("Malaysian Ringgit", actual.CurrencyName);
+            Assert.Equal("Malaysian Ringgit", actual.Name);
             Assert.Equal(458, actual.NumericCode);
             Assert.Equal("MYR", actual.AlphabeticCode);
         }
@@ -30,7 +60,7 @@ namespace RapidCore.UnitTests.Globalization
         {
             var actual = currencies.GetCurrencyByAlphabeticCode("inr");
 
-            Assert.Equal("Indian Rupee", actual.CurrencyName);
+            Assert.Equal("Indian Rupee", actual.Name);
             Assert.Equal(356, actual.NumericCode);
             Assert.Equal("INR", actual.AlphabeticCode);
         }
@@ -40,7 +70,7 @@ namespace RapidCore.UnitTests.Globalization
         {
             var actual = currencies.GetCurrencyByNumericCode(943);
 
-            Assert.Equal("Mozambique Metical", actual.CurrencyName);
+            Assert.Equal("Mozambique Metical", actual.Name);
             Assert.Equal(943, actual.NumericCode);
             Assert.Equal("MZN", actual.AlphabeticCode);
         }
