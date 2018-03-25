@@ -196,18 +196,6 @@ namespace RapidCore.Globalization
         /// <summary>
         /// Get currency by name
         /// </summary>
-        /// <param name="currencyName">currency name</param>
-        /// <returns>The matching currency or null</returns>
-        public virtual CurrencyIso4217 GetCurrencyByCurrencyName(string currencyName)
-        {
-            var uppered = currencyName.ToUpper();
-
-            return currencies.SingleOrDefault(x => x.Name.ToUpper() == uppered);
-        }
-
-        /// <summary>
-        /// Get currency by name
-        /// </summary>
         /// <param name="alphabeticCode">currency name</param>
         /// <returns>The matching currency or null</returns>
         public virtual CurrencyIso4217 GetCurrencyByAlphabeticCode(string alphabeticCode)

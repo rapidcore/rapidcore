@@ -46,16 +46,6 @@ namespace RapidCore.UnitTests.Globalization
         }
 
         [Fact]
-        public void GetCurrencyByCurrencyName()
-        {
-            var actual = currencies.GetCurrencyByCurrencyName("malaysian ringgit");
-
-            Assert.Equal("Malaysian Ringgit", actual.Name);
-            Assert.Equal(458, actual.NumericCode);
-            Assert.Equal("MYR", actual.AlphabeticCode);
-        }
-
-        [Fact]
         public void GetCurrencyByAlphabeticCode()
         {
             var actual = currencies.GetCurrencyByAlphabeticCode("inr");
@@ -83,10 +73,6 @@ namespace RapidCore.UnitTests.Globalization
 
 
             actual = currencies.GetCurrencyByAlphabeticCode("DOES_NOT_EXIST");
-            Assert.Null(actual);
-
-
-            actual = currencies.GetCurrencyByCurrencyName("DOES_NOT_EXIST");
             Assert.Null(actual);
         }
     }
