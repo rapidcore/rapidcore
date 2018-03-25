@@ -6,7 +6,7 @@
     <Title>RapidCore</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
-    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;</PackageTags>
+    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;iso4217;currency</PackageTags>
     <PackageProjectUrl>https://github.com/rapidcore/rapidcore/</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
