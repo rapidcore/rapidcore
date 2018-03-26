@@ -53,5 +53,29 @@ namespace RapidCore.UnitTests.Globalization
             Assert.Equal(input.ToUniversalTime(), actual);
         }
         #endregion
+
+        #region ToUtc - string input
+        [Theory]
+        // already UTC
+        [InlineData("2018-03-26Z", 2018, 3, 26, 0, 0, 0, 0)] // date + timezone
+        [InlineData("2018-03-26T10:20+00:00", 2018, 3, 26, 10, 20, 0, 0)] // date, hour, minute, timezone
+        [InlineData("2018-03-26T10:20:33+00:00", 2018, 3, 26, 10, 20, 33, 0)] // date, hour, minute, second, timezone
+        [InlineData("2018-03-26T10:20:33.123+00:00", 2018, 3, 26, 10, 20, 33, 123)] // date, hour, minute, second, millisecond, timezone
+        [InlineData("2018-03-26T10:20Z", 2018, 3, 26, 10, 20, 0, 0)] // date, hour, minute, Z
+        [InlineData("2018-03-26T10:20:33Z", 2018, 3, 26, 10, 20, 33, 0)] // date, hour, minute, second, Z
+        [InlineData("2018-03-26T10:20:33.123Z", 2018, 3, 26, 10, 20, 33, 123)] // date, hour, minute, second, millisecond, Z
+        // non-UTC
+        [InlineData("2018-03-26+04:00", 2018, 3, 25, 20, 0, 0, 0)] // date only, already utc
+        [InlineData("2018-03-26T10:20+04:00", 2018, 3, 26, 6, 20, 0, 0)] // date, hour, minute, timezone
+        [InlineData("2018-03-26T10:20:33+04:00", 2018, 3, 26, 6, 20, 33, 0)] // date, hour, minute, second, timezone
+        [InlineData("2018-03-26T10:20:33.123+04:00", 2018, 3, 26, 6, 20, 33, 123)] // date, hour, minute, second, millisecond, timezone
+        public void ToUtc_string_(string input, int expYear, int expMonth, int expDay, int expHour, int expMinute, int expSecond, int expMilli)
+        {
+            var actual = utcHelper.ToUtc(input);
+            var expected = new DateTime(expYear, expMonth, expDay, expHour, expMinute, expSecond, expMilli, DateTimeKind.Utc);
+            
+            Assert.Equal(expected, actual);
+        }
+        #endregion
     }
 }

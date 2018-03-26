@@ -25,5 +25,17 @@ namespace RapidCore.Globalization
         {
             return possiblyNonUtc.ToUniversalTime();
         }
+
+        /// <summary>
+        /// Convert a given string into a UTC DateTime instance.
+        /// 
+        /// It accepts whatever DateTime.Ctor(..) accepts.
+        /// </summary>
+        /// <param name="whateverDateTimeAccepts">Whatever string the DateTime constructor accepts</param>
+        /// <returns>A UTC DateTime</returns>
+        public virtual DateTime ToUtc(string whateverDateTimeAccepts)
+        {
+            return DateTime.Parse(whateverDateTimeAccepts).ToUniversalTime();
+        }
     }
 }
