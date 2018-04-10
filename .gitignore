@@ -294,3 +294,6 @@ docs/.sass-cache/
 docs/.jekyll-metadata
 docs/_pdf
 .DS_Store
+
+# mkdocs generated stuff
+docs-generated/

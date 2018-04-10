@@ -8,7 +8,7 @@ function mkdocsServe {
 
 case "$1" in
     build)
-        mkdocs build
+        mkdocs build --site-dir /app/repository/docs-generated
         exit;;
     serve)
         mkdocsServe
