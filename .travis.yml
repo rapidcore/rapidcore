@@ -6,6 +6,7 @@ services:
   - mongodb
   - redis-server
   - postgresql
+  - docker
 dotnet: 1.0.4
 addons:
   postgresql:  "9.5"
