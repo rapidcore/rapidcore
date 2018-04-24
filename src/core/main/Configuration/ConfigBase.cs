@@ -1,6 +1,7 @@
 #if NETSTANDARD1_6
 
 using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
 namespace RapidCore.Configuration
@@ -28,6 +29,21 @@ namespace RapidCore.Configuration
             if (string.IsNullOrEmpty(value))
             {
                 return defaultValue;
+            }
+
+            if (typeof(T).GetTypeInfo().IsEnum)
+            {
+                // try..catch is not as pretty as Enum.TryParse, but
+                // TryParse requires T to be non-nullable, which is
+                // not a constraint for us
+                try
+                {
+                    return (T)Enum.Parse(typeof(T), value, true);
+                }
+                catch (Exception)
+                {
+                    return defaultValue;
+                }
             }
 
             return (T)Convert.ChangeType(value, typeof(T));

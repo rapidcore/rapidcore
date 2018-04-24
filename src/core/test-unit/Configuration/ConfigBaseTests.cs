@@ -19,7 +19,11 @@ namespace RapidCore.UnitTests.Configuration
                     { "int", "3" },
                     { "int_zero", "0" },
                     { "section:section-1", "s1 from config" },
-                    { "section:subsection:subsection-1", "subsection 1 from config"}
+                    { "section:subsection:subsection-1", "subsection 1 from config"},
+                    { "enum", "One" },
+                    { "enum_null", null },
+                    { "enum_empty", string.Empty },
+                    { "enum_invalid", "NotAValidValue" }
                 });
 
             config = new MyTestConfig(builder.Build());
@@ -106,6 +110,36 @@ namespace RapidCore.UnitTests.Configuration
         {
             Assert.Equal("subsection 1 from config", config.Get<string>("section:subsection:subsection-1", "default"));
         }
+
+        [Fact]
+        public void Get_Enum()
+        {
+            Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum", MyTestConfigThing.Zero));
+        }
+
+        [Fact]
+        public void Get_Enum_Default_IfNull()
+        {
+            Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_null", MyTestConfigThing.One));
+        }
+
+        [Fact]
+        public void Get_Enum_Default_IfEmpty()
+        {
+            Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_empty", MyTestConfigThing.One));
+        }
+
+        [Fact]
+        public void Get_Enum_Default_IfUndefined()
+        {
+            Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("does_not_exist_coz_that_would_be_weird", MyTestConfigThing.One));
+        }
+        
+        [Fact]
+        public void Get_Enum_Default_IfInvalidValue()
+        {
+            Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_invalid", MyTestConfigThing.One));
+        }
         
         
 
@@ -128,6 +162,12 @@ namespace RapidCore.UnitTests.Configuration
             {
                 return configuration.GetSection(key);
             }
+        }
+
+        private enum MyTestConfigThing
+        {
+            Zero = 0,
+            One = 1
         }
         #endregion
     }
