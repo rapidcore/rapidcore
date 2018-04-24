@@ -17,7 +17,9 @@ namespace RapidCore.UnitTests.Configuration
                     { "string_null", null },
                     { "string_empty", string.Empty },
                     { "int", "3" },
-                    { "int_zero", "0" }
+                    { "int_zero", "0" },
+                    { "section:section-1", "s1 from config" },
+                    { "section:subsection:subsection-1", "subsection 1 from config"}
                 });
 
             config = new MyTestConfig(builder.Build());
@@ -64,15 +66,67 @@ namespace RapidCore.UnitTests.Configuration
         {
             Assert.Equal(999, config.Get<int>("does_not_exist_coz_that_would_be_weird", 999));
         }
+        
+        [Fact]
+        public void Section_syntax_is_correct()
+        {
+            // tests that the "parsed" json section
+            // syntax used in the contructor of this class
+            // is correct
+
+            var actual = config.GetSection("section");
+            
+            Assert.Equal("s1 from config", actual["section-1"]);
+
+            var subsection = actual.GetSection("subsection");
+            
+            Assert.Equal("subsection 1 from config", subsection["subsection-1"]);
+        }
+        
+        [Fact]
+        public void Get_Section_exists_key_exists()
+        {
+            Assert.Equal("s1 from config", config.Get<string>("section:section-1", "default"));
+        }
+        
+        [Fact]
+        public void Get_Section_if_section_is_undefined_return_default()
+        {
+            Assert.Equal("default", config.Get<string>("no-such-section:yummy", "default"));
+        }
+        
+        [Fact]
+        public void Get_Section_if_key_is_undefined_return_default()
+        {
+            Assert.Equal("default", config.Get<string>("section:yummy", "default"));
+        }
+        
+        [Fact]
+        public void Get_SubSection_exists_key_exists()
+        {
+            Assert.Equal("subsection 1 from config", config.Get<string>("section:subsection:subsection-1", "default"));
+        }
+        
+        
 
         #region Config implementation
         private class MyTestConfig : ConfigBase
         {
-            public MyTestConfig(IConfigurationRoot configuration) : base(configuration) { }
+            private readonly IConfigurationRoot configuration;
+            
+            public MyTestConfig(IConfigurationRoot configuration) : base(configuration)
+            {
+                this.configuration = configuration;
+            }
 
             public new T Get<T>(string key, T defaultValue)
             {
                 return base.Get<T>(key, defaultValue);
+            }
+
+            public IConfigurationSection GetSection(string key)
+            {
+                return configuration.GetSection(key);
             }
         }
         #endregion
