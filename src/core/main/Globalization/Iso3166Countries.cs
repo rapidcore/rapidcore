@@ -284,7 +284,14 @@ namespace RapidCore.Globalization
 
             return countries.FirstOrDefault(x => x.CodeAlpha3 == uppered);
         }
-
+        /// <summary>
+        /// Get All the country list
+        /// </summary>
+        /// <returns>List of CountryIso3166 </returns>
+        public virtual IReadOnlyList<CountryIso3166> GetAll()
+        {
+            return countries.ToList();
+        }
         /// <summary>
         /// Get country by numeric code
         /// </summary>
