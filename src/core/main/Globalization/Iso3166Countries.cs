@@ -288,7 +288,7 @@ namespace RapidCore.Globalization
         /// Get All the country list
         /// </summary>
         /// <returns>List of CountryIso3166 </returns>
-        public virtual List<CountryIso3166> GetAll()
+        public virtual IReadOnlyList<CountryIso3166> GetAll()
         {
             return countries.ToList();
         }
