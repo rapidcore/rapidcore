@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rapidcore.google-cloud", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "functionaltests.csproj", "src\google-cloud\test-functional\functionaltests.csproj.csproj", "{F6A5A384-CA16-4540-9FE9-0AE34ABC5A84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test-unit", "src\google-cloud\test-unit\test-unit.csproj", "{861A19E1-4713-412B-A6C8-CB374363EE21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -250,6 +252,18 @@ Global
 		{F6A5A384-CA16-4540-9FE9-0AE34ABC5A84}.Release|x64.Build.0 = Release|x64
 		{F6A5A384-CA16-4540-9FE9-0AE34ABC5A84}.Release|x86.ActiveCfg = Release|x86
 		{F6A5A384-CA16-4540-9FE9-0AE34ABC5A84}.Release|x86.Build.0 = Release|x86
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|x64.ActiveCfg = Debug|x64
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|x64.Build.0 = Debug|x64
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|x86.ActiveCfg = Debug|x86
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Debug|x86.Build.0 = Debug|x86
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|x64.ActiveCfg = Release|x64
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|x64.Build.0 = Release|x64
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|x86.ActiveCfg = Release|x86
+		{861A19E1-4713-412B-A6C8-CB374363EE21}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -277,6 +291,7 @@ Global
 		{684716F9-026C-4779-8B6A-4D56B34E93C8} = {68F11D70-6FFF-4761-9EB9-44E9F4C2C967}
 		{0FB0B03E-33C9-4195-A021-B265F237CF20} = {684716F9-026C-4779-8B6A-4D56B34E93C8}
 		{F6A5A384-CA16-4540-9FE9-0AE34ABC5A84} = {684716F9-026C-4779-8B6A-4D56B34E93C8}
+		{861A19E1-4713-412B-A6C8-CB374363EE21} = {684716F9-026C-4779-8B6A-4D56B34E93C8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B5F746B-0AD6-4F58-B8B4-E3DC872C2D8B}
