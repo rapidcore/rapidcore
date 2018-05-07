@@ -1,12 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="Datastore\Internal" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Datastore.V1" Version="2.1.0" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>RapidCore.GoogleCloud</RootNamespace>
   </PropertyGroup>
-
 </Project>
