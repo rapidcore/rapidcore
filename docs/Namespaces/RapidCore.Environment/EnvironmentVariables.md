@@ -8,7 +8,7 @@ This all lives in `RapidCore.Environment`.
 ## Get the value of an environment variable
 
 ```csharp
-using RapidCore.Environment
+using RapidCore.Environment;
 
 public class SomeThingKewl
 {
