@@ -101,5 +101,40 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             return clean.Equals("id") || clean.Equals("identifier") || clean.Equals("primarykey");
         }
         #endregion
+
+        #region Content properties
+        public List<PropertyInfo> GetContentProperties(object poco)
+        {
+            if (poco == null)
+            {
+                throw new ArgumentNullException(nameof(poco), "Cannot get content properties from null");
+            }
+            
+            var type = poco.GetType().GetTypeInfo();
+
+            return type
+                .GetProperties()
+                .Where(prop =>
+                {
+                    if (prop.HasAttribute(typeof(IgnoreAttribute)))
+                    {
+                        return false;
+                    }
+
+                    if (prop.GetMethod == null || prop.GetMethod.IsStatic)
+                    {
+                        return false;
+                    }
+
+                    if (IsIdProperty(prop))
+                    {
+                        return false;
+                    }
+                    
+                    return true;
+                })
+                .ToList();
+        }
+        #endregion
     }
 }
