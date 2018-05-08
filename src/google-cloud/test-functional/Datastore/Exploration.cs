@@ -21,7 +21,7 @@ namespace functionaltests.csproj.Datastore
                 DatastoreSettings.GetDefault()
             );
             
-            var dsDb = DatastoreDb.Create("project-id-12345", "test-space", client);
+            var dsDb = DatastoreDb.Create("rapidcore-local", "test-space", client);
             dsConnection = new DatastoreConnection(dsDb);
         }
 
