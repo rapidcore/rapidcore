@@ -7,7 +7,8 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
 {
     public class DatastoreReflector
     {
-        public string GetKind(object poco)
+        #region Kind
+        public virtual string GetKind(object poco)
         {
             if (poco == null)
             {
@@ -25,5 +26,6 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             
             return poco.GetType().Name;
         }
+        #endregion
     }
 }
