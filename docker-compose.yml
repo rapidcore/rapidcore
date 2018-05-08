@@ -25,6 +25,24 @@ services:
     ports:
       - 8081:8081
 
+  # datastore-ui:
+  #   image: rapidcore:datastore-ui
+  #   environment:
+  #     PROJECT_ID: rapidcore-local
+  #     UI_PORT: 8282
+  #     DATASTORE_ENDPOINT: datastore:8081
+  #   build:
+  #       context: .
+  #       dockerfile: Dockerfile.dsui
+  #   volumes:
+  #     - .:/app/repository
+  #   ports:
+  #     - 8282:8282
+  #   depends_on:
+  #     - datastore
+  #   links:
+  #     - datastore
+
   mkdocs:
     image: rapidcore:mkdocs
     build:

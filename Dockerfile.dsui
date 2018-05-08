@@ -1,0 +1,20 @@
+FROM node:8
+
+WORKDIR /app
+ENV PROJECT_ID rapidcore-local
+ENV UI_PORT 8282
+ENV DATASTORE_ENDPOINT datastore:8081
+
+EXPOSE $UI_PORT
+
+RUN echo "{\"name\":\"haha\",\"description\":\"yomomma\",\"repository\":\"so.fat\",\"license\":\"MIT\" }" > package.json \
+    && npm install jquery \
+    && npm install popper.js \
+    && npm install @streamrail/dsui \
+    && npm cache clean --force
+
+COPY ./dsui_entrypoint.sh .
+
+RUN ln -s /app/node_modules/@streamrail/dsui/bin/dsui /app/dsui
+
+ENTRYPOINT ["/bin/sh", "dsui_entrypoint.sh"]
