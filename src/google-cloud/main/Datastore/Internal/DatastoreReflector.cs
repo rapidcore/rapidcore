@@ -136,5 +136,24 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                 .ToList();
         }
         #endregion
+
+        #region Value name
+        public string GetValueName(PropertyInfo prop)
+        {
+            if (prop == null)
+            {
+                throw new ArgumentNullException(nameof(prop), "Cannot get value name from null");
+            }
+            
+            if (prop.HasAttribute(typeof(NameAttribute)))
+            {
+                var attr = prop.GetSpecificAttribute(typeof(NameAttribute)).FirstOrDefault();
+
+                return ((NameAttribute) attr)?.Name;
+            }
+
+            return prop.Name;
+        }
+        #endregion
     }
 }
