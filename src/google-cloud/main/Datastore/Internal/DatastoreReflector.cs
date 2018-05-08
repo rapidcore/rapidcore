@@ -35,7 +35,8 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             typeof(short),
             typeof(int),
             typeof(long),
-            typeof(string)
+            typeof(string),
+            typeof(Guid)
         };
         
         public virtual string GetIdValue(object poco)

@@ -166,12 +166,22 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
         }
         
         [Fact]
+        public void TypeCheck_guid_isValid()
+        {
+            var expected = Guid.NewGuid();
+            
+            var actual = reflector.GetIdValue(new TypeCheck_Guid { Id = expected });
+            
+            Assert.Equal(expected.ToString(), actual);
+        }
+        
+        [Fact]
         public void TypeCheck_double_INVALID()
         {
             var actual = Record.Exception(() => reflector.GetIdValue(new TypeCheck_Invalid_Double()));
             
             Assert.IsType<PrimaryKeyException>(actual);
-            Assert.Equal("The id property TypeCheck_Invalid_Double.Id has invalid type of Double. Only Int16, Int32, Int64, String are allowed.", actual.Message);
+            Assert.Equal("The id property TypeCheck_Invalid_Double.Id has invalid type of Double. Only Int16, Int32, Int64, String, Guid are allowed.", actual.Message);
         }
 
         #region POCOs
@@ -271,6 +281,11 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
         public class TypeCheck_String
         {
             public string Id { get; set; } = "das id";
+        }
+        
+        public class TypeCheck_Guid
+        {
+            public Guid Id { get; set; }
         }
         
         public class TypeCheck_Invalid_Double
