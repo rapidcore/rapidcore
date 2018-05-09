@@ -9,12 +9,19 @@ namespace RapidCore.GoogleCloud.Datastore
         private readonly DatastoreReflector reflector;
         private readonly IEntityFactory entityFactory;
         private readonly DatastoreDb datastoreDb;
+        private readonly IPocoFactory pocoFactory;
 
-        public DatastoreOrm(DatastoreReflector reflector, IEntityFactory entityFactory, DatastoreDb datastoreDb)
+        public DatastoreOrm(
+            DatastoreReflector reflector,
+            IEntityFactory entityFactory,
+            DatastoreDb datastoreDb,
+            IPocoFactory pocoFactory
+        )
         {
             this.reflector = reflector;
             this.entityFactory = entityFactory;
             this.datastoreDb = datastoreDb;
+            this.pocoFactory = pocoFactory;
         }
 
         public virtual string GetKind(Type type)
@@ -37,9 +44,9 @@ namespace RapidCore.GoogleCloud.Datastore
             return entityFactory.FromPoco(datastoreDb, kind, poco);
         }
 
-        public virtual TPoco EntityToPoco<TPoco>(Entity entity)
+        public virtual TPoco EntityToPoco<TPoco>(Entity entity) where TPoco : new()
         {
-            throw new NotImplementedException("EntityToPoco has not been implemented yet");
+            return pocoFactory.FromEntity<TPoco>(entity);
         }
     }
 }

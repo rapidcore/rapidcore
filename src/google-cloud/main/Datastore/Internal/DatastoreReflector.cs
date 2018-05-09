@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Google.Cloud.Datastore.V1;
 using RapidCore.Reflection;
 
 namespace RapidCore.GoogleCloud.Datastore.Internal
 {
     public class DatastoreReflector
     {
+        private class IdType
+        {
+            public Type Type { get; set; }
+            public Func<object, string> ToIdOnEntity { get; set; } = pocoId => pocoId.ToString();
+            public Func<Key, object> ToIdOnPoco { get; set; } = key => key.Path[0].Name;
+        }
+        
         #region Kind
         public virtual string GetKind(Type type)
         {
@@ -35,14 +43,95 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
         #endregion
 
         #region ID
-        protected List<Type> validIdTypes = new List<Type>
+        private readonly Dictionary<Type, IdType> validIdTypes = new Dictionary<Type, IdType>
         {
-            typeof(short),
-            typeof(int),
-            typeof(long),
-            typeof(string),
-            typeof(Guid)
-        };
+            {
+                typeof(short),
+                new IdType
+                {
+                    Type = typeof(short),
+                    ToIdOnPoco = key => short.Parse(key.Path[0].Id.ToString())
+                }
+            },
+            {
+                typeof(int),
+                new IdType
+                {
+                    Type = typeof(int),
+                    ToIdOnPoco = key => int.Parse(key.Path[0].Id.ToString())
+                }
+            },
+            {
+                typeof(long),
+                new IdType
+                {
+                    Type = typeof(long),
+                    ToIdOnPoco = key => key.Path[0].Id
+                }
+            },
+            {
+                typeof(string),
+                new IdType
+                {
+                    Type = typeof(string),
+                    ToIdOnPoco = key => key.Path[0].Name
+                }
+            },
+            {
+                typeof(Guid),
+                new IdType
+                {
+                    Type = typeof(Guid),
+                    ToIdOnPoco = key => Guid.Parse(key.Path[0].Name)
+                }
+            }
+        }; 
+
+        public virtual PropertyInfo GetIdProperty(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+
+            var idProps = typeInfo
+                .GetProperties()
+                .Where(IsIdProperty)
+                .ToList();
+
+            if (idProps.Count == 0)
+            {
+                throw new PrimaryKeyException($"Could not find an id on {typeInfo.Name}");
+            }
+
+            if (idProps.Count > 1)
+            {
+                var propNames = string.Join(", ", idProps.Select(x => x.Name));
+                throw new PrimaryKeyException($"More than 1 property on {typeInfo.Name} could be an id: {propNames}");
+            }
+
+            var idProp = idProps.First();
+
+            if (idProp.HasAttribute(typeof(IgnoreAttribute)))
+            {
+                throw new PrimaryKeyException($"The id property {typeInfo.Name}.{idProp.Name} is marked with {nameof(IgnoreAttribute)}");
+            }
+
+            if (!validIdTypes.ContainsKey(idProp.PropertyType))
+            {
+                var allowed = string.Join(", ", validIdTypes.Select(kvp => kvp.Key.Name));
+                throw new PrimaryKeyException($"The id property {typeInfo.Name}.{idProp.Name} has invalid type of {idProp.PropertyType.Name}. Only {allowed} are allowed.");
+            }
+
+            if (idProp.GetMethod == null)
+            {
+                throw new PrimaryKeyException($"The id property {typeInfo.Name}.{idProp.Name} has no getter");
+            }
+            
+            if (idProp.GetMethod.IsStatic)
+            {
+                throw new PrimaryKeyException($"The id property {typeInfo.Name}.{idProp.Name} is static");
+            }
+
+            return idProp;
+        }
         
         public virtual string GetIdValue(object poco)
         {
@@ -51,48 +140,23 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                 throw new ArgumentNullException(nameof(poco), "Cannot get ID from null");
             }
 
-            var type = poco.GetType().GetTypeInfo();
+            var idProp = GetIdProperty(poco.GetType());
+            var mapper = validIdTypes[idProp.PropertyType];
 
-            var idProps = type
-                            .GetProperties()
-                            .Where(IsIdProperty)
-                            .ToList();
+            return mapper.ToIdOnEntity(idProp.GetValue(poco));
+        }
 
-            if (idProps.Count == 0)
+        public virtual void SetIdValue(object poco, Key key)
+        {
+            if (poco == null)
             {
-                throw new PrimaryKeyException($"Could not find an id on {type.Name}");
+                throw new ArgumentNullException(nameof(poco), "Cannot set ID on null");
             }
 
-            if (idProps.Count > 1)
-            {
-                var propNames = string.Join(", ", idProps.Select(x => x.Name));
-                throw new PrimaryKeyException($"More than 1 property on {type.Name} could be an id: {propNames}");
-            }
-
-            var idProp = idProps.First();
-
-            if (idProp.HasAttribute(typeof(IgnoreAttribute)))
-            {
-                throw new PrimaryKeyException($"The id property {type.Name}.{idProp.Name} is marked with {nameof(IgnoreAttribute)}");
-            }
-
-            if (!validIdTypes.Contains(idProp.PropertyType))
-            {
-                var allowed = string.Join(", ", validIdTypes.Select(x => x.Name));
-                throw new PrimaryKeyException($"The id property {type.Name}.{idProp.Name} has invalid type of {idProp.PropertyType.Name}. Only {allowed} are allowed.");
-            }
-
-            if (idProp.GetMethod == null)
-            {
-                throw new PrimaryKeyException($"The id property {type.Name}.{idProp.Name} has no getter");
-            }
+            var idProp = GetIdProperty(poco.GetType());
+            var mapper = validIdTypes[idProp.PropertyType];
             
-            if (idProp.GetMethod.IsStatic)
-            {
-                throw new PrimaryKeyException($"The id property {type.Name}.{idProp.Name} is static");
-            }
-
-            return idProp.GetValue(poco).ToString();
+            idProp.SetValue(poco, mapper.ToIdOnPoco(key));
         }
 
         private bool IsIdProperty(PropertyInfo prop)
