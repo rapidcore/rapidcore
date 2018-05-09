@@ -42,7 +42,7 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="poco">The POCO to insert</param>
         public virtual Task InsertAsync(string kind, object poco)
         {
-            return datastoreDb.InsertAsync(entityFactory.FromPoco(kind, poco));
+            return datastoreDb.InsertAsync(entityFactory.FromPoco(datastoreDb, kind, poco));
         }
     }
 }

@@ -11,27 +11,47 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             this.reflection = reflection;
         }
         
-        public Entity FromPoco(string kind, object poco)
+        public Entity FromPoco(DatastoreDb datastoreDb, string kind, object poco)
         {
-            throw new System.NotImplementedException();
-            
-            /*
             var entity = new Entity();
 
-            var id = GetIdValue(poco); // gets value of property flagged with Id or named something like "Id"
-            entity.Key = dsDb.CreateKeyFactory(kind).CreateKey(id);
+            SetKey(reflection.GetIdValue(poco), kind, datastoreDb, entity);
 
-            foreach (property in poco)
-            {
-                if (property is not flagged as ignore)
-                {
-                    var tuple = ValueFactory.FromPropertyInfo(property); // returns tuple like <name, value>
-                    entity.Properties.Add(tuple.name, tuple.value);
-                }
-            }
+            AddProperties(entity, poco);
 
             return entity;
-            */
+        }
+
+        public Entity EmbeddedEntityFromPoco(object poco)
+        {
+            var entity = new Entity();
+            
+            AddProperties(entity, poco);
+
+            return entity;
+        }
+
+        private void SetKey(string id, string kind, DatastoreDb datastoreDb, Entity entity)
+        {
+            if (long.TryParse(id, out var idLong))
+            {
+                entity.Key = datastoreDb.CreateKeyFactory(kind).CreateKey(idLong);
+                return;
+            }
+            
+            entity.Key = datastoreDb.CreateKeyFactory(kind).CreateKey(id);
+        }
+        
+        private void AddProperties(Entity entity, object poco)
+        {
+            reflection
+                .GetContentProperties(poco)
+                .ForEach(prop =>
+                {
+                    var name = reflection.GetValueName(prop);
+                    var value = EntityValueFactory.FromPropertyInfo(poco, prop, this);
+                    entity.Properties.Add(name, value);
+                });
         }
     }
 }
