@@ -11,6 +11,11 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
         {
             this.reflection = reflection;
         }
+
+        public Entity FromPoco(DatastoreDb datastoreDb, object poco)
+        {
+            return FromPoco(datastoreDb, reflection.GetKind(poco), poco);
+        }
         
         public Entity FromPoco(DatastoreDb datastoreDb, string kind, object poco)
         {

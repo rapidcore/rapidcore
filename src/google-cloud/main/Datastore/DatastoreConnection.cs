@@ -44,5 +44,10 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return datastoreDb.InsertAsync(entityFactory.FromPoco(datastoreDb, kind, poco));
         }
+
+        public virtual Task InsertAsync(object poco)
+        {
+            return datastoreDb.InsertAsync(entityFactory.FromPoco(datastoreDb, poco));
+        }
     }
 }

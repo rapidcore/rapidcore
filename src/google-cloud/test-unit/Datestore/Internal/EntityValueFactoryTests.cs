@@ -182,7 +182,7 @@ namespace unittests.Datestore.Internal
             Assert.Equal("one", actual.ArrayValue.Values[0].StringValue);
             Assert.Equal("two", actual.ArrayValue.Values[1].StringValue);
             Assert.Equal("three", actual.ArrayValue.Values[2].StringValue);
-            Assert.Equal(true, actual.ExcludeFromIndexes);
+            Assert.Equal(false, actual.ExcludeFromIndexes);
         }
         
         [Fact]
@@ -194,7 +194,7 @@ namespace unittests.Datestore.Internal
             Assert.Equal("one", actual.ArrayValue.Values[0].StringValue);
             Assert.Equal("two", actual.ArrayValue.Values[1].StringValue);
             Assert.Equal("three", actual.ArrayValue.Values[2].StringValue);
-            Assert.Equal(true, actual.ExcludeFromIndexes);
+            Assert.Equal(false, actual.ExcludeFromIndexes);
         }
         
         [Fact]
@@ -206,7 +206,7 @@ namespace unittests.Datestore.Internal
             Assert.Equal(1, actual.ArrayValue.Values[0].IntegerValue);
             Assert.Equal(2, actual.ArrayValue.Values[1].IntegerValue);
             Assert.Equal(3, actual.ArrayValue.Values[2].IntegerValue);
-            Assert.Equal(true, actual.ExcludeFromIndexes);
+            Assert.Equal(false, actual.ExcludeFromIndexes);
         }
         
         [Fact]

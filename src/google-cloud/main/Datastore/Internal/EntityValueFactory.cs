@@ -133,6 +133,7 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
         {
             if (type.ImplementsInterface(typeof(IEnumerable)))
             {
+                value.ExcludeFromIndexes = false; // Exclude from indexes cannot be set on a list value 
                 value.ArrayValue = new ArrayValue();
                 
                 foreach (object item in (IEnumerable) propValue)

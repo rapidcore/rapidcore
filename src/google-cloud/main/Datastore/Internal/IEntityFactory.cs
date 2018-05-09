@@ -12,6 +12,14 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
         /// Create an entity from a POCO
         /// </summary>
         /// <param name="datastoreDb">The datastore db instance that will "host" the entity</param>
+        /// <param name="poco">The POCO</param>
+        /// <returns>The entity matching the POCO</returns>
+        Entity FromPoco(DatastoreDb datastoreDb, object poco);
+
+        /// <summary>
+        /// Create an entity from a POCO
+        /// </summary>
+        /// <param name="datastoreDb">The datastore db instance that will "host" the entity</param>
         /// <param name="kind">The kind to make the key on</param>
         /// <param name="poco">The POCO</param>
         /// <returns>The entity matching the POCO</returns>
