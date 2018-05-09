@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Datastore.V1;
+﻿using System.Collections.Generic;
+using Google.Cloud.Datastore.V1;
 
 namespace RapidCore.GoogleCloud.Datastore.Internal
 {
@@ -17,13 +18,15 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
         Entity FromPoco(DatastoreDb datastoreDb, string kind, object poco);
 
         /// <summary>
-        /// Create a sub-entity from a POCO.
-        ///
-        /// The only major difference, is that a sub-entity
-        /// does not have a Key
+        ///  Create a sub-entity from a POCO.
+        /// 
+        ///  The only major difference, is that a sub-entity
+        ///  does not have a Key
         /// </summary>
         /// <param name="poco">The POCO</param>
+        /// <param name="recursionPath">Recursion path</param>
         /// <returns>The entity matching the POCO</returns>
-        Entity EmbeddedEntityFromPoco(object poco);
+        /// <seealso cref="DatastoreConstantsRapidCore.MaxRecursionDepth"/>
+        Entity EmbeddedEntityFromPoco(object poco, IList<string> recursionPath);
     }
 }

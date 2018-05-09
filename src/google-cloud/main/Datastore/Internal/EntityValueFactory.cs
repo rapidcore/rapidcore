@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf;
@@ -12,12 +13,14 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
 {
     public class EntityValueFactory
     {
-        public static Value FromPropertyInfo(object poco, PropertyInfo prop, IEntityFactory entityFactory)
+        public static Value FromPropertyInfo(object poco, PropertyInfo prop, IEntityFactory entityFactory, IList<string> recursionPath)
         {
             if (prop == null)
             {
                 throw new ArgumentNullException(nameof(prop), "Cannot build an entity Value without a property");
             }
+            
+            recursionPath.Add(prop.Name);
             
             var value = new Value
             {
@@ -26,29 +29,29 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
 
             var propValue = prop.GetValue(poco);
 
-            if (SetValue(prop.PropertyType, value, propValue, entityFactory)) return value;
+            if (SetValue(prop.PropertyType, value, propValue, entityFactory, recursionPath)) return value;
                 
             throw new NotSupportedException($"The type {prop.PropertyType.Name} is not supported");
         }
 
-        private static bool SetValue(Type type, Value value, object propValue, IEntityFactory entityFactory)
+        private static bool SetValue(Type type, Value value, object propValue, IEntityFactory entityFactory, IList<string> recursionPath)
         {
             if (HandleNull(type, value, propValue, entityFactory)) return true;
             if (HandleEnum(type, value, propValue, entityFactory)) return true;
             if (HandleBinary(type, value, propValue, entityFactory)) return true;
             if (HandleString(type, value, propValue, entityFactory)) return true;
-            if (HandleEnumerable(type, value, propValue, entityFactory)) return true;
+            if (HandleEnumerable(type, value, propValue, entityFactory, recursionPath)) return true;
             if (HandleBasicTypes(type, value, propValue, entityFactory)) return true;
-            if (HandleComplexType(type, value, propValue, entityFactory)) return true;
+            if (HandleComplexType(type, value, propValue, entityFactory, recursionPath)) return true;
 
             return false;
         }
 
-        private static bool HandleComplexType(Type type, Value value, object propValue, IEntityFactory entityFactory)
+        private static bool HandleComplexType(Type type, Value value, object propValue, IEntityFactory entityFactory, IList<string> recursionPath)
         {
             if (type.GetTypeInfo().IsClass)
             {
-                value.EntityValue = entityFactory.EmbeddedEntityFromPoco(propValue);
+                value.EntityValue = entityFactory.EmbeddedEntityFromPoco(propValue, recursionPath);
                 return true;
             }
             
@@ -126,7 +129,7 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             return true;
         }
 
-        private static bool HandleEnumerable(Type type, Value value, object propValue, IEntityFactory entityFactory)
+        private static bool HandleEnumerable(Type type, Value value, object propValue, IEntityFactory entityFactory, IList<string> recursionPath)
         {
             if (type.ImplementsInterface(typeof(IEnumerable)))
             {
@@ -135,7 +138,7 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                 foreach (object item in (IEnumerable) propValue)
                 {
                     var itemValue = new Value();
-                    SetValue(item.GetType(), itemValue, item, entityFactory);
+                    SetValue(item.GetType(), itemValue, item, entityFactory, recursionPath);
                     
                     value.ArrayValue.Values.Add(itemValue);
                 }
