@@ -17,7 +17,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
         [Fact]
         public void NullPocosNotAllowed()
         {
-            var actual = Record.Exception(() => reflector.GetKind(null));
+            var actual = Record.Exception(() => reflector.GetKind((object)null));
 
             Assert.IsType<ArgumentNullException>(actual);
             Assert.Equal("Cannot get kind from null\nParameter name: poco", actual.Message);
