@@ -9,23 +9,28 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
     public class DatastoreReflector
     {
         #region Kind
+        public virtual string GetKind(Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+
+            if (typeInfo.HasAttribute(typeof(KindAttribute)))
+            {
+                var attr = typeInfo.GetSpecificAttribute(typeof(KindAttribute)).FirstOrDefault();
+
+                return ((KindAttribute) attr)?.Kind;
+            }
+            
+            return type.Name;
+        }
+        
         public virtual string GetKind(object poco)
         {
             if (poco == null)
             {
                 throw new ArgumentNullException(nameof(poco), "Cannot get kind from null");
             }
-            
-            var type = poco.GetType().GetTypeInfo();
 
-            if (type.HasAttribute(typeof(KindAttribute)))
-            {
-                var attr = type.GetSpecificAttribute(typeof(KindAttribute)).FirstOrDefault();
-
-                return ((KindAttribute) attr)?.Kind;
-            }
-            
-            return poco.GetType().Name;
+            return GetKind(poco.GetType());
         }
         #endregion
 
