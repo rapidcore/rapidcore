@@ -58,6 +58,7 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                     var name = reflection.GetValueName(prop);
                     var value = EntityValueFactory.FromPropertyInfo(poco, prop, this, recursionPath);
                     entity.Properties.Add(name, value);
+                    recursionPath.Clear();
                 });
         }
     }

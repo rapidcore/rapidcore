@@ -250,44 +250,6 @@ namespace unittests.Datestore.Internal
 
             Assert.Equal(false, actual.ExcludeFromIndexes);
         }
-
-        [Fact]
-        public void ProtectAgainstInfiniteLoops()
-        {
-            // it has to real, in order to properly get the recursion tested
-            var realEntityFactory = new ReflectionBasedEntityFactory(new DatastoreReflector());
-            
-            // infinite recursion... ouch
-            var a = new Infinite();
-            var b = new Infinite();
-            a.Other = b;
-            b.Other = a;
-            poco.Infinite = a;
-            
-            // deep nesting, which is ok
-            // it is here to show, that we are "resetting" for every top-level property
-            var n1 = new Infinite();
-            var n2 = new Infinite {Other = n1};
-            var n3 = new Infinite {Other = n2};
-            var n4 = new Infinite {Other = n3};
-            var n5 = new Infinite {Other = n4};
-            var n6 = new Infinite {Other = n5};
-            var n7 = new Infinite {Other = n6};
-            var n8 = new Infinite {Other = n7};
-            var n9 = new Infinite {Other = n8};
-            var n10 = new Infinite {Other = n9};
-            poco.Nesting = n10;
-
-            var actual = Record.Exception(() => EntityValueFactory.FromPropertyInfo(
-                poco,
-                poco.GetType().GetProperty("Infinite"),
-                realEntityFactory,
-                new List<string>()
-            ));
-
-            Assert.IsType<RecursionException>(actual);
-            Assert.Equal($"Recursion depth has reached 20 - bailing out.{Environment.NewLine}Path: Infinite.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other.Other", actual.Message);
-        }
         
         #region POCOs
         public class DasPoco
@@ -317,8 +279,6 @@ namespace unittests.Datestore.Internal
             public byte[] Binary { get; set; } = new byte[] {1, 2, 3, 4, 5};
             public string Null => null;
             public Sub Complex { get; set; }
-            public Infinite Infinite { get; set; }
-            public Infinite Nesting { get; set; }
 
             [Index]
             public string Indexed => "indexed";
@@ -337,11 +297,6 @@ namespace unittests.Datestore.Internal
             
             [Index]
             public string SubIndexed => "foxy lady";
-        }
-        
-        public class Infinite
-        {
-            public Infinite Other { get; set; }
         }
         #endregion
     }
