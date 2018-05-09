@@ -171,8 +171,6 @@ namespace functionaltests.csproj.Datastore
                 }
             };
             
-            entity.Properties.Add();
-            
             
             await dsConnection.DatastoreDb.InsertAsync(entity);
         }
