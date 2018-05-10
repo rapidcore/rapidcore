@@ -1,19 +1,11 @@
 ﻿using System;
 using Google.Cloud.Datastore.V1;
-using RapidCore.GoogleCloud.Testing;
 using Xunit;
 
 namespace functionaltests.Datastore.DatastoreConnection
 {
-    public class QueryTests : DatastoreConnectedTestBase
+    public class QueryTests : DatastoreConnectionTestBase
     {
-        private readonly RapidCore.GoogleCloud.Datastore.DatastoreConnection connection;
-
-        public QueryTests()
-        {
-            connection = new RapidCore.GoogleCloud.Datastore.DatastoreConnection(GetDb());
-        }
-
         #region Prepare data
         private void PrepareData(string kind)
         {

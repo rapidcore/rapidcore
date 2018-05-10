@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using RapidCore.GoogleCloud.Datastore;
-using RapidCore.GoogleCloud.Testing;
 using Xunit;
 
 namespace functionaltests.Datastore.DatastoreConnection
 {
-    public class InsertAndLoadTests : DatastoreConnectedTestBase
+    public class InsertAndLoadTests : DatastoreConnectionTestBase
     {
-        private readonly RapidCore.GoogleCloud.Datastore.DatastoreConnection connection;
         private readonly Random random;
 
         public InsertAndLoadTests()
         {
-            connection = new RapidCore.GoogleCloud.Datastore.DatastoreConnection(GetDb());
-            
             random = new Random();
         }
 
