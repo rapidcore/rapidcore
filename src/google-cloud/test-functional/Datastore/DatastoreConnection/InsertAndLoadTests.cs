@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using RapidCore.Environment;
 using RapidCore.GoogleCloud.Datastore;
 using RapidCore.GoogleCloud.Testing;
 using Xunit;
@@ -14,8 +13,6 @@ namespace functionaltests.Datastore.DatastoreConnection
 
         public InsertAndLoadTests()
         {
-            var envVars = new EnvironmentVariables();
-            ConnectionString = envVars.Get("DATASTORE_URL", "http://localhost:8081");
             connection = new RapidCore.GoogleCloud.Datastore.DatastoreConnection(GetDb());
             
             random = new Random();

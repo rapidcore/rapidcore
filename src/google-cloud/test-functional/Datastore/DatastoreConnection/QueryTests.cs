@@ -1,6 +1,5 @@
 ﻿using System;
 using Google.Cloud.Datastore.V1;
-using RapidCore.Environment;
 using RapidCore.GoogleCloud.Testing;
 using Xunit;
 
@@ -12,8 +11,6 @@ namespace functionaltests.Datastore.DatastoreConnection
 
         public QueryTests()
         {
-            var envVars = new EnvironmentVariables();
-            ConnectionString = envVars.Get("DATASTORE_URL", "http://localhost:8081");
             connection = new RapidCore.GoogleCloud.Datastore.DatastoreConnection(GetDb());
         }
 

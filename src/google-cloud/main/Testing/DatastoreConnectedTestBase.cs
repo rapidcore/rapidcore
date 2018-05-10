@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Google.Cloud.Datastore.V1;
 using Grpc.Core;
+using RapidCore.Environment;
 
 namespace RapidCore.GoogleCloud.Testing
 {
@@ -17,9 +18,18 @@ namespace RapidCore.GoogleCloud.Testing
         private DatastoreDb db;
         private bool isConnected = false;
 
-        protected string ProjectId { get; set; } = "rapidcore-local";
-        protected string ConnectionString { get; set; } = "http://localhost:8081";
-
+        protected virtual string GetProjectId()
+        {
+            var envVars = new EnvironmentVariables();
+            return envVars.Get("RAPIDCORE_DATASTORE_PROJECT_ID", "rapidcore-local");
+        }
+        
+        protected virtual string GetConnectionString()
+        {
+            var envVars = new EnvironmentVariables();
+            return envVars.Get("RAPIDCORE_DATASTORE_URL", "localhost:8081");
+        }
+        
         protected string GetNamespace()
         {
             return GetType().Name;
@@ -30,7 +40,7 @@ namespace RapidCore.GoogleCloud.Testing
             if (!isConnected)
             {
                 isConnected = true;
-                db = DatastoreDb.Create(ProjectId, GetNamespace(), GetClient());
+                db = DatastoreDb.Create(GetProjectId(), GetNamespace(), GetClient());
                 
                 // truncate the namespace ... aka remove all kinds
                 var query = new Query("__kind__") { Limit = int.MaxValue };
@@ -42,9 +52,21 @@ namespace RapidCore.GoogleCloud.Testing
             }
         }
 
+        private Uri ToUri(string url)
+        {
+            var uri = new Uri(url);
+
+            if (string.IsNullOrEmpty(uri.Host))
+            {
+                return new Uri($"fake://{url}");
+            }
+
+            return uri;
+        }
+
         protected virtual DatastoreClient GetClient()
         {
-            var url = new Uri(ConnectionString);
+            var url = ToUri(GetConnectionString());
             
             return DatastoreClient.Create(
                 new Channel(url.Host, url.Port, ChannelCredentials.Insecure),
