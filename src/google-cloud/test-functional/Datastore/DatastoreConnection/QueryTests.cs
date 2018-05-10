@@ -113,12 +113,35 @@ namespace functionaltests.Datastore.DatastoreConnection
             Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
         }
 
+        [Fact]
+        public async void Query_projection()
+        {
+            PrepareData("Full");
+            
+            var actual = await connection.Query<FullLight>(new Query
+            {
+                Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4}),
+                Projection = { "__key__", "String" }
+            }, "Full");
+            
+            Assert.Equal(3, actual.Count);
+            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+        }
+
         #region POCOs
         public class Full
         {
             public int Id { get; set; }
             public string String { get; set; }
             public int X { get; set; }
+        }
+        
+        public class FullLight
+        {
+            public int Id { get; set; }
+            public string String { get; set; }
         }
         #endregion
     }
