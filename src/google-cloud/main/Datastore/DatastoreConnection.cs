@@ -172,6 +172,35 @@ namespace RapidCore.GoogleCloud.Datastore
         }
         #endregion
 
+        #region Delete
+        public virtual Task DeleteAsync<TPoco>(long id) where TPoco : new()
+        {
+            var kind = orm.GetKind(typeof(TPoco));
+            return DeleteAsync(id, kind);
+        }
+        
+        public virtual Task DeleteAsync<TPoco>(string id) where TPoco : new()
+        {
+            var kind = orm.GetKind(typeof(TPoco));
+            return DeleteAsync(id, kind);
+        }
+
+        public virtual Task DeleteAsync(long id, string kind)
+        {
+            return DeleteAsync(orm.GetKey(kind, id));
+        }
+        
+        public virtual Task DeleteAsync(string id, string kind)
+        {
+            return DeleteAsync(orm.GetKey(kind, id));
+        }
+
+        public virtual Task DeleteAsync(Key key)
+        {
+            return datastoreDb.DeleteAsync(key);
+        }
+        #endregion
+
         #region Query
         /// <summary>
         /// Get a list of POCOs from a query
