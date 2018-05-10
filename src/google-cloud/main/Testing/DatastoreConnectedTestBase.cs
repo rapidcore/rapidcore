@@ -86,5 +86,15 @@ namespace RapidCore.GoogleCloud.Testing
             var queryRes = GetDb().RunQuery(query);
             return new List<Entity>(queryRes.Entities);
         }
+
+        protected Key GetKey(string kind, string id)
+        {
+            return GetDb().CreateKeyFactory(kind).CreateKey(id);
+        }
+
+        protected Key GetKey(string kind, long id)
+        {
+            return GetDb().CreateKeyFactory(kind).CreateKey(id);
+        }
     }
 }

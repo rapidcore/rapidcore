@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore.Internal;
@@ -43,6 +45,19 @@ namespace RapidCore.GoogleCloud.Datastore
         /// The underlying db connection
         /// </summary>
         public virtual DatastoreDb DatastoreDb => datastoreDb;
+
+        /// <summary>
+        /// Get the kind of a POCO
+        ///
+        /// This is meant as a convenience for consumers who might be
+        /// building GQL queries or otherwise needs the kind of a POCO.
+        /// The same thing could be achieved by using <see cref="DatastoreOrm"/> directly.
+        /// </summary>
+        /// <typeparam name="TPoco">The POCO you wish to get the kind for</typeparam>
+        public virtual string GetKind<TPoco>()
+        {
+            return orm.GetKind(typeof(TPoco));
+        }
         
         #region Insert
         /// <summary>
@@ -130,6 +145,58 @@ namespace RapidCore.GoogleCloud.Datastore
             var entity = await datastoreDb.LookupAsync(key);
 
             return orm.EntityToPoco<TPoco>(entity);
+        }
+        #endregion
+
+        #region Query
+        /// <summary>
+        /// Get a list of POCOs from a query
+        ///
+        /// You can ignore the kind, as we look it up with the ORM anyway.
+        /// </summary>
+        /// <param name="query">The query to run (you can ignore the kind)</param>
+        /// <typeparam name="TPoco">The POCO you want back</typeparam>
+        public virtual Task<IList<TPoco>> Query<TPoco>(Query query) where TPoco : new()
+        {
+            if (query.Kind.Count == 0)
+            {
+                return Query<TPoco>(query, orm.GetKind(typeof(TPoco)));
+            }
+            
+            return Query<TPoco>(query, "ignored");
+        }
+        
+        /// <summary>
+        /// Get a list of POCOs from a query
+        /// </summary>
+        /// <param name="query">The query to run (you can ignore the kind)</param>
+        /// <param name="kind">The kind to use</param>
+        /// <typeparam name="TPoco">The POCO you want back</typeparam>
+        public virtual async Task<IList<TPoco>> Query<TPoco>(Query query, string kind) where TPoco : new()
+        {
+            var q = query;
+
+            if (query.Kind.Count == 0)
+            {
+                q = new Query(kind);
+                q.MergeFrom(query);
+            }
+
+            var res = await datastoreDb.RunQueryAsync(q);
+
+            return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).ToList();
+        }
+        
+        /// <summary>
+        /// Get a list of POCOs from a query using GQL
+        /// </summary>
+        /// <param name="query">The query to run (you can ignore the kind)</param>
+        /// <typeparam name="TPoco">The POCO you want back</typeparam>
+        public virtual async Task<IList<TPoco>> Query<TPoco>(GqlQuery query) where TPoco : new()
+        {
+            var res = await datastoreDb.RunQueryAsync(query);
+
+            return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).ToList();
         }
         #endregion
     }
