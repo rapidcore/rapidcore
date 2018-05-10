@@ -27,7 +27,7 @@ namespace unittests.Datestore.Internal
             var actual = Record.Exception(() => PocoValueFactory.FromEntityValue(null, new Value(), pocoFactory));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot extract the proper data from the Value without having the property\nParameter name: prop", actual.Message);
+            Assert.Equal($"Cannot extract the proper data from the Value without having the property{Environment.NewLine}Parameter name: prop", actual.Message);
         }
         
         [Fact]
@@ -36,7 +36,7 @@ namespace unittests.Datestore.Internal
             var actual = Record.Exception(() => PocoValueFactory.FromEntityValue(poco.GetType().GetProperty("True"), null, pocoFactory));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot extract data from a null Value\nParameter name: value", actual.Message);
+            Assert.Equal($"Cannot extract data from a null Value{Environment.NewLine}Parameter name: value", actual.Message);
         }
 
         [Fact]

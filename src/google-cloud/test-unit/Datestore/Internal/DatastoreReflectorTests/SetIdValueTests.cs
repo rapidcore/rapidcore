@@ -22,7 +22,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
             var actual = Record.Exception(() => reflector.SetIdValue(null, keyFactory.CreateKey("yay")));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot set ID on null\nParameter name: poco", actual.Message);
+            Assert.Equal($"Cannot set ID on null{Environment.NewLine}Parameter name: poco", actual.Message);
         }
 
         [Fact]

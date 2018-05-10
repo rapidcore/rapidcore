@@ -21,7 +21,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
             var actual = Record.Exception(() => reflector.GetContentProperties(null));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot get content properties from null\nParameter name: poco", actual.Message);
+            Assert.Equal($"Cannot get content properties from null{Environment.NewLine}Parameter name: poco", actual.Message);
         }
 
         [Fact]

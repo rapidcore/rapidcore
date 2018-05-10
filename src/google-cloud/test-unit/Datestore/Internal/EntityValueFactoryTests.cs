@@ -28,7 +28,7 @@ namespace unittests.Datestore.Internal
             var actual = Record.Exception(() => EntityValueFactory.FromPropertyInfo(poco, null, entityFactory, new List<string>()));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot build an entity Value without a property\nParameter name: prop", actual.Message);
+            Assert.Equal($"Cannot build an entity Value without a property{Environment.NewLine}Parameter name: prop", actual.Message);
         }
 
         [Fact]

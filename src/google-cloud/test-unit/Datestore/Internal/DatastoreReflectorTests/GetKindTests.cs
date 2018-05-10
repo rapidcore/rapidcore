@@ -20,7 +20,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
             var actual = Record.Exception(() => reflector.GetKind((object)null));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot get kind from null\nParameter name: poco", actual.Message);
+            Assert.Equal($"Cannot get kind from null{Environment.NewLine}Parameter name: poco", actual.Message);
         }
 
         [Fact]

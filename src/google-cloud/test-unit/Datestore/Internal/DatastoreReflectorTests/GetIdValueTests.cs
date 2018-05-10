@@ -21,7 +21,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
             var actual = Record.Exception(() => reflector.GetIdValue(null));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot get ID from null\nParameter name: poco", actual.Message);
+            Assert.Equal($"Cannot get ID from null{Environment.NewLine}Parameter name: poco", actual.Message);
         }
         
         [Fact]

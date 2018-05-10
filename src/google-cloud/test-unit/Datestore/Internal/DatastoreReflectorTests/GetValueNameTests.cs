@@ -20,7 +20,7 @@ namespace unittests.Datestore.Internal.DatastoreReflectorTests
             var actual = Record.Exception(() => reflector.GetValueName(null));
 
             Assert.IsType<ArgumentNullException>(actual);
-            Assert.Equal("Cannot get value name from null\nParameter name: prop", actual.Message);
+            Assert.Equal($"Cannot get value name from null{Environment.NewLine}Parameter name: prop", actual.Message);
         }
 
         [Fact]
