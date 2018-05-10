@@ -94,6 +94,18 @@ namespace RapidCore.GoogleCloud.Datastore
             return datastoreDb.UpsertAsync(orm.PocoToEntity(poco, kind));
         }
         #endregion
+        
+        #region Update
+        public virtual Task UpdateAsync<TPoco>(TPoco poco) where TPoco : new()
+        {
+            return UpdateAsync(poco, orm.GetKind(poco.GetType()));
+        }
+        
+        public virtual Task UpdateAsync<TPoco>(TPoco poco, string kind) where TPoco : new()
+        {
+            return datastoreDb.UpdateAsync(orm.PocoToEntity(poco, kind));
+        }
+        #endregion
 
         #region Get by ID
         /// <summary>
