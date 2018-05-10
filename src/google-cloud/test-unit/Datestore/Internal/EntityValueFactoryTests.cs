@@ -129,8 +129,16 @@ namespace unittests.Datestore.Internal
         public void Decimal()
         {
             var actual = EntityValueFactory.FromPropertyInfo(poco, poco.GetType().GetProperty("Decimal"), entityFactory, new List<string>());
+
+            var integral = actual.EntityValue["integral"];
+            var fraction = actual.EntityValue["fraction"];
             
-            Assert.Equal(1.123456789012345, actual.DoubleValue);
+            Assert.Equal(12345, integral.IntegerValue);
+            Assert.Equal(true, integral.ExcludeFromIndexes);
+            
+            Assert.Equal(0.0123456789012345, fraction.DoubleValue);
+            Assert.Equal(true, fraction.ExcludeFromIndexes);
+            
             Assert.Equal(true, actual.ExcludeFromIndexes);
         }
         
@@ -268,7 +276,7 @@ namespace unittests.Datestore.Internal
             public ulong Ulong => 5L;
             public float Float => 1.2f;
             public double Double => 1.2;
-            public decimal Decimal => 1.123456789012345m;
+            public decimal Decimal => 12345.0123456789012345m;
             public DasPocoEnum Enum => DasPocoEnum.Two;
             public DateTime DateTime { get; set; }
             public DateTimeOffset DateTimeOffset { get; set; }

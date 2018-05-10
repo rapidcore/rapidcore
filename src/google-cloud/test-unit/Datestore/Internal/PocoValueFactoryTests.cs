@@ -169,7 +169,7 @@ namespace unittests.Datestore.Internal
             var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
 
             var actualDec = Assert.IsType<decimal>(actual);
-            Assert.Equal(1.12345678901234m, actualDec, 15);
+            Assert.Equal(12345.0123456789012345m, actualDec, 15);
         }
         
         [Fact]
@@ -331,7 +331,7 @@ namespace unittests.Datestore.Internal
             public ulong Ulong => 5L;
             public float Float => 1.2f;
             public double Double => 1.2;
-            public decimal Decimal => 1.12345678901234m;
+            public decimal Decimal => 12345.0123456789012345m;
             public DasPocoEnum Enum => DasPocoEnum.Two;
             public DateTime DateTime { get; set; }
             public DateTimeOffset DateTimeOffset { get; set; }

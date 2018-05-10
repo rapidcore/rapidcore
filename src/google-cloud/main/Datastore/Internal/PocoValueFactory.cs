@@ -68,7 +68,9 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                     return new Tuple<bool, object>(true, value.DoubleValue);
                 
                 case "Decimal":
-                    return new Tuple<bool, object>(true, Convert.ToDecimal(value.DoubleValue));
+                    var dec = Convert.ToDecimal(value.EntityValue["integral"].IntegerValue);
+                    dec = dec + Convert.ToDecimal(value.EntityValue["fraction"].DoubleValue);
+                    return new Tuple<bool, object>(true, dec);
                 
                 case "DateTime":
                     return new Tuple<bool, object>(true, value.TimestampValue.ToDateTime());

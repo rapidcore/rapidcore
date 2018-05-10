@@ -107,7 +107,22 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                     break;
                 
                 case "Decimal":
-                    value.DoubleValue = Convert.ToDouble(propValue);
+                    var dec = (decimal) propValue;
+                    var integral = Convert.ToInt64(decimal.Truncate(dec));
+                    var fraction = Convert.ToDouble(dec % 1m);
+                    value.EntityValue = new Entity
+                    {
+                        ["integral"] = new Value
+                        {
+                            IntegerValue = integral,
+                            ExcludeFromIndexes = true
+                        },
+                        ["fraction"] = new Value
+                        {
+                            DoubleValue = fraction,
+                            ExcludeFromIndexes = true
+                        }
+                    };
                     break;
                 
                 case "DateTime":
