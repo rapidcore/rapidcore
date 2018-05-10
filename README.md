@@ -66,6 +66,14 @@ Current features
 [nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
 
-## For devs
+## Notes for devs
+
+Start by running `docker-compose up -d`.
+
+### Documentation
 
 The documentation is available with live-reload at http://localhost:8000.
+
+### Google Cloud Datastore
+
+The setup made by `docker-compose` includes a [UI for datastore](http://localhost:8282).

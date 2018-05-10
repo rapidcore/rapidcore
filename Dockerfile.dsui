@@ -7,14 +7,8 @@ ENV DATASTORE_ENDPOINT datastore:8081
 
 EXPOSE $UI_PORT
 
-RUN echo "{\"name\":\"haha\",\"description\":\"yomomma\",\"repository\":\"so.fat\",\"license\":\"MIT\" }" > package.json \
-    && npm install jquery \
-    && npm install popper.js \
-    && npm install @streamrail/dsui \
-    && npm cache clean --force
+RUN yarn global add google-cloud-gui
 
 COPY ./dsui_entrypoint.sh .
-
-RUN ln -s /app/node_modules/@streamrail/dsui/bin/dsui /app/dsui
 
 ENTRYPOINT ["/bin/sh", "dsui_entrypoint.sh"]
