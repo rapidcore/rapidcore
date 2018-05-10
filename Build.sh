@@ -8,6 +8,11 @@ dotnet build -c Release -f netstandard1.6 src/core/main/rapidcore.csproj \
 && dotnet test src/core/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
 && dotnet test src/core/test-functional/functionaltests.csproj -c Release -f netcoreapp1.1
 
+# Build google-cloud and test
+dotnet build -c Release -f netstandard1.6 src/google-cloud/main/rapidcore.google-cloud.csproj \
+&& dotnet test src/google-cloud/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
+&& dotnet test src/google-cloud/test-functional/functionaltests.csproj -c Release -f netcoreapp1.1
+
 # Build mongo and test
 dotnet build -c Release -f netstandard1.6 src/mongo/main/rapidcore.mongo.csproj \
 && dotnet test src/mongo/test-unit/unittests.csproj -c Release -f netcoreapp1.1 \
