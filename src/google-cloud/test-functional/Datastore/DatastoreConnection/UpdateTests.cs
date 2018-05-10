@@ -41,7 +41,7 @@ namespace functionaltests.Datastore.DatastoreConnection
                 X = 333
             };
 
-            await connection.InsertAsync("DeviledPigs", poco);
+            await connection.InsertAsync(poco, "DeviledPigs");
 
             poco.X = 999;
             await connection.UpdateAsync(poco, "DeviledPigs");

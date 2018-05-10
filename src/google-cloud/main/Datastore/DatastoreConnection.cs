@@ -63,9 +63,9 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <summary>
         /// Async insert
         /// </summary>
-        /// <param name="kind">The kind to work on</param>
         /// <param name="poco">The POCO to insert</param>
-        public virtual Task InsertAsync<TPoco>(string kind, TPoco poco)
+        /// <param name="kind">The kind to work on</param>
+        public virtual Task InsertAsync<TPoco>(TPoco poco, string kind)
         {
             return datastoreDb.InsertAsync(orm.PocoToEntity(poco, kind));
         }
@@ -79,7 +79,7 @@ namespace RapidCore.GoogleCloud.Datastore
         public virtual Task InsertAsync<TPoco>(TPoco poco)
         {
             var kind = orm.GetKind(typeof(TPoco));
-            return InsertAsync(kind, poco);
+            return InsertAsync(poco, kind);
         }
         #endregion
 

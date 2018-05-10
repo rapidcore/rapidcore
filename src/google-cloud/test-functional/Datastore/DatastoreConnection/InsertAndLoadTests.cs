@@ -32,7 +32,12 @@ namespace functionaltests.Datastore.DatastoreConnection
                 Nesting = n4
             };
 
-            await connection.InsertAsync("DasPoco", poco);
+            await connection.InsertAsync(poco, "DasPoco");
+
+            var all = GetAll("DasPoco");
+            
+            Assert.Equal(1, all.Count);
+            Assert.Equal(poco.Id.ToString(), all[0].Key.Path[0].Name);
         }
         #endregion
 
@@ -67,7 +72,7 @@ namespace functionaltests.Datastore.DatastoreConnection
                 String = Guid.NewGuid().ToString()
             };
 
-            await connection.InsertAsync("GetByIdAsync_long_kind", poco);
+            await connection.InsertAsync(poco, "GetByIdAsync_long_kind");
 
             var actual = await connection.GetByIdAsync<NumericIdPoco>(poco.Id, "GetByIdAsync_long_kind");
             
@@ -105,7 +110,7 @@ namespace functionaltests.Datastore.DatastoreConnection
                 String = Guid.NewGuid().ToString()
             };
 
-            await connection.InsertAsync("GetByIdAsync_string_kind", poco);
+            await connection.InsertAsync(poco, "GetByIdAsync_string_kind");
 
             var actual = await connection.GetByIdAsync<StringIdPoco>(poco.Id, "GetByIdAsync_string_kind");
             
