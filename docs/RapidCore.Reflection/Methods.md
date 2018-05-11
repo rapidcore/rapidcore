@@ -1,6 +1,35 @@
-# Invoking methods on objects
+# Methods
 
-These methods are for invoking methods dynamically using reflection.
+## Get method recursively
+
+The `System.Type.GetMethodRecursively` extension method, tries to find the method you are asking for, anywhere in the type hierarchy (this is the recursive part of the name).
+
+Note that it **tries to find an exact method** and not just all methods with a given name.
+
+```csharp
+using System.Reflection;
+using RapidCore.Reflection;
+
+class ZseParent
+{
+    public void KewlMethod(string str) { }
+}
+
+class ZseChild : ZseParent
+{
+    public void KewlMethod(int) { }
+}
+
+
+var instance = new ZseChild();
+
+MethodInfo method = instance.GetMethodRecursively(
+    "KewlMethod",
+    typeof(string)
+);
+// method now points to ZseParent.KewlMethod(string)
+```
+
 
 ## Invoke method recursively
 
@@ -63,28 +92,4 @@ var whatWasSaid = (string)child.InvokeGenericMethodRecursively(
     222L // third param
 );
 // => "Yo Sandy! 111 222"
-```
-
-
-## Invoke property methods
-
-Again, same concept, but this time for **property getters and setters**.
-
-```csharp
-using RapidCore.Reflection;
-
-class HazMadPropz
-{
-    public string SuitType { get; set; }
-}
-
-
-var instance = new HazMadPropz();
-
-// set the value
-instance.InvokeSetterRecursively("SuitType", "Plastic");
-
-// get the value
-var res = instance.InvokeGetterRecursively("SuitType");
-// => "Plastic"
 ```

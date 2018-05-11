@@ -1,6 +1,4 @@
-# Getting properties
-
-These methods can be used to get references to properties on an object.
+# Properties
 
 ## Get property recursively
 
@@ -25,4 +23,29 @@ var instance = new DasChild();
 
 PropertyInfo property = instance.GetPropertyRecursively("TheProp");
 // property now points to DasParent.TheProp
+```
+
+
+## Invoke property methods
+
+These methods allow you to call a propertie's **getter** and **setter** dynamically. _Recursively_ means "anywhere in the type hierarchy".
+
+
+```csharp
+using RapidCore.Reflection;
+
+class HazMadPropz
+{
+    public string SuitType { get; set; }
+}
+
+
+var instance = new HazMadPropz();
+
+// set the value
+instance.InvokeSetterRecursively("SuitType", "Plastic");
+
+// get the value
+var res = instance.InvokeGetterRecursively("SuitType");
+// => "Plastic"
 ```
