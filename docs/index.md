@@ -7,13 +7,16 @@
 - [Request a feature](https://github.com/rapidcore/rapidcore/issues)
 - [Release notes](https://github.com/rapidcore/rapidcore/releases)
 
-## Code should be...
+## Our goals
 
-- maintainable
+- code should be maintainable
     - readable
     - as simple as possible
-- testable 
+- code should be testable 
     - mockable (unit tests should be easy to control)
+- exceptions should be helpful
+    - types that make sense
+    - messages that help you fix/diagnose the problem
 
 ## Packages
 
