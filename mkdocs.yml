@@ -16,6 +16,7 @@ pages:
       - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
   - Network:
       - DNS: RapidCore.Network/HostnameToIP.md
+      - Predictable http client: RapidCore.Network/HttpClient.md
   - Reflection:
       - Attributes: RapidCore.Reflection/Attributes.md
       - Methods: RapidCore.Reflection/Methods.md
