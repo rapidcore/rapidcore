@@ -11,6 +11,7 @@ pages:
   - Globalization:
       - Countries: RapidCore.Globalization/ISO3166_Countries.md
       - Currencies: RapidCore.Globalization/ISO4217_Currencies.md
+      - Date and time: RapidCore.Globalization/DateAndTime.md
   - Locking:
       - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
   - Networking:
