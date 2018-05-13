@@ -1,6 +1,6 @@
 # ISO 3166 Countries
 
-Country codes can have multiple forms. In order to address this, we have implemented a list of countries as defined by [ISO 3166](INSERT_URL) and tools for seamless "translation" between the codes defined in the ISO; namely:
+Country codes can have multiple forms. In order to address this, we have implemented a list of countries as defined by [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) and tools for seamless "translation" between the codes defined in the ISO; namely:
 
 - alpha-2 (two letter representation)
 - alpha-3 (three letter representation)
