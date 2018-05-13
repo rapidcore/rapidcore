@@ -1,3 +1,23 @@
 site_name: RapidCore Docs
 theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
+pages:
+  - RapidCore: index.md
+  - Mongo DB:
+      - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
+      - Indexes: MongoDB/Indexes.md
+  - Environment:
+      - Variables: RapidCore.Environment/EnvironmentVariables.md
+  - Globalization:
+      - Countries: RapidCore.Globalization/ISO3166_Countries.md
+      - Currencies: RapidCore.Globalization/ISO4217_Currencies.md
+  - Locking:
+      - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
+  - Networking:
+      - DNS: RapidCore.Networking/HostnameToIP.md
+  - Reflection:
+      - Attributes: RapidCore.Reflection/Attributes.md
+      - Methods: RapidCore.Reflection/Methods.md
+      - Properties: RapidCore.Reflection/Properties.md
+  - Threading:
+      - Async/Await: RapidCore.Threading/AsyncAwait.md
