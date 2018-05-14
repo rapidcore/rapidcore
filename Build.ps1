@@ -9,8 +9,7 @@
 .EXAMPLE
   exec { svn info $repository_trunk } "Error executing SVN. Please verify SVN command-line client is installed"
 #>
-function Exec  
-{
+function Exec {
     [CmdletBinding()]
     param(
         [Parameter(Position=0,Mandatory=1)][scriptblock]$cmd,
@@ -63,9 +62,16 @@ Use-NuGetReference .\src\xunit\main\rapidcore.xunit.csproj $version
 ##
 # Pack each package
 ##
-exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-exec { & dotnet pack .\src\google-cloud\main\rapidcore.google-cloud.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-exec { & dotnet pack .\src\postgresql\main\rapidcore.postgresql.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-exec { & dotnet pack .\src\xunit\main\rapidcore.xunit.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+$revCount = & git rev-list HEAD --count | Out-String
+$projectsToBuild = '.\src\core\main\rapidcore.csproj', '.\src\google-cloud\main\rapidcore.google-cloud.csproj', '.\src\mongo\main\rapidcore.mongo.csproj', '.\src\postgresql\main\rapidcore.postgresql.csproj', '.\src\redis\main\rapidcore.redis.csproj', '.\src\xunit\main\rapidcore.xunit.csproj'
+
+foreach ($project in $projectsToBuild) {
+    # If we are building a tag (a real release) don't build with a version suffix
+    if ($Env:APPVEYOR_REPO_TAG -eq "true") {
+        exec { & dotnet pack $project -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+        continue
+    }
+
+    # We are building on a branch or something, append the current commit revision count as the version suffix
+    exec { & dotnet pack $project -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore --version-suffix $revCount }
+}
