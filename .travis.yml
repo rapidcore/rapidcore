@@ -9,9 +9,22 @@ services:
   - docker
 dotnet: 1.0.4
 addons:
-  postgresql:  "9.5"
+  postgresql: '9.5'
 before_install:
   - docker pull singularities/datastore-emulator
   - docker run --rm -d -e DATASTORE_PROJECT_ID=rapidcore-local -e DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081 -p 8081:8081 singularities/datastore-emulator
 script:
   - chmod +x ./Build.sh && ./Build.sh --quiet verify
+deploy:
+  provider: gcs
+  access_key_id: GOOG3WOQ425K2J262RM3
+  secret_access_key:
+    secure: AKGMdkOY4dPwPAZQGPmHULiMidMcdacQYKHPyqANsqnooKEpcdL3AwXRsv9YIbz4x/bkDdHsh95oGoePZn9kNbilb8HC9NgwfA7/+7o/yROSMpX3DPu3wD5Ipc7UOULlU4Nhj7QMHdEuizTTnig7Kgwc+Zfgo5V7/KN8kYcglittIdw0aSr1VKWpKBowMd2OpukQCFEtWz+ca3/G3hNic1v4DGCyUmMoFW0S1nrueoteTbgqUx/WBSpwhzNHCWPt0WjoaSNOak8EjDFcLNqtbPZ63eC/Uo2OTLRIIJKdmt26TuGPHq7oj8izeKsDbc1D6vWYpvu8BJ/EQC5c4F1H9gQIfLgoYASHqIxuLlzY2OQ7Gm8K7mwj+pCkn27KSmlPu1HANTPI0KtJVqnCHq2qN1jBWw1WZs9k/0KQfoJkd/xnofDjCs/CF9iiPtePqOjX40C5LFgg/Wuxwz2AIeALM/Lcj187hrKIHNQdYLxnABJT3TwW0T5bevWUol+ZoXxs7RceLGabJCuAUHVNyyr7WCpVxqJLFLOin0hDCx0xtsv3T+KRD2OjAE3y/5qHRPdmp16l6iZh6yYN0GNiacXmU2RQR+YjNp/x61P4g0kSNS44QhQYukbXMlTzl3eM8l3VQxteplKzP4ljlw6Xx1YHWTZRpd3q6/k67UeChH/BgBc=
+  bucket: rapidcore-docs
+  local-dir: docs-generated
+  skip_cleanup: true
+  on:
+    repo: rapidcore/rapidcore
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^master|feature\/51-update-travisci-with-documentation-publishing$
+    tags: true
