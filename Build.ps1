@@ -12,8 +12,8 @@
 function Exec {
     [CmdletBinding()]
     param(
-        [Parameter(Position=0,Mandatory=1)][scriptblock]$cmd,
-        [Parameter(Position=1,Mandatory=0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
+        [Parameter(Position = 0, Mandatory = 1)][scriptblock]$cmd,
+        [Parameter(Position = 1, Mandatory = 0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
     )
     & $cmd
     if ($lastexitcode -ne 0) {
@@ -32,19 +32,17 @@ function Use-NuGetReference {
     (Get-Content $pathToCsproj).replace($localReference, $nugetReference) | Set-Content $pathToCsproj
 }
 
-if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
+if (Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
 exec { & dotnet restore }
 
 exec { & dotnet build -c Release }
 
-exec { & dotnet test '.\src\core\test-unit\unittests.csproj' -c Release }
-exec { & dotnet test '.\src\google-cloud\test-unit\unittests.csproj' -c Release }
-exec { & dotnet test '.\src\mongo\test-unit\unittests.csproj' -c Release }
-exec { & dotnet test '.\src\postgresql\test-unit\unittests.csproj' -c Release }
-exec { & dotnet test '.\src\redis\test-unit\unittests.csproj' -c Release }
-exec { & dotnet test '.\src\xunit\test-unit\unittests.csproj' -c Release }
+$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj'
 
+foreach ($testProject in $testProjects) {
+    exec { & dotnet test $testProject -c Release }
+}
 
 ##
 # Replace local references to RapidCore with NuGet references
