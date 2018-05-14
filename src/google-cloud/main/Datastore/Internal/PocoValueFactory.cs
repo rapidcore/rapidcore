@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Google.Cloud.Datastore.V1;
@@ -21,7 +22,7 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
                 throw new ArgumentNullException(nameof(value), "Cannot extract data from a null Value");
             }
 
-            return GetValue(prop.PropertyType, value, pocoFactory);
+            return GetValue(prop.PropertyType.GetTypeOrUnderlyingNullableType(), value, pocoFactory);
         }
 
         private static object GetValue(Type type, Value value, IPocoFactory pocoFactory)

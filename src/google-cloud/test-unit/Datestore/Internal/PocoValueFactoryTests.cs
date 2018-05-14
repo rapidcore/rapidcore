@@ -10,6 +10,14 @@ namespace unittests.Datestore.Internal
 {
     public class PocoValueFactoryTests
     {
+        /**
+         * I know it looks a bit funky in the nullable_hasvalue tests,
+         * that we are asserting that the type is the underlying type and
+         * not the nullable. It is because the runtime is handling the nullable
+         * for us.
+         * https://blogs.msdn.microsoft.com/haibo_luo/2005/08/23/reflection-and-nullablet/
+         */
+        
         private readonly DasPoco poco;
         private readonly IEntityFactory entityFactory;
         private readonly IPocoFactory pocoFactory;
@@ -20,7 +28,7 @@ namespace unittests.Datestore.Internal
             pocoFactory = A.Fake<IPocoFactory>(o => o.Strict());
             poco = new DasPoco();
         }
-        
+
         [Fact]
         public void NullPropertyInfoNotAllowed()
         {
@@ -64,6 +72,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void BoolNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("BoolNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void BoolNullable_hasValue()
+        {
+            poco.BoolNullable = true;
+            var prop = poco.GetType().GetProperty("BoolNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<bool>(actual);
+            Assert.Equal(true, typedActual);
+        }
+        
+        [Fact]
         public void Char()
         {
             var prop = poco.GetType().GetProperty("Char");
@@ -76,6 +108,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void CharNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("CharNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void CharNullable_hasValue()
+        {
+            poco.CharNullable = 'x';
+            var prop = poco.GetType().GetProperty("CharNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<char>(actual);
+            Assert.Equal('x', typedActual);
+        }
+        
+        [Fact]
         public void Byte()
         {
             var prop = poco.GetType().GetProperty("Byte");
@@ -85,6 +141,30 @@ namespace unittests.Datestore.Internal
 
             Assert.IsType<byte>(actual);
             Assert.Equal((byte)5, actual);
+        }
+        
+        [Fact]
+        public void ByteNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("ByteNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void ByteNullable_hasValue()
+        {
+            poco.ByteNullable = 17;
+            var prop = poco.GetType().GetProperty("ByteNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<byte>(actual);
+            Assert.Equal(17, typedActual);
         }
         
         [Theory]
@@ -113,6 +193,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void ShortNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("ShortNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void ShortNullable_hasValue()
+        {
+            poco.ShortNullable = -5;
+            var prop = poco.GetType().GetProperty("ShortNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<short>(actual);
+            Assert.Equal(-5, typedActual);
+        }
+        
+        [Fact]
         public void Int()
         {
             var prop = poco.GetType().GetProperty("Int");
@@ -122,6 +226,30 @@ namespace unittests.Datestore.Internal
 
             Assert.IsType<int>(actual);
             Assert.Equal(-5, actual);
+        }
+        
+        [Fact]
+        public void IntNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("IntNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void IntNullable_hasValue()
+        {
+            poco.IntNullable = 789;
+            var prop = poco.GetType().GetProperty("IntNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<int>(actual);
+            Assert.Equal(789, typedActual);
         }
         
         [Fact]
@@ -137,6 +265,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void LongNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("LongNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void LongNullable_hasValue()
+        {
+            poco.LongNullable = 789456123;
+            var prop = poco.GetType().GetProperty("LongNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<long>(actual);
+            Assert.Equal(789456123, typedActual);
+        }
+        
+        [Fact]
         public void Float()
         {
             var prop = poco.GetType().GetProperty("Float");
@@ -146,6 +298,30 @@ namespace unittests.Datestore.Internal
 
             Assert.IsType<float>(actual);
             Assert.Equal((float)1.2, actual);
+        }
+        
+        [Fact]
+        public void FloatNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("FloatNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void FloatNullable_hasValue()
+        {
+            poco.FloatNullable = 1.2f;
+            var prop = poco.GetType().GetProperty("FloatNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<float>(actual);
+            Assert.Equal(1.2f, typedActual);
         }
         
         [Fact]
@@ -161,6 +337,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void DoubleNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("DoubleNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void DoubleNullable_hasValue()
+        {
+            poco.DoubleNullable = 1.234;
+            var prop = poco.GetType().GetProperty("DoubleNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<double>(actual);
+            Assert.Equal(1.234, typedActual);
+        }
+        
+        [Fact]
         public void Decimal()
         {
             var prop = poco.GetType().GetProperty("Decimal");
@@ -173,6 +373,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void DecimalNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("DecimalNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void DecimalNullable_hasValue()
+        {
+            poco.DecimalNullable = 12345.0123456789012345m;
+            var prop = poco.GetType().GetProperty("DecimalNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<decimal>(actual);
+            Assert.Equal(12345.0123456789012345m, typedActual);
+        }
+        
+        [Fact]
         public void Enum()
         {
             var prop = poco.GetType().GetProperty("Enum");
@@ -182,6 +406,30 @@ namespace unittests.Datestore.Internal
 
             Assert.IsType<DasPocoEnum>(actual);
             Assert.Equal(DasPocoEnum.Two, actual);
+        }
+        
+        [Fact]
+        public void EnumNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("EnumNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void EnumNullable_hasValue()
+        {
+            poco.EnumNullable = DasPocoEnum.One;
+            var prop = poco.GetType().GetProperty("EnumNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<DasPocoEnum>(actual);
+            Assert.Equal(DasPocoEnum.One, typedActual);
         }
         
         [Fact]
@@ -199,6 +447,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void DateTimeNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("DateTimeNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void DateTimeNullable_hasValue()
+        {
+            poco.DateTimeNullable = DateTime.UtcNow;
+            var prop = poco.GetType().GetProperty("DateTimeNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<DateTime>(actual);
+            Assert.Equal(poco.DateTimeNullable, typedActual);
+        }
+        
+        [Fact]
         public void DateTimeOffsetX()
         {
             poco.DateTimeOffset = DateTimeOffset.UtcNow;
@@ -213,6 +485,30 @@ namespace unittests.Datestore.Internal
         }
         
         [Fact]
+        public void DateTimeOffsetNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("DateTimeOffsetNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void DateTimeOffsetNullable_hasValue()
+        {
+            poco.DateTimeOffsetNullable = DateTimeOffset.UtcNow;
+            var prop = poco.GetType().GetProperty("DateTimeOffsetNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<DateTimeOffset>(actual);
+            Assert.Equal(poco.DateTimeOffsetNullable, typedActual);
+        }
+        
+        [Fact]
         public void TimeSpanX()
         {
             poco.TimeSpan = TimeSpan.FromDays(1.34567);
@@ -224,6 +520,30 @@ namespace unittests.Datestore.Internal
 
             Assert.IsType<TimeSpan>(actual);
             Assert.Equal(poco.TimeSpan, actual);
+        }
+        
+        [Fact]
+        public void TimeSpanNullable_noValue()
+        {
+            var prop = poco.GetType().GetProperty("TimeSpanNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            Assert.Null(actual);
+        }
+        
+        [Fact]
+        public void TimeSpanNullable_hasValue()
+        {
+            poco.TimeSpanNullable = TimeSpan.FromHours(789.123);
+            var prop = poco.GetType().GetProperty("TimeSpanNullable");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typedActual = Assert.IsType<TimeSpan>(actual);
+            Assert.Equal(poco.TimeSpanNullable, typedActual);
         }
         
         [Fact]
@@ -342,6 +662,20 @@ namespace unittests.Datestore.Internal
             public byte[] Binary { get; set; } = new byte[] {1, 2, 3, 4, 5};
             public string Null => null;
             public Sub Complex { get; set; }
+            
+            public bool? BoolNullable { get; set; }
+            public char? CharNullable { get; set; }
+            public byte? ByteNullable { get; set; }
+            public short? ShortNullable { get; set; }
+            public int? IntNullable { get; set; }
+            public long? LongNullable { get; set; }
+            public float? FloatNullable { get; set; }
+            public double? DoubleNullable { get; set; }
+            public decimal? DecimalNullable { get; set; }
+            public DasPocoEnum? EnumNullable { get; set; }
+            public DateTime? DateTimeNullable { get; set; }
+            public DateTimeOffset? DateTimeOffsetNullable { get; set; }
+            public TimeSpan? TimeSpanNullable { get; set; }
         }
         
         public enum DasPocoEnum

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf;
@@ -26,10 +27,10 @@ namespace RapidCore.GoogleCloud.Datastore.Internal
             {
                 ExcludeFromIndexes = !prop.HasAttribute(typeof(IndexAttribute))
             };
-
+            
             var propValue = prop.GetValue(poco);
 
-            if (SetValue(prop.PropertyType, value, propValue, entityFactory, recursionPath)) return value;
+            if (SetValue(prop.PropertyType.GetTypeOrUnderlyingNullableType(), value, propValue, entityFactory, recursionPath)) return value;
                 
             throw new NotSupportedException($"The type {prop.PropertyType.Name} is not supported");
         }
