@@ -25,6 +25,7 @@ pages:
   - Reflection:
       - Attributes: RapidCore.Reflection/Attributes.md
       - Methods: RapidCore.Reflection/Methods.md
+      - Nullable: RapidCore.Reflection/Nullable.md
       - Properties: RapidCore.Reflection/Properties.md
   - Threading:
       - Async/Await: RapidCore.Threading/AsyncAwait.md
