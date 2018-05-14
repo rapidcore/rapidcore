@@ -55,7 +55,7 @@ namespace functionaltests.Datastore.DatastoreConnection
 
             await connection.InsertAsync(poco);
 
-            var actual = await connection.GetByIdAsync<NumericIdPoco>(poco.Id);
+            var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id);
             
             Assert.Equal(poco.Id, actual.Id);
             Assert.Equal(poco.String, actual.String);
@@ -74,7 +74,7 @@ namespace functionaltests.Datastore.DatastoreConnection
 
             await connection.InsertAsync(poco, "GetByIdAsync_long_kind");
 
-            var actual = await connection.GetByIdAsync<NumericIdPoco>(poco.Id, "GetByIdAsync_long_kind");
+            var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id, "GetByIdAsync_long_kind");
             
             Assert.Equal(poco.Id, actual.Id);
             Assert.Equal(poco.String, actual.String);
@@ -93,7 +93,7 @@ namespace functionaltests.Datastore.DatastoreConnection
 
             await connection.InsertAsync(poco);
 
-            var actual = await connection.GetByIdAsync<StringIdPoco>(poco.Id);
+            var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id);
             
             Assert.Equal(poco.Id, actual.Id);
             Assert.Equal(poco.String, actual.String);
@@ -112,7 +112,7 @@ namespace functionaltests.Datastore.DatastoreConnection
 
             await connection.InsertAsync(poco, "GetByIdAsync_string_kind");
 
-            var actual = await connection.GetByIdAsync<StringIdPoco>(poco.Id, "GetByIdAsync_string_kind");
+            var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id, "GetByIdAsync_string_kind");
             
             Assert.Equal(poco.Id, actual.Id);
             Assert.Equal(poco.String, actual.String);

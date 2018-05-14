@@ -114,10 +114,10 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="id">The numerical ID</param>
         /// <typeparam name="TPoco">The type of class you want to get back</typeparam>
         /// <returns>A hydrated instance of <typeparamref name="TPoco"/> or <c>null</c></returns>
-        public virtual Task<TPoco> GetByIdAsync<TPoco>(long id) where TPoco : new()
+        public virtual Task<TPoco> GetByIdOrDefaultAsync<TPoco>(long id) where TPoco : new()
         {
             var kind = orm.GetKind(typeof(TPoco));
-            return GetByIdAsync<TPoco>(id, kind);
+            return GetByIdOrDefaultAsync<TPoco>(id, kind);
         }
         
         /// <summary>
@@ -126,10 +126,10 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="id">The string ID</param>
         /// <typeparam name="TPoco">The type of class you want to get back</typeparam>
         /// <returns>A hydrated instance of <typeparamref name="TPoco"/> or <c>null</c></returns>
-        public virtual Task<TPoco> GetByIdAsync<TPoco>(string id) where TPoco : new()
+        public virtual Task<TPoco> GetByIdOrDefaultAsync<TPoco>(string id) where TPoco : new()
         {
             var kind = orm.GetKind(typeof(TPoco));
-            return GetByIdAsync<TPoco>(id, kind);
+            return GetByIdOrDefaultAsync<TPoco>(id, kind);
         }
         
         /// <summary>
@@ -139,9 +139,9 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="kind">The kind on which to query</param>
         /// <typeparam name="TPoco">The type of class you want to get back</typeparam>
         /// <returns>A hydrated instance of <typeparamref name="TPoco"/> or <c>null</c></returns>
-        public virtual Task<TPoco> GetByIdAsync<TPoco>(long id, string kind) where TPoco : new()
+        public virtual Task<TPoco> GetByIdOrDefaultAsync<TPoco>(long id, string kind) where TPoco : new()
         {
-            return GetByKeyAsync<TPoco>(orm.GetKey(kind, id));
+            return GetByKeyOrDefaultAsync<TPoco>(orm.GetKey(kind, id));
         }
         
         /// <summary>
@@ -151,9 +151,9 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="kind">The kind on which to query</param>
         /// <typeparam name="TPoco">The type of class you want to get back</typeparam>
         /// <returns>A hydrated instance of <typeparamref name="TPoco"/> or <c>null</c></returns>
-        public virtual Task<TPoco> GetByIdAsync<TPoco>(string id, string kind) where TPoco : new()
+        public virtual Task<TPoco> GetByIdOrDefaultAsync<TPoco>(string id, string kind) where TPoco : new()
         {
-            return GetByKeyAsync<TPoco>(orm.GetKey(kind, id));
+            return GetByKeyOrDefaultAsync<TPoco>(orm.GetKey(kind, id));
         }
         #endregion
 
@@ -164,7 +164,7 @@ namespace RapidCore.GoogleCloud.Datastore
         /// <param name="key">The key to look up</param>
         /// <typeparam name="TPoco">The type of class you want to get back</typeparam>
         /// <returns>A hydrated instance of <typeparamref name="TPoco"/> or <c>null</c></returns>
-        public virtual async Task<TPoco> GetByKeyAsync<TPoco>(Key key) where TPoco : new()
+        public virtual async Task<TPoco> GetByKeyOrDefaultAsync<TPoco>(Key key) where TPoco : new()
         {
             var entity = await datastoreDb.LookupAsync(key);
 
