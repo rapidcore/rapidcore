@@ -45,7 +45,7 @@ foreach ($testProject in $testProjects) {
 }
 
 ##
-# Replace local references to RapidCore with NuGet references
+# Get current version of project and append commit count, if we are not building a tag (thus creating a pre-release)
 ##
 $revCount = & git rev-list HEAD --count | Out-String
 
@@ -59,7 +59,7 @@ if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
 }
 
 ##
-# Update all packages to use nuget reference and pack them
+# Update all packages to use nuget reference and pack them up as nugets
 ##
 $projectsToBuild = '.\src\core\main\rapidcore.csproj', '.\src\google-cloud\main\rapidcore.google-cloud.csproj', '.\src\mongo\main\rapidcore.mongo.csproj', '.\src\postgresql\main\rapidcore.postgresql.csproj', '.\src\redis\main\rapidcore.redis.csproj', '.\src\xunit\main\rapidcore.xunit.csproj'
 
