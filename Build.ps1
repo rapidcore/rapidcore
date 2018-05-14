@@ -47,29 +47,24 @@ foreach ($testProject in $testProjects) {
 ##
 # Replace local references to RapidCore with NuGet references
 ##
+$revCount = & git rev-list HEAD --count | Out-String
+
 Set-Location .\src\core\main
 $version = & dotnet version --output-format=json | ConvertFrom-Json | Select-Object -ExpandProperty currentVersion
 Set-Location ..\..\..\
 
-Use-NuGetReference .\src\google-cloud\main\rapidcore.google-cloud.csproj $version
-Use-NuGetReference .\src\mongo\main\rapidcore.mongo.csproj $version
-Use-NuGetReference .\src\postgresql\main\rapidcore.postgresql.csproj $version
-Use-NuGetReference .\src\redis\main\rapidcore.redis.csproj $version
-Use-NuGetReference .\src\xunit\main\rapidcore.xunit.csproj $version
+# If we are not building a tag, update the version to include a version suffix
+if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
+    $version = "$($version)-preview-$($revCount)".Trim()
+}
 
 ##
-# Pack each package
+# Update all packages to use nuget reference and pack them
 ##
-$revCount = & git rev-list HEAD --count | Out-String
 $projectsToBuild = '.\src\core\main\rapidcore.csproj', '.\src\google-cloud\main\rapidcore.google-cloud.csproj', '.\src\mongo\main\rapidcore.mongo.csproj', '.\src\postgresql\main\rapidcore.postgresql.csproj', '.\src\redis\main\rapidcore.redis.csproj', '.\src\xunit\main\rapidcore.xunit.csproj'
 
-foreach ($project in $projectsToBuild) {
-    # If we are building a tag (a real release) don't build with a version suffix
-    if ($Env:APPVEYOR_REPO_TAG -eq "true") {
-        exec { & dotnet pack $project -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
-        continue
-    }
-
-    # We are building on a branch or something, append the current commit revision count as the version suffix
-    exec { & dotnet pack $project -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore --version-suffix $revCount }
+foreach ($project in $mainProjects) {
+    Use-NuGetReference $project $version
+    # Explicitly set the package version to include any version suffixes...
+    exec { & dotnet pack $project -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore /p:PackageVersion=$version }
 }
