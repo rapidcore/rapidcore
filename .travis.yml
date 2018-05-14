@@ -23,6 +23,7 @@ deploy:
   bucket: rapidcore-docs
   local-dir: docs-generated
   skip_cleanup: true
+  acl: public-read
   on:
     repo: rapidcore/rapidcore
     all_branches: true
