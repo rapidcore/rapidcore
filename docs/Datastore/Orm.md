@@ -23,6 +23,7 @@ Note that due to design choices in Datastore, the following datatypes are not su
 - Kind defaults to the name of the POCO, but can be overridden with `[Kind(..)]`
 - Value names default to the name of the property, but can be overridden with `[Name(..)]`
 - This ORM does not make references to other entities
+- Decimals are stored as a complex type with **integral** and **fraction** as separate values
 
 
 ## Usage example
@@ -187,3 +188,7 @@ public class Kewl
     public int CalculatedValue => 34 * 2;
 }
 ```
+
+## Decimals
+
+Since Datastore does not support the `decimal` datatype directly, the ORM will store it as a complex type in order to preserve precision.
