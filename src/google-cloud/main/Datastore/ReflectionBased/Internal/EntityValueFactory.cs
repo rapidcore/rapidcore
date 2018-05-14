@@ -21,6 +21,11 @@ namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
             }
             
             recursionPath.Add(prop.Name);
+
+            if (prop.PropertyType.GetTypeInfo().IsInterface)
+            {
+                throw new NotSupportedException($"\"{poco.GetType().Name}.{string.Join(".", recursionPath)}\" has \"{prop.PropertyType.Name}\" as type, but that is just an interface and is therefore not supported");
+            }
             
             var value = new Value
             {

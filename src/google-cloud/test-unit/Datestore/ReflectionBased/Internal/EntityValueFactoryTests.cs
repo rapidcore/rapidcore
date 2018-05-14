@@ -122,6 +122,15 @@ namespace unittests.Datestore.ReflectionBased.Internal
             Assert.Equal(6, actual.IntegerValue);
             Assert.Equal(true, actual.ExcludeFromIndexes);
         }
+
+        [Fact]
+        public void ThrowOnInterface()
+        {
+            var actual = Record.Exception(() => EntityValueFactory.FromPropertyInfo(poco, poco.GetType().GetProperty("Interface"), entityFactory, new List<string>()));
+
+            Assert.IsType<NotSupportedException>(actual);
+            Assert.Equal("\"DasPoco.Interface\" has \"IHavePrettyFace\" as type, but that is just an interface and is therefore not supported", actual.Message);
+        }
         
         [Theory]
         [InlineData("Sbyte", typeof(sbyte))]
@@ -541,6 +550,7 @@ namespace unittests.Datestore.ReflectionBased.Internal
             public byte[] Binary { get; set; } = new byte[] {1, 2, 3, 4, 5};
             public string Null => null;
             public Sub Complex { get; set; }
+            public IHavePrettyFace Interface { get; set; }
             
             public bool? BoolNullable { get; set; }
             public char? CharNullable { get; set; }
@@ -573,6 +583,10 @@ namespace unittests.Datestore.ReflectionBased.Internal
             
             [Index]
             public string SubIndexed => "foxy lady";
+        }
+        
+        public interface IHavePrettyFace
+        {
         }
         #endregion
     }
