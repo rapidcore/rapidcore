@@ -49,7 +49,7 @@ namespace RapidCore.Network
         /// https://github.com/dotnet/corefx/issues/8768
         /// </summary>
         /// <param name="uriString">The uri with a hostname to fix</param>
-        /// <returns>The patched uri with an ip instead of a hostname</return>
+        /// <returns>The patched uri with an ip instead of a hostname</returns>
         public virtual string Convert(string uriString)
         {
             return ConvertAsync(uriString).Result;

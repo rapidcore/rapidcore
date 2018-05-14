@@ -1,0 +1,7 @@
+FROM python:3.6.5-alpine3.7
+WORKDIR /app
+EXPOSE 8000
+RUN pip install mkdocs
+VOLUME /app/repository
+ADD ./mkdocs-entrypoint.sh /app
+ENTRYPOINT ["/bin/sh", "/app/mkdocs-entrypoint.sh"]

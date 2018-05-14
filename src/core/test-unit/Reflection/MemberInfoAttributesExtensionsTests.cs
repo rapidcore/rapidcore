@@ -18,6 +18,24 @@ namespace RapidCore.UnitTests.Reflection
         }
 
         [Fact]
+        public void HasAttribute_T_returns_true_if_attributeIsPresent()
+        {
+            Assert.Equal(true, GetProperty("HasObsoleteAttrib").HasAttribute<ObsoleteAttribute>());
+        }
+        
+        [Fact]
+        public void HasAttribute_T_returns_false_if_attributeIsNotPresent_evenWhenItHasOtherAttributes()
+        {
+            Assert.Equal(false, GetProperty("HasObsoleteAttrib").HasAttribute<DisplayNameAttribute>());
+        }
+
+        [Fact]
+        public void HasAttribute_T_returns_false_ifItDoesNotHaveTheAttribute()
+        {
+            Assert.Equal(false, GetProperty("HasNoAttrib").HasAttribute<DisplayNameAttribute>());
+        }
+
+        [Fact]
         public void GetSpecificAttribute_returnAttributeInstance_whenItExists()
         {
             var actual = GetProperty("HasObsoleteAttrib").GetSpecificAttribute(typeof(ObsoleteAttribute));
@@ -38,6 +56,32 @@ namespace RapidCore.UnitTests.Reflection
         public void GetSpecificAttribute_worksOnClassLevel()
         {
             var actual = typeof(GuineaPig).GetTypeInfo().GetSpecificAttribute(typeof(DisplayNameAttribute));
+
+            Assert.Equal(1, actual.Count);
+            Assert.IsType(typeof(DisplayNameAttribute), actual[0]);
+        }
+        
+        [Fact]
+        public void GetSpecificAttribute_T_returnAttributeInstance_whenItExists()
+        {
+            var actual = GetProperty("HasObsoleteAttrib").GetSpecificAttribute<ObsoleteAttribute>();
+
+            Assert.Equal(1, actual.Count);
+            Assert.IsType(typeof(ObsoleteAttribute), actual[0]);
+        }
+
+        [Fact]
+        public void GetSpecificAttribute_T_returnsEmptyList_whenItDoesNotHaveTheAttribute()
+        {
+            var actual = GetProperty("HasNoAttrib").GetSpecificAttribute<ObsoleteAttribute>();
+
+            Assert.Empty(actual);
+        }
+
+        [Fact]
+        public void GetSpecificAttribute_T_worksOnClassLevel()
+        {
+            var actual = typeof(GuineaPig).GetTypeInfo().GetSpecificAttribute<DisplayNameAttribute>();
 
             Assert.Equal(1, actual.Count);
             Assert.IsType(typeof(DisplayNameAttribute), actual[0]);

@@ -16,3 +16,13 @@ services:
       POSTGRES_PASSWORD: 
     ports:
       - 5432:5432
+
+  mkdocs:
+    image: rapidcore:mkdocs
+    build:
+        context: .
+        dockerfile: Dockerfile.mkdocs
+    volumes:
+      - .:/app/repository
+    ports:
+      - 8000:8000

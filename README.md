@@ -65,3 +65,7 @@ Current features
 
 [nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
+
+## For devs
+
+The documentation is available with live-reload at http://localhost:8000.
