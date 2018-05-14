@@ -5,10 +5,10 @@ using Google.Cloud.Datastore.V1;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using RapidCore.GoogleCloud.Datastore;
-using RapidCore.GoogleCloud.Datastore.Internal;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal;
 using Xunit;
 
-namespace unittests.Datestore.Internal
+namespace unittests.Datestore.ReflectionBased.Internal
 {
     public class EntityValueFactoryTests
     {

@@ -5,7 +5,7 @@ using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using RapidCore.Reflection;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore
 {
     public class DatastoreReflector
     {

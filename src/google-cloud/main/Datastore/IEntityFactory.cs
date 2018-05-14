@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Google.Cloud.Datastore.V1;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore
 {
     /// <summary>
     /// Creates <see cref="Entity"/> instances

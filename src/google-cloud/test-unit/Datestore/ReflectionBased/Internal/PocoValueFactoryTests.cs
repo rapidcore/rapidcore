@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using Google.Cloud.Datastore.V1;
-using RapidCore.GoogleCloud.Datastore.Internal;
+using RapidCore.GoogleCloud.Datastore;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal;
 using Xunit;
 using Value = Google.Cloud.Datastore.V1.Value;
 
-namespace unittests.Datestore.Internal
+namespace unittests.Datestore.ReflectionBased.Internal
 {
     public class PocoValueFactoryTests
     {

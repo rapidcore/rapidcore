@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using FakeItEasy;
 using Google.Cloud.Datastore.V1;
 using RapidCore;
-using RapidCore.GoogleCloud.Datastore.Internal;
+using RapidCore.GoogleCloud.Datastore;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased;
 using Xunit;
 
-namespace unittests.Datestore.Internal
+namespace unittests.Datestore.ReflectionBased
 {
     public class ReflectionBasedEntityFactoryTests
     {

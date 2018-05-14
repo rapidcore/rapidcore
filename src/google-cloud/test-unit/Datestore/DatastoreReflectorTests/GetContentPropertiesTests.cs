@@ -1,10 +1,9 @@
 ﻿using System;
 using RapidCore;
 using RapidCore.GoogleCloud.Datastore;
-using RapidCore.GoogleCloud.Datastore.Internal;
 using Xunit;
 
-namespace unittests.Datestore.Internal.DatastoreReflectorTests
+namespace unittests.Datestore.DatastoreReflectorTests
 {
     public class GetContentPropertiesTests
     {

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using RapidCore.Reflection;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
 {
     public class PocoValueFactory
     {

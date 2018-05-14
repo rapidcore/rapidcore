@@ -1,7 +1,7 @@
 ﻿using System;
 using Google.Cloud.Datastore.V1;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore
 {
     /// <summary>
     /// Converts from <see cref="Entity"/> to POCO

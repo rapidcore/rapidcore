@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
-using RapidCore.GoogleCloud.Datastore.Internal;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased;
 
 namespace RapidCore.GoogleCloud.Datastore
 {
@@ -32,9 +32,9 @@ namespace RapidCore.GoogleCloud.Datastore
                 var reflector = new DatastoreReflector();
                 
                 this.orm = new DatastoreOrm(
+                    datastoreDb,
                     reflector,
                     new ReflectionBasedEntityFactory(reflector),
-                    datastoreDb,
                     new ReflectionBasedPocoFactory(reflector)
                 );
             }

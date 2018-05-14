@@ -1,7 +1,8 @@
 ﻿using System;
 using Google.Cloud.Datastore.V1;
+using RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore.ReflectionBased
 {
     public class ReflectionBasedPocoFactory : IPocoFactory
     {

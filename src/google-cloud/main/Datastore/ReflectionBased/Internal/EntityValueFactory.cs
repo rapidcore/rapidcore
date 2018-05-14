@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf;
@@ -10,7 +9,7 @@ using RapidCore.Reflection;
 using Type = System.Type;
 using Value = Google.Cloud.Datastore.V1.Value;
 
-namespace RapidCore.GoogleCloud.Datastore.Internal
+namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
 {
     public class EntityValueFactory
     {
