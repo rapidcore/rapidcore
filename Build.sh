@@ -35,4 +35,3 @@ dotnet build -c Release -f netstandard1.6 src/xunit/main/rapidcore.xunit.csproj 
 # Build documentation
 docker build -t rapidcore:mkdocs -f Dockerfile.mkdocs .
 docker run --volume=${PWD}:/app/repository:rw -p 8000:8000 -it rapidcore:mkdocs build
-echo "TODO do stuff with the build files which are in docs-generated/"
