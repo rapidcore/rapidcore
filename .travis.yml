@@ -1,8 +1,5 @@
 language: csharp
 dist: trusty
-  apt:
-    packages:
-      - google-cloud-sdk
 sudo: required
 mono: none
 services:
@@ -13,6 +10,9 @@ services:
 dotnet: 1.0.4
 addons:
   postgresql:  "9.5"
+  apt:
+    packages:
+      - google-cloud-sdk
 before_script:
   - gcloud beta emulators datastore start &
   - $(gcloud beta emulators datastore env-init)
