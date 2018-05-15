@@ -22,6 +22,12 @@ The library is split into multiple packages (based on external dependencies).
 
 [![nuget version][nuget-image-core]][nuget-url-core]
 
+### RapidCore.GoogleCloud
+
+RapidCore classes for [Google Cloud Platform](https://cloud.google.com) that depend on various SDKs.
+
+[![nuget version][nuget-image-google-cloud]][nuget-url-google-cloud]
+
 ### RapidCore.Mongo
 
 RapidCore classes that depend on MongoDB.
@@ -54,6 +60,9 @@ Current features
 [nuget-image-core]: https://img.shields.io/nuget/v/RapidCore.svg
 [nuget-url-core]: https://www.nuget.org/packages/RapidCore
 
+[nuget-image-google-cloud]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg
+[nuget-url-google-cloud]: https://www.nuget.org/packages/RapidCore.GoogleCloud
+
 [nuget-image-mongo]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
 [nuget-url-mongo]: https://www.nuget.org/packages/RapidCore.Mongo
 
@@ -66,6 +75,14 @@ Current features
 [nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
 
-## For devs
+## Notes for devs
+
+Start by running `docker-compose up -d`.
+
+### Documentation
 
 The documentation is available with live-reload at http://localhost:8000.
+
+### Google Cloud Datastore
+
+The setup made by `docker-compose` includes a [UI for datastore](http://localhost:8282).

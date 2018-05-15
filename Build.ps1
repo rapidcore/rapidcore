@@ -40,6 +40,7 @@ exec { & dotnet restore }
 exec { & dotnet build -c Release }
 
 exec { & dotnet test '.\src\core\test-unit\unittests.csproj' -c Release }
+exec { & dotnet test '.\src\google-cloud\test-unit\unittests.csproj' -c Release }
 exec { & dotnet test '.\src\mongo\test-unit\unittests.csproj' -c Release }
 exec { & dotnet test '.\src\postgresql\test-unit\unittests.csproj' -c Release }
 exec { & dotnet test '.\src\redis\test-unit\unittests.csproj' -c Release }
@@ -53,6 +54,7 @@ Set-Location .\src\core\main
 $version = & dotnet version --output-format=json | ConvertFrom-Json | Select-Object -ExpandProperty currentVersion
 Set-Location ..\..\..\
 
+Use-NuGetReference .\src\google-cloud\main\rapidcore.google-cloud.csproj $version
 Use-NuGetReference .\src\mongo\main\rapidcore.mongo.csproj $version
 Use-NuGetReference .\src\postgresql\main\rapidcore.postgresql.csproj $version
 Use-NuGetReference .\src\redis\main\rapidcore.redis.csproj $version
@@ -62,6 +64,7 @@ Use-NuGetReference .\src\xunit\main\rapidcore.xunit.csproj $version
 # Pack each package
 ##
 exec { & dotnet pack .\src\core\main\rapidcore.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
+exec { & dotnet pack .\src\google-cloud\main\rapidcore.google-cloud.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
 exec { & dotnet pack .\src\mongo\main\rapidcore.mongo.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
 exec { & dotnet pack .\src\postgresql\main\rapidcore.postgresql.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }
 exec { & dotnet pack .\src\redis\main\rapidcore.redis.csproj -c Release -o ..\..\..\artifacts --include-source --no-build --no-restore }

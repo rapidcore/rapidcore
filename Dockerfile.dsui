@@ -1,0 +1,14 @@
+FROM node:8
+
+WORKDIR /app
+ENV PROJECT_ID rapidcore-local
+ENV UI_PORT 8282
+ENV DATASTORE_ENDPOINT datastore:8081
+
+EXPOSE $UI_PORT
+
+RUN yarn global add google-cloud-gui
+
+COPY ./dsui_entrypoint.sh .
+
+ENTRYPOINT ["/bin/sh", "dsui_entrypoint.sh"]

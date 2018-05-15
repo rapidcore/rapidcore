@@ -26,6 +26,7 @@ Set-Location ../../
 
 Write-Host "Version of rapidcore is: " $newVersion " setting this explicit version on all other rapidcore libs" -ForegroundColor Green
 
+Update-Package -path .\google-cloud\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\mongo\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\postgresql\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\redis\main -goTo ..\..\ -version $newVersion |Out-Null

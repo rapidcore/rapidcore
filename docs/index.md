@@ -23,6 +23,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ja3vf8fp1ros6q4t/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore/branch/master)
 
 - [![nuget version][core-nuget-image]][core-nuget-url] RapidCore
+- [![nuget version][google-cloud-nuget-image]][google-cloud-nuget-url] RapidCore.GoogleCloud
 - [![nuget version][mongo-nuget-image]][mongo-nuget-url] RapidCore.Mongo
 - [![nuget version][postgres-nuget-image]][postgres-nuget-url] RapidCore.PostgreSql
 - [![nuget version][redis-nuget-image]][redis-nuget-url] RapidCore.Redis
@@ -30,6 +31,9 @@
 
 [core-nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg
 [core-nuget-url]: https://www.nuget.org/packages/RapidCore
+
+[google-cloud-nuget-image]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg
+[google-cloud-nuget-url]: https://www.nuget.org/packages/RapidCore.GoogleCloud
 
 [mongo-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
 [mongo-nuget-url]: https://www.nuget.org/packages/RapidCore.Mongo
