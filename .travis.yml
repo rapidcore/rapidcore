@@ -10,11 +10,8 @@ services:
 dotnet: 1.0.4
 addons:
   postgresql:  "9.5"
-  apt:
-    packages:
-      - google-cloud-sdk
-before_script:
-  - gcloud beta emulators datastore start &
-  - $(gcloud beta emulators datastore env-init)
+before_install:
+  - docker pull singularities/datastore-emulator
+  - docker run --rm -e DATASTORE_PROJECT_ID=rapidcore-local -e DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081 -p 8081:8081 singularities/datastore-emulator
 script:
   - chmod +x ./Build.sh && ./Build.sh --quiet verify
