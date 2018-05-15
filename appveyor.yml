@@ -14,9 +14,14 @@ artifacts:
   name: NuGet
 deploy:
 - provider: NuGet
-  name: production
+  name: stable
+  api_key:
+    secure: O2aKtP6hbwJ7WLPp9s5GcTsOu/OiNL3Zfpuk1w7JjQAQPbT4P3JGD0FsrusyaYrc
+  on:
+    appveyor_repo_tag: true
+- provider: NuGet
+  name: preview
   api_key:
     secure: O2aKtP6hbwJ7WLPp9s5GcTsOu/OiNL3Zfpuk1w7JjQAQPbT4P3JGD0FsrusyaYrc
   on:
     branch: master
-    appveyor_repo_tag: true
