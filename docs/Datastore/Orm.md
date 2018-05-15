@@ -24,6 +24,7 @@ Note that due to design choices in Datastore, the following datatypes are not su
 - Value names default to the name of the property, but can be overridden with `[Name(..)]`
 - This ORM does not make references to other entities
 - Decimals are stored as a complex type with **integral** and **fraction** as separate values
+- If a cyclical dependency is detected, an exception is thrown
 
 
 ## Usage example
@@ -192,3 +193,24 @@ public class Kewl
 ## Decimals
 
 Since Datastore does not support the `decimal` datatype directly, the ORM will store it as a complex type in order to preserve precision.
+
+
+## Cyclical dependencies
+
+Cyclical dependencies are not supported. The ORM always generates 1 Entity, so references do not exist. If your POCO has complex properties, they are stored as sub-entities, which means that they already have a "reference" to their "parent" through the hierarchy in which they are stored - hence, the reference to the parent is worthless in the storage.
+
+This is what we are talking about:
+
+```csharp
+public class Parent
+{
+    public Child Child { get; set; }
+}
+
+public class Child
+{
+    public Parent Parent { get; set; }
+}
+```
+
+The above will lead to a `RecursionException` as the ORM will gladly follow the references down the rabbit hole - until we detect that we are at a certain depth and we throw an exception.
