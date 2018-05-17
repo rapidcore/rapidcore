@@ -23,6 +23,11 @@ dotnet build -c Release -f netstandard1.6 src/postgresql/main/rapidcore.postgres
 && dotnet test src/postgresql/test-unit/unittests.csproj -c Release -f netcoreapp2.0 \
 && dotnet test src/postgresql/test-functional/functionaltests.csproj -c Release -f netcoreapp2.0 || { echo 'postgresql project build / test failure' ; exit 1; }
 
+# Build postgreSql and test
+dotnet build -c Release -f netstandard1.6 src/sqlserver/main/rapidcore.sqlserver.csproj \
+&& dotnet test src/sqlserver/test-unit/unittests.csproj -c Release -f netcoreapp2.0 \
+&& dotnet test src/sqlserver/test-functional/functionaltests.csproj -c Release -f netcoreapp2.0 || { echo 'sqlserver project build / test failure' ; exit 1; }
+
 # Build redis and test
 dotnet build -c Release -f netstandard1.6 src/redis/main/rapidcore.redis.csproj \
 && dotnet test src/redis/test-unit/unittests.csproj -c Release -f netcoreapp2.0 \
