@@ -38,11 +38,15 @@ public class Startup
 }
 ```
 
-It is safe to register the `provider` as a singleton as it hands out new lock instances for each acquire. 
+It is safe to register the `provider` as a singleton as it hands out new lock instances for each acquire.
+
+It is very important that the `IDbConnection` instance returned by the connection factory `Func` is being opened (by calling the `Open()` method) as the underlying tooling will otherwise open and close the connection immediately, which renders the lock useless.
+
+Also please note that the default configuration of the `SqlServerDistributedAppLockProvider` will manage the connection for you, thus when the lock is disposed, so will the database connection. This is to ensure that connections do not leak.
 
 ### Usage with Entity Framework
 
-Given that the lock provider operates on the lowest level of database connections, namely the `IDbConnection` it supports using your current connection from entity framework - everything but the service registration has been removed for brevity:
+Given that the lock provider operates on the lowest level of database connections, namely the `IDbConnection` it supports using your current connection from entity framework - everything but the service registration has been removed for brevity. As EF will manage the connection state you have to opt out of the db connection state management...
 
 ```csharp
 // Ensure that you have registered your DbContext before this Add
@@ -52,6 +56,9 @@ services.AddSingleton<IDistributedAppLockProvider>(container => {
         var connection = db.Database.GetDbConnection();
         connection.Open();
         return_connection;
+    }, new SqlServerDistributedAppLockConfig
+    {
+        DisposeDbConnection = false
     });
 });
 ```
