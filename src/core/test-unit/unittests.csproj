@@ -4,7 +4,7 @@
     <RootNamespace>RapidCore.UnitTests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="3.4.1" />
+    <PackageReference Include="FakeItEasy" Version="4.6.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.*" />

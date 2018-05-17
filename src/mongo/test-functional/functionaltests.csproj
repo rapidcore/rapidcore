@@ -4,7 +4,7 @@
     <RootNamespace>RapidCore.Mongo.FunctionalTests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="4.0.0" />
+    <PackageReference Include="FakeItEasy" Version="4.6.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.*" />
     <PackageReference Include="MongoDB.Bson" Version="2.4.4" />
