@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>RapidCore.Redis.UnitTests</RootNamespace>
     <AssemblyName>RapidCore.Redis.UnitTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fakeiteasy" Version="3.4.2" />
+    <PackageReference Include="Fakeiteasy" Version="4.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />

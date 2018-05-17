@@ -7,7 +7,7 @@ services:
   - redis-server
   - postgresql
   - docker
-dotnet: 1.0.4
+dotnet: 2.1.200
 addons:
   postgresql: '9.5'
 before_install:
