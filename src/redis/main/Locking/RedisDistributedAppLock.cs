@@ -20,14 +20,14 @@ namespace RapidCore.Redis.Locking
         {
             _redisMuxer = redisMuxer;
         }
-        
+
         /// <summary>
         /// The name of the lock acquired
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public bool IsActive { get; set; }
-        
+        public bool IsActive { get; private set; }
+
         /// <summary>
         /// A unique lock handle for this instance of the lock
         /// </summary>
@@ -41,7 +41,8 @@ namespace RapidCore.Redis.Locking
         /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis will auto expire the lock key</param>
         /// <returns><c>this</c> upon successful lock grab (for a fluent interface)</returns>
         /// <exception cref="DistributedAppLockException"></exception>
-        public async Task<IDistributedAppLock> AcquireLockAsync(string lockName, TimeSpan? lockWaitTimeout = null, TimeSpan? lockAutoExpireTimeout = null)
+        public async Task<IDistributedAppLock> AcquireLockAsync(string lockName, TimeSpan? lockWaitTimeout = null,
+            TimeSpan? lockAutoExpireTimeout = null)
         {
             var stopWatch = new Stopwatch();
             try
@@ -57,7 +58,7 @@ namespace RapidCore.Redis.Locking
                 {
                     lockAutoExpireTimeout = TimeSpan.FromDays(1);
                 }
-                
+
                 _redisDb = _redisMuxer.GetDatabase();
                 stopWatch.Start();
                 do
@@ -82,8 +83,7 @@ namespace RapidCore.Redis.Locking
                     IsActive = true;
                     Name = lockName;
                     break;
-                } 
-                while (stopWatch.Elapsed.TotalSeconds < lockWaitTimeout.Value.TotalSeconds);
+                } while (stopWatch.Elapsed.TotalSeconds < lockWaitTimeout.Value.TotalSeconds);
 
                 if (!IsActive)
                 {
@@ -144,7 +144,7 @@ namespace RapidCore.Redis.Locking
                     $"Lock precondition mismatch, required IsActive=true with name '{name}' but IsActive=true with name '{this.Name}'");
             }
         }
-        
+
         /// <summary>
         /// Dispose of the lock instance and release the lock with the underlying Redis system
         /// </summary>

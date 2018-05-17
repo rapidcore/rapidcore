@@ -10,12 +10,12 @@ namespace RapidCore.Locking
         /// <summary>
         /// The name of the lock acquired
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Determines whether the lock has been taken in the underlying source and is still active
         /// </summary>
-        bool IsActive { get; set; }
+        bool IsActive { get; }
 
         /// <summary>
         /// When implemented in a downstream provider it will verify that the current instance of the lock is in an

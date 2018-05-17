@@ -12,7 +12,7 @@ namespace RapidCore.Redis.Locking
     public class RedisDistributedAppLockProvider : IDistributedAppLockProvider
     {
         private readonly IConnectionMultiplexer _redisMuxer;
-        
+
         /// <summary>
         /// Create a new instance of the locker
         /// </summary>
@@ -27,10 +27,12 @@ namespace RapidCore.Redis.Locking
         /// </summary>
         /// <param name="lockName">Name of the lock to acquire</param>
         /// <param name="lockWaitTimeout">A max amount of time to wait for the lock to become available</param>
-        /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis will auto expire the lock key</param>
+        /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis
+        /// will auto expire the lock key</param>
         /// <returns>A <see cref="RedisDistributedAppLock"/> if the lock is grabbed, throws otherwise</returns>
         /// <exception cref="Exception"></exception>
-        public IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = default(TimeSpan?), TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
+        public IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = default(TimeSpan?),
+            TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
             var handle = new RedisDistributedAppLock(_redisMuxer);
             var task = handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
@@ -43,7 +45,7 @@ namespace RapidCore.Redis.Locking
             catch (AggregateException exception)
             {
                 throw exception.Flatten().InnerException;
-            }    
+            }
         }
 
         /// <summary>
@@ -51,9 +53,11 @@ namespace RapidCore.Redis.Locking
         /// </summary>
         /// <param name="lockName">Name of the lock to acquire</param>
         /// <param name="lockWaitTimeout">A max amount of time to wait for the lock to become available</param>
-        /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis will auto expire the lock key</param>
+        /// <param name="lockAutoExpireTimeout">The amount of time the lock is allowed to stay in Redis before redis
+        /// will auto expire the lock key</param>
         /// <returns>A <see cref="RedisDistributedAppLock"/> if the lock is grabbed, throws otherwise</returns>
-        public async Task<IDistributedAppLock> AcquireAsync(string lockName, TimeSpan? lockWaitTimeout = default(TimeSpan?), TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
+        public async Task<IDistributedAppLock> AcquireAsync(string lockName,
+            TimeSpan? lockWaitTimeout = default(TimeSpan?), TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
             var handle = new RedisDistributedAppLock(_redisMuxer);
             return await handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
