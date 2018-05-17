@@ -23,12 +23,12 @@ namespace functionaltests.Locking
                 "Server=localhost,1433; Trusted_Connection=False; User=sa; Password=sql-s3rv3r%");
 
             _connection = new SqlConnection(_connectionString);
-            
+
             _connectionFactory = () =>
             {
                 if (_connection.State != ConnectionState.Open)
                 {
-                    _connection.Open();                    
+                    _connection.Open();
                 }
 
                 return _connection;
@@ -40,10 +40,11 @@ namespace functionaltests.Locking
         {
             const string lockName = "my-lock";
 
-            var locker = new SqlServerDistributedAppLockProvider(_connectionFactory, new SqlServerDistributedAppLockConfig
-            {
-                DisposeDbConnection = false
-            });
+            var locker = new SqlServerDistributedAppLockProvider(_connectionFactory,
+                new SqlServerDistributedAppLockConfig
+                {
+                    DisposeDbConnection = false
+                });
 
             using (await locker.AcquireAsync(lockName))
             {
@@ -77,7 +78,7 @@ namespace functionaltests.Locking
         public void Cannot_acquire_lock_twice()
         {
             const string lockName = "second-lock";
-            
+
             var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
 
             using (locker.Acquire(lockName, TimeSpan.FromSeconds(1)))
@@ -85,7 +86,13 @@ namespace functionaltests.Locking
                 var ex = Assert.Throws<DistributedAppLockException>(() =>
                 {
                     // we have to create a new connection here as taking the lock twice via the same connection is OK
-                    var otherLocker = new SqlServerDistributedAppLockProvider(() => new SqlConnection(_connectionString));
+                    var otherLocker = new SqlServerDistributedAppLockProvider(() =>
+                    {
+                        var conn = new SqlConnection(_connectionString);
+                        conn.Open();
+
+                        return conn;
+                    });
                     return otherLocker.Acquire(lockName);
                 });
                 Assert.Equal(DistributedAppLockExceptionReason.LockAlreadyAcquired, ex.Reason);
@@ -162,9 +169,9 @@ namespace functionaltests.Locking
             handle.Dispose();
 
             await Task.Delay(50);
-            
+
             Assert.True(hasBeenDisposed);
-            Assert.Equal(ConnectionState.Closed , _connection.State);
+            Assert.Equal(ConnectionState.Closed, _connection.State);
         }
 
         [Fact]
@@ -173,20 +180,31 @@ namespace functionaltests.Locking
             var hasBeenDisposed = false;
             _connection.Disposed += (sender, args) => { hasBeenDisposed = true; };
 
-            var provider = new SqlServerDistributedAppLockProvider(_connectionFactory, new SqlServerDistributedAppLockConfig
-            {
-                
-                DisposeDbConnection = false
-            });
-            
+            var provider = new SqlServerDistributedAppLockProvider(_connectionFactory,
+                new SqlServerDistributedAppLockConfig
+                {
+                    DisposeDbConnection = false
+                });
+
             var handle = await provider.AcquireAsync("some-lock");
 
             handle.Dispose();
 
             await Task.Delay(50);
-            
+
             Assert.False(hasBeenDisposed);
-            Assert.Equal(ConnectionState.Open , _connection.State);
+            Assert.Equal(ConnectionState.Open, _connection.State);
+        }
+
+
+        [Fact]
+        public async Task Throws_if_given_connection_is_not_open()
+        {
+            var locker = new SqlServerDistributedAppLockProvider(() => new SqlConnection(_connectionString));
+            var ex = await Assert.ThrowsAsync<DistributedAppLockException>(async () => { await locker.AcquireAsync("TheLock"); });
+            var arEx = Assert.IsAssignableFrom<ArgumentException>(ex.InnerException);
+            
+            Assert.Equal("dbConnection", arEx.ParamName);
         }
 
         public void Dispose()

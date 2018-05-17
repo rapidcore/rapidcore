@@ -36,7 +36,14 @@ namespace RapidCore.SqlServer.Locking
             try
             {
                 _dbConnection = _dbConnectionFactory();
-                // TODO implement check of whether the connection is open!
+
+                if (_dbConnection.State != ConnectionState.Open)
+                {
+                    throw new ArgumentException(
+                        "The IDbConnection returned by the factory function must be Open. Call the Open() method on the connection before returning",
+                        "dbConnection");
+                }
+
                 var timeoutProvided = lockWaitTimeout.HasValue;
                 if (!timeoutProvided)
                 {
