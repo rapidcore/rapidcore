@@ -19,7 +19,7 @@ namespace functionaltests.Locking
         {
             var env = new EnvironmentVariables();
             var connectionString = env.Get("SQL_SERVER_CONNECTION",
-                "Server=localhost,1433; Trusted_Connection=False; User=sa; Password=sql-s3rv3r!");
+                "Server=localhost,1433; Trusted_Connection=False; User=sa; Password=sql-s3rv3r%");
 
             _connectionFactory = () =>
             {
@@ -52,6 +52,18 @@ namespace functionaltests.Locking
             }
         }
 
+        [Fact]
+        public void Acquire_sync_also_works()
+        {
+            const string lockName = "my-lock";
+            var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
+
+            using (locker.Acquire(lockName))
+            {
+                // mutual exclusion scope here
+            }
+        }
+        
         [Fact]
         public void Cannot_acquire_lock_twice()
         {
