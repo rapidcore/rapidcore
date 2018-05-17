@@ -10,14 +10,17 @@ namespace RapidCore.SqlServer.Locking
     public class SqlServerDistributedAppLock : IDistributedAppLock
     {
         private readonly Func<IDbConnection> _dbConnectionFactory;
+        private readonly SqlServerDistributedAppLockConfig _config;
 
         private IDbConnection _dbConnection;
 
         private bool _disposedValue;
 
-        public SqlServerDistributedAppLock(Func<IDbConnection> dbConnectionFactory)
+        public SqlServerDistributedAppLock(Func<IDbConnection> dbConnectionFactory,
+            SqlServerDistributedAppLockConfig config)
         {
             _dbConnectionFactory = dbConnectionFactory;
+            _config = config;
         }
 
         public string Name { get; private set; }
@@ -33,7 +36,7 @@ namespace RapidCore.SqlServer.Locking
             try
             {
                 _dbConnection = _dbConnectionFactory();
-
+                // TODO implement check of whether the connection is open!
                 var timeoutProvided = lockWaitTimeout.HasValue;
                 if (!timeoutProvided)
                 {
@@ -148,6 +151,13 @@ namespace RapidCore.SqlServer.Locking
                 if (exitCode == (int) SpGetAppLockReturnCode.CallOrParameterError)
                 {
                     // TODO what to do if we are passing invalid data to SQL server?
+                }
+
+                if (_config.DisposeDbConnection)
+                {
+                    _dbConnection?.Close();
+                    _dbConnection?.Dispose();
+                    _dbConnection = null;
                 }
 
                 IsActive = false;

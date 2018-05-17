@@ -13,18 +13,24 @@ namespace functionaltests.Locking
 
     {
         private readonly Func<IDbConnection> _connectionFactory;
-        private SqlConnection _connection;
+        private readonly SqlConnection _connection;
+        private readonly string _connectionString;
 
         public SqlServerDistributedAppLockProviderTests()
         {
             var env = new EnvironmentVariables();
-            var connectionString = env.Get("SQL_SERVER_CONNECTION",
+            _connectionString = env.Get("SQL_SERVER_CONNECTION",
                 "Server=localhost,1433; Trusted_Connection=False; User=sa; Password=sql-s3rv3r%");
 
+            _connection = new SqlConnection(_connectionString);
+            
             _connectionFactory = () =>
             {
-                _connection = new SqlConnection(connectionString);
-                _connection.Open();
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();                    
+                }
+
                 return _connection;
             };
         }
@@ -34,7 +40,10 @@ namespace functionaltests.Locking
         {
             const string lockName = "my-lock";
 
-            var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
+            var locker = new SqlServerDistributedAppLockProvider(_connectionFactory, new SqlServerDistributedAppLockConfig
+            {
+                DisposeDbConnection = false
+            });
 
             using (await locker.AcquireAsync(lockName))
             {
@@ -63,22 +72,26 @@ namespace functionaltests.Locking
                 // mutual exclusion scope here
             }
         }
-        
+
         [Fact]
         public void Cannot_acquire_lock_twice()
         {
             const string lockName = "second-lock";
-            // ensure that no stale keys are left
             
             var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
 
             using (locker.Acquire(lockName, TimeSpan.FromSeconds(1)))
             {
-                var ex = Assert.Throws<DistributedAppLockException>(() => locker.Acquire(lockName));
+                var ex = Assert.Throws<DistributedAppLockException>(() =>
+                {
+                    // we have to create a new connection here as taking the lock twice via the same connection is OK
+                    var otherLocker = new SqlServerDistributedAppLockProvider(() => new SqlConnection(_connectionString));
+                    return otherLocker.Acquire(lockName);
+                });
                 Assert.Equal(DistributedAppLockExceptionReason.LockAlreadyAcquired, ex.Reason);
             }
         }
-        
+
         [Fact]
         public void Test_acquire_lock_with_timeout_works()
         {
@@ -94,7 +107,7 @@ namespace functionaltests.Locking
             SqlServerDistributedAppLock firstLock = null;
             SqlServerDistributedAppLock secondLock = null;
             var lockName = "some-other-lock";
-            
+
             var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
             firstLock = (SqlServerDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
 
@@ -115,7 +128,7 @@ namespace functionaltests.Locking
             // this second lock now enters retry mode
             secondLock = (SqlServerDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
         }
-        
+
         [Fact]
         public void Test_that_is_acquired_is_false_when_disposed()
         {
@@ -124,7 +137,7 @@ namespace functionaltests.Locking
             theLock.Dispose();
             Assert.False(theLock.IsActive);
         }
-        
+
         [Fact]
         public async Task Acquire_with_auto_expiry_throws()
         {
@@ -135,6 +148,45 @@ namespace functionaltests.Locking
             });
 
             Assert.IsAssignableFrom<NotSupportedException>(ex.InnerException);
+        }
+
+        [Fact]
+        public async Task Default_behavior_disposes_connection()
+        {
+            var hasBeenDisposed = false;
+            _connection.Disposed += (sender, args) => { hasBeenDisposed = true; };
+
+            var provider = new SqlServerDistributedAppLockProvider(_connectionFactory);
+            var handle = await provider.AcquireAsync("some-lock");
+
+            handle.Dispose();
+
+            await Task.Delay(50);
+            
+            Assert.True(hasBeenDisposed);
+            Assert.Equal(ConnectionState.Closed , _connection.State);
+        }
+
+        [Fact]
+        public async Task Configured_behavior_leaves_connection_intact()
+        {
+            var hasBeenDisposed = false;
+            _connection.Disposed += (sender, args) => { hasBeenDisposed = true; };
+
+            var provider = new SqlServerDistributedAppLockProvider(_connectionFactory, new SqlServerDistributedAppLockConfig
+            {
+                
+                DisposeDbConnection = false
+            });
+            
+            var handle = await provider.AcquireAsync("some-lock");
+
+            handle.Dispose();
+
+            await Task.Delay(50);
+            
+            Assert.False(hasBeenDisposed);
+            Assert.Equal(ConnectionState.Open , _connection.State);
         }
 
         public void Dispose()
