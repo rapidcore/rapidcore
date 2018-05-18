@@ -46,11 +46,12 @@ Also please note that the default configuration of the `SqlServerDistributedAppL
 
 ### Usage with Entity Framework
 
-Given that the lock provider operates on the lowest level of database connections, namely the `IDbConnection` it supports using your current connection from entity framework - everything but the service registration has been removed for brevity. As EF will manage the connection state you have to opt out of the db connection state management...
+Given that the lock provider operates on the lowest level of database connections, namely the `IDbConnection` it supports using your current connection from entity framework. As EF will manage the connection state you have to opt out of the db connection state management.
+
+Everything but the service registration has been removed for brevity:
 
 ```csharp
-// Ensure that you have registered your DbContext before this Add
-services.AddSingleton<IDistributedAppLockProvider>(container => {
+services.AddScoped<IDistributedAppLockProvider>(container => {
     var db = container.GetService<YourDbContext>();
     return new SqlServerDistributedAppLockProvider(() => {
         var connection = db.Database.GetDbConnection();
@@ -62,3 +63,5 @@ services.AddSingleton<IDistributedAppLockProvider>(container => {
     });
 });
 ```
+
+Also note that when we are using an Entity Framework DbContext the `SqlServerDistributedAppLockProvider` is registered as `Scoped` - this is required as your `DbContext` is most likely registered as a scoped dependency. 
