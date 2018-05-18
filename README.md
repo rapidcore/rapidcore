@@ -40,6 +40,12 @@ RapidCore classes that depend on PostgreSql.
 
 [![nuget version][nuget-image-postgres]][nuget-url-postgres]
 
+### RapidCore.SqlServer
+
+RapidCore classes that depend on SqlServer.
+
+[![nuget version][nuget-image-sqlserver]][nuget-url-sqlserver]
+
 ### RapidCore.Redis
 
 RapidCore classes that depend on Redis.
@@ -71,6 +77,9 @@ Current features
 
 [nuget-image-redis]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
 [nuget-url-redis]: https://www.nuget.org/packages/RapidCore.Redis
+
+[nuget-image-sqlserver]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg
+[nuget-url-sqlserver]: https://www.nuget.org/packages/RapidCore.SqlServer
 
 [nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
