@@ -38,7 +38,7 @@ exec { & dotnet restore }
 
 exec { & dotnet build -c Release }
 
-$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj'
+$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
 
 foreach ($testProject in $testProjects) {
     exec { & dotnet test $testProject -c Release }
@@ -63,7 +63,7 @@ Set-Location ..\..\..\
 ##
 # Update all packages to use nuget reference and pack them up as nugets
 ##
-$mainProjects = '.\src\core\main\rapidcore.csproj', '.\src\google-cloud\main\rapidcore.google-cloud.csproj', '.\src\mongo\main\rapidcore.mongo.csproj', '.\src\postgresql\main\rapidcore.postgresql.csproj', '.\src\redis\main\rapidcore.redis.csproj', '.\src\xunit\main\rapidcore.xunit.csproj'
+$mainProjects = '.\src\core\main\rapidcore.csproj', '.\src\google-cloud\main\rapidcore.google-cloud.csproj', '.\src\mongo\main\rapidcore.mongo.csproj', '.\src\postgresql\main\rapidcore.postgresql.csproj', '.\src\redis\main\rapidcore.redis.csproj', '.\src\xunit\main\rapidcore.xunit.csproj', '.\src\sqlserver\main\rapidcore.sqlserver.csproj' 
 
 foreach ($project in $mainProjects) {
     Use-NuGetReference $project $version

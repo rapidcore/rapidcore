@@ -1,12 +1,12 @@
 # Distributed app locks
 
-When you need to ensure that only 1 process (accross all of your instances or services) is working on some resource, you need some form of distributed app lock. In `RapidCore` this is defined in `RapidCore.Locking.IDistributedAppLockProvider` and `RapidCore.Locking.IDistributedAppLock`.
+When you need to ensure that only 1 process (across all of your instances or services) is working on some resource, you need some form of distributed app lock. In `RapidCore` this is defined in `RapidCore.Locking.IDistributedAppLockProvider` and `RapidCore.Locking.IDistributedAppLock`.
 
 You can implement your own or use one the implementations available in the RapidCore packages with dependencies:
 
 - Noop in `RapidCore` for when you really do not care, but the framework requires it
-- Redis in `RapidCore.Redis`
-
+- Redis in in the package `RapidCore.Redis`
+- SqlServer in the package [`RapidCore.SqlServer`](../SqlServer/Locking.md)
 
 ## Taking a lock
 
@@ -31,7 +31,7 @@ public class Worker
         var howLongBeforeGivingUp = TimeSpan.FromSeconds(10);
         var howLongBeforeLockAutoExpires = TimeSpan.FromSeconds(60);
 
-        using (var appLock = appLockProvider.AcquireAsync("lock name", howLongBeforeGivingUp, howLongBeforeLockAutoExpires)) // there is also a synchronous version
+        using (var appLock = await appLockProvider.AcquireAsync("lock name", howLongBeforeGivingUp, howLongBeforeLockAutoExpires)) // there is also a synchronous version
         {
             // work on the sensitive resource
         }
@@ -68,7 +68,7 @@ public class Worker
 
         try
         {
-            using (var appLock = appLockProvider.AcquireAsync("lock name", howLongBeforeGivingUp, howLongBeforeLockAutoExpires))
+            using (var appLock = await appLockProvider.AcquireAsync("lock name", howLongBeforeGivingUp, howLongBeforeLockAutoExpires))
             {
                 // work on the sensitive resource
             }

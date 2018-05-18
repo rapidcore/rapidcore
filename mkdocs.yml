@@ -21,6 +21,8 @@ pages:
       - Connected test base: Datastore/TestBase.md
   - Locking:
       - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
+  - SqlServer:
+      - Distributed app lock: SqlServer/Locking.md
   - Network:
       - DNS: RapidCore.Network/HostnameToIP.md
       - Predictable http client: RapidCore.Network/HttpClient.md
