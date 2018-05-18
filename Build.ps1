@@ -51,12 +51,14 @@ $revCount = & git rev-list HEAD --count | Out-String
 
 Set-Location .\src\core\main
 $version = & dotnet version --output-format=json | ConvertFrom-Json | Select-Object -ExpandProperty currentVersion
-Set-Location ..\..\..\
 
-# If we are not building a tag, update the version to include a version suffix
+# If we are not building a tag, update the version to include a version suffix and a minor bump
 if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
+    $version = & dotnet version --output-format=json --dry-run patch | ConvertFrom-Json | Select-Object -ExpandProperty newVersion
     $version = "$($version)-preview-$($revCount)".Trim()
 }
+
+Set-Location ..\..\..\
 
 ##
 # Update all packages to use nuget reference and pack them up as nugets
