@@ -27,6 +27,7 @@
 - [![nuget version][mongo-nuget-image]][mongo-nuget-url] RapidCore.Mongo
 - [![nuget version][postgres-nuget-image]][postgres-nuget-url] RapidCore.PostgreSql
 - [![nuget version][redis-nuget-image]][redis-nuget-url] RapidCore.Redis
+- [![nuget version][sqlserver-nuget-image]][sqlserver-nuget-url] RapidCore.SqlServer
 - [![nuget version][xunit-nuget-image]][xunit-nuget-url] RapidCore.Xunit
 
 [core-nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg
@@ -43,6 +44,9 @@
 
 [redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
 [redis-nuget-url]: https://www.nuget.org/packages/RapidCore.Redis
+
+[sqlserver-nuget-image]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg
+[sqlserver-nuget-url]: https://www.nuget.org/packages/RapidCore.SqlServer
 
 [xunit-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
 [xunit-nuget-url]: https://www.nuget.org/packages/RapidCore.Xunit
