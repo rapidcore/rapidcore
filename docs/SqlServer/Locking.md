@@ -1,6 +1,6 @@
 # SqlServer Distributed Application Lock
 
-The `SqlServerDistributedAppLockProvider` is a concrete Distributed Application lock implementation using SqlServer 2008+ as the locking backend. Underneath the hood it is using the stored procedure [`sp_getapplock`](https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-getapplock-transact-sql?view=sql-server-2017)
+The `SqlServerDistributedAppLockProvider` is a concrete Distributed Application lock implementation using SqlServer 2008+ as the locking backend. Under the hood it is using the stored procedure [`sp_getapplock`](https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-getapplock-transact-sql?view=sql-server-2017)
 
 As described in the [Distributed app locks](../RapidCore.Locking/DistributedAppLock.md) section your code should take a dependency on the `IDistributedAppLockProvider` and use the `Acquire` or `AcquireAsync` methods to grab a lock.
 
@@ -55,7 +55,7 @@ services.AddSingleton<IDistributedAppLockProvider>(container => {
     return new SqlServerDistributedAppLockProvider(() => {
         var connection = db.Database.GetDbConnection();
         connection.Open();
-        return_connection;
+        return connection;
     }, new SqlServerDistributedAppLockConfig
     {
         DisposeDbConnection = false

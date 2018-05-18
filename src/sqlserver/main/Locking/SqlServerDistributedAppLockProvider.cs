@@ -62,14 +62,14 @@ namespace RapidCore.SqlServer.Locking
         }
 
         /// <summary>
-        /// Acquire a lock asyncrhonosouly
+        /// Acquire a lock asynchronously
         /// </summary>
         /// <remarks>
         /// Please note that passing a <param name="lockAutoExpireTimeout"></param> value is not supported and will result
         /// in thrown <see cref="NotSupportedException"/>s
         /// </remarks>
         /// <param name="lockName">The name of the lock</param>
-        /// <param name="lockWaitTimeout">The amount of time to wait for the acquicution of the lock</param>
+        /// <param name="lockWaitTimeout">The amount of time to wait for the acquisition of the lock</param>
         /// <param name="lockAutoExpireTimeout">Not supported</param>
         /// <returns></returns>
         public async Task<IDistributedAppLock> AcquireAsync(string lockName, TimeSpan? lockWaitTimeout = null,
