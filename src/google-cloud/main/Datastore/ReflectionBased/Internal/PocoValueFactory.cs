@@ -105,11 +105,10 @@ namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
                     return new Tuple<bool, object>(true, output);
                 }
 
-
-                elmType = type.GenericTypeArguments.FirstOrDefault();
+                elmType = GetElementTypeFromEnumerable(type);
                 if (elmType == null)
                 {
-                    throw new NotSupportedException($"I am unable to recreate a ${type.Name}");
+                    throw new NotSupportedException($"I am unable to recreate a {type.Name} as I do not know what type of element it enumerates");
                 }
                 
                 var data = (IList)Activator.CreateInstance(type);
@@ -123,6 +122,38 @@ namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
             }
             
             return new Tuple<bool, object>(false, null);
+        }
+
+        /// <summary>
+        /// Get the type of the element of an enumerable type.
+        ///
+        /// It also handles cases like <c>class CustomCollection : Collection'T</c>
+        /// </summary>
+        /// <param name="enumerable">The enumerable type</param>
+        /// <returns>The type of the enumerated element or null if unable to find one</returns>
+        private static Type GetElementTypeFromEnumerable(Type enumerable)
+        {
+            TypeInfo ti;
+
+            Type cur = enumerable;
+            while (true)
+            {
+                if (cur.GenericTypeArguments.Length > 0)
+                {
+                    return cur.GenericTypeArguments.First();
+                }
+
+                ti = cur.GetTypeInfo();
+
+                if (ti.BaseType == null)
+                {
+                    break;
+                }
+
+                cur = ti.BaseType;
+            }
+
+            return null;
         }
 
         private static Tuple<bool, object> HandleBinary(Type type, Value value)
