@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using FakeItEasy;
 using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore;
@@ -636,6 +637,29 @@ namespace unittests.Datestore.ReflectionBased.Internal
             Assert.Same(sub, actual);
         }
         
+        [Fact]
+        public void CustomCollection()
+        {
+            var simple = new Simple {Hello = "neo"};
+            var collection = new MyCollection
+            {
+                simple
+            };
+
+            poco.MyCollection = collection;
+            
+            A.CallTo(() => pocoFactory.FromEmbeddedEntity(typeof(Simple), A<Entity>._)).Returns(simple);
+            
+            var prop = poco.GetType().GetProperty("MyCollection");
+            var value = EntityValueFactory.FromPropertyInfo(poco, prop, entityFactory, new List<string>());
+
+            var actual = PocoValueFactory.FromEntityValue(prop, value, pocoFactory);
+
+            var typed = Assert.IsType<MyCollection>(actual);
+            Assert.Equal(1, typed.Count);
+            Assert.Equal("neo", typed[0].Hello);
+        }
+        
         #region POCOs
         public class DasPoco
         {
@@ -664,6 +688,7 @@ namespace unittests.Datestore.ReflectionBased.Internal
             public byte[] Binary { get; set; } = new byte[] {1, 2, 3, 4, 5};
             public string Null => null;
             public Sub Complex { get; set; }
+            public MyCollection MyCollection { get; set; }
             
             public bool? BoolNullable { get; set; }
             public char? CharNullable { get; set; }
@@ -692,6 +717,15 @@ namespace unittests.Datestore.ReflectionBased.Internal
             public string SubWhat { get; set; }
             
             public string SubIndexed { get; set; }
+        }
+        
+        public class MyCollection : Collection<Simple>
+        {
+        }
+        
+        public class Simple
+        {
+            public string Hello { get; set; }
         }
         #endregion
     }

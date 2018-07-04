@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using FakeItEasy;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf;
@@ -130,6 +131,22 @@ namespace unittests.Datestore.ReflectionBased.Internal
 
             Assert.IsType<NotSupportedException>(actual);
             Assert.Equal("\"DasPoco.Interface\" has \"IHavePrettyFace\" as type, but that is just an interface and is therefore not supported", actual.Message);
+        }
+        
+        [Fact]
+        public void Collection()
+        {
+            var simple = new Simple();
+            poco.MyCollection = new MyCollection { simple };
+            
+            var simpleEntity = new Entity();
+
+            A.CallTo(() => entityFactory.EmbeddedEntityFromPoco(simple, A<IList<string>>._)).Returns(simpleEntity);
+            
+            var actual = EntityValueFactory.FromPropertyInfo(poco, poco.GetType().GetProperty("MyCollection"), entityFactory, new List<string>());
+            
+            Assert.Equal(1, actual.ArrayValue.Values.Count);
+            Assert.Equal(false, actual.ExcludeFromIndexes);
         }
         
         [Theory]
@@ -551,6 +568,7 @@ namespace unittests.Datestore.ReflectionBased.Internal
             public string Null => null;
             public Sub Complex { get; set; }
             public IHavePrettyFace Interface { get; set; }
+            public MyCollection MyCollection { get; set; }
             
             public bool? BoolNullable { get; set; }
             public char? CharNullable { get; set; }
@@ -587,6 +605,15 @@ namespace unittests.Datestore.ReflectionBased.Internal
         
         public interface IHavePrettyFace
         {
+        }
+        
+        public class MyCollection : Collection<Simple>
+        {
+        }
+        
+        public class Simple
+        {
+            public string Hello { get; set; }
         }
         #endregion
     }
