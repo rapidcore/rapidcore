@@ -30,12 +30,12 @@ namespace RapidCore.GoogleCloud.Testing
             return envVars.Get("RAPIDCORE_DATASTORE_URL", "localhost:8081");
         }
         
-        protected string GetNamespace()
+        protected virtual string GetNamespace()
         {
             return GetType().Name;
         }
 
-        protected void Connect()
+        protected virtual void Connect()
         {
             if (!isConnected)
             {
@@ -74,7 +74,7 @@ namespace RapidCore.GoogleCloud.Testing
             );
         }
 
-        protected DatastoreDb GetDb()
+        protected virtual DatastoreDb GetDb()
         {
             Connect();
             return db;
@@ -93,12 +93,12 @@ namespace RapidCore.GoogleCloud.Testing
             GetDb().Delete(res.Entities.Select(x => x.Key));
         }
 
-        protected void Insert(Entity entity)
+        protected virtual void Insert(Entity entity)
         {
             GetDb().Insert(entity);
         }
 
-        protected IList<Entity> GetAll(string kind)
+        protected virtual IList<Entity> GetAll(string kind)
         {
             var query = new Query(kind)
             {
@@ -109,12 +109,12 @@ namespace RapidCore.GoogleCloud.Testing
             return new List<Entity>(queryRes.Entities);
         }
 
-        protected Key GetKey(string kind, string id)
+        protected virtual Key GetKey(string kind, string id)
         {
             return GetDb().CreateKeyFactory(kind).CreateKey(id);
         }
 
-        protected Key GetKey(string kind, long id)
+        protected virtual Key GetKey(string kind, long id)
         {
             return GetDb().CreateKeyFactory(kind).CreateKey(id);
         }
