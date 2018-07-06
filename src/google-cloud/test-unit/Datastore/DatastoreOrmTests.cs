@@ -57,8 +57,57 @@ namespace unittests.Datastore
             Assert.Same(entity, actual);
         }
 
+        [Fact]
+        public void GetValueName_works_given_a_property()
+        {
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.MyProperty);
+            
+            Assert.Equal("MyProperty", actual);
+        }
+        
+        [Fact]
+        public void GetValueName_throws_ifExpression_IsWrongType()
+        {
+            var actual = Record.Exception(() => orm.GetValueName<ValueNameVictim>(x => x.MyProperty.Equals("horse")));
+
+            Assert.IsType<ArgumentException>(actual);
+            Assert.StartsWith("The given expression does not point to a member", actual.Message);
+        }
+        
+        [Fact]
+        public void GetValueName_throws_ifExpression_doesNotPointToAProperty()
+        {
+            var actual = Record.Exception(() => orm.GetValueName<ValueNameVictim>(x => x.SomeField));
+
+            Assert.IsType<ArgumentException>(actual);
+            Assert.StartsWith("The given expression does not point to a property", actual.Message);
+        }
+        
+        [Fact]
+        public void GetValueName_1_level_only()
+        {
+            var actual = Record.Exception(() => orm.GetValueName<ValueNameVictim>(x => x.TheDeeper.DangerIs));
+
+            Assert.IsType<ArgumentException>(actual);
+            Assert.StartsWith("The given expression does not point to a member", actual.Message);
+        }
+
         #region POCOs
         public class Bee {}
+        
+        public class ValueNameVictim
+        {
+            public string SomeField;
+            
+            public string MyProperty { get; set; }
+            
+            public Deeper TheDeeper { get; set; }
+        }
+        
+        public class Deeper
+        {
+            public int DangerIs => 23;
+        }
         #endregion
     }
 }

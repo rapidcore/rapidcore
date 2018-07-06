@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq.Expressions;
+using System.Reflection;
 using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore.ReflectionBased;
 
@@ -112,6 +114,31 @@ namespace RapidCore.GoogleCloud.Datastore
         public virtual TPoco EntityToPoco<TPoco>(Entity entity) where TPoco : new()
         {
             return pocoFactory.FromEntity<TPoco>(entity);
+        }
+
+        /// <summary>
+        /// Get the name of the Datastore entity value for a given property
+        /// </summary>
+        /// <param name="propertySelectionExpression"></param>
+        /// <typeparam name="T">The type you are selecting from</typeparam>
+        /// <exception cref="ArgumentException">Thrown if the expression does not point to a property on the given type</exception>
+        public virtual string GetValueName<T>(Expression<Func<T, object>> propertySelectionExpression)
+        {
+            var expr = propertySelectionExpression.Body as MemberExpression;
+
+            if (expr == null)
+            {
+                throw new ArgumentException("The given expression does not point to a member", nameof(propertySelectionExpression));
+            }
+
+            var prop = expr.Member as PropertyInfo;
+
+            if (prop == null)
+            {
+                throw new ArgumentException("The given expression does not point to a property", nameof(propertySelectionExpression));
+            }
+
+            return reflector.GetValueName(prop);
         }
     }
 }
