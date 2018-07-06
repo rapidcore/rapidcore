@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Grpc.Core;
 using RapidCore.Environment;
@@ -117,6 +118,37 @@ namespace RapidCore.GoogleCloud.Testing
         protected virtual Key GetKey(string kind, long id)
         {
             return GetDb().CreateKeyFactory(kind).CreateKey(id);
+        }
+        
+        /// <summary>
+        /// This is a work-around for the following issue:
+        /// https://issuetracker.google.com/issues/111182297
+        ///
+        /// It simply repeats the test a few times if it fails.
+        /// If it continues to fail, the resulting exception is rethrown.
+        ///
+        /// Hopefully this method will no longer be needed in the near future!
+        /// </summary>
+        /// <param name="theTestAsync">The test code to repeat</param>
+        protected async Task WorkAroundDatastoreEmulatorIssueAsync(Func<Task> theTestAsync)
+        {
+            var i = 0;
+            while (true)
+            {
+                i++;
+                try
+                {
+                    await theTestAsync.Invoke();
+                    break;
+                }
+                catch (Exception)
+                {
+                    if (i == 10)
+                    {
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

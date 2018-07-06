@@ -51,83 +51,98 @@ namespace functionaltests.Datastore.DatastoreConnection
         [Fact]
         public async void Query_query_withKindSet()
         {
-            PrepareData("DonkeyDiamonds");
-            
-            var actual = await connection.Query<Full>(new Query("DonkeyDiamonds")
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
+                PrepareData("DonkeyDiamonds");
+
+                var actual = await connection.Query<Full>(new Query("DonkeyDiamonds")
+                {
+                    Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
+                });
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
             });
-            
-            Assert.Equal(3, actual.Count);
-            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
-            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
-            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
         }
         
         [Fact]
         public async void Query_query_withoutSettingKind()
         {
-            PrepareData("Full");
-            
-            var actual = await connection.Query<Full>(new Query
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
+                PrepareData("Full");
+
+                var actual = await connection.Query<Full>(new Query
+                {
+                    Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
+                });
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
             });
-            
-            Assert.Equal(3, actual.Count);
-            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
-            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
-            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
         }
         
         [Fact]
         public async void Query_query_kind()
         {
-            PrepareData("BagOfBaguettes");
-            
-            var actual = await connection.Query<Full>(new Query
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
-            }, "BagOfBaguettes");
-            
-            Assert.Equal(3, actual.Count);
-            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
-            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
-            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+                PrepareData("BagOfBaguettes");
+
+                var actual = await connection.Query<Full>(new Query
+                {
+                    Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4})
+                }, "BagOfBaguettes");
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+            });
         }
         
         [Fact]
         public async void Query_gql()
         {
-            PrepareData("BagOfBaguettes");
-            
-            var actual = await connection.Query<Full>(new GqlQuery
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                AllowLiterals = true,
-                QueryString = "select * from BagOfBaguettes where X<=4"
+                PrepareData("BagOfBaguettes");
+
+                var actual = await connection.Query<Full>(new GqlQuery
+                {
+                    AllowLiterals = true,
+                    QueryString = "select * from BagOfBaguettes where X<=4"
+                });
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
             });
-            
-            Assert.Equal(3, actual.Count);
-            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
-            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
-            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
         }
 
         [Fact]
         public async void Query_projection()
         {
-            PrepareData("Full");
-            
-            var actual = await connection.Query<FullLight>(new Query
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4}),
-                Projection = { "__key__", "String" }
-            }, "Full");
-            
-            Assert.Equal(3, actual.Count);
-            Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
-            Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
-            Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+                PrepareData("Full");
+
+                var actual = await connection.Query<FullLight>(new Query
+                {
+                    Filter = Filter.LessThanOrEqual("X", new Value {IntegerValue = 4}),
+                    Projection = {"__key__", "String"}
+                }, "Full");
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+            });
         }
 
         #region POCOs
