@@ -4,7 +4,7 @@ using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore;
 using Xunit;
 
-namespace unittests.Datestore
+namespace unittests.Datastore
 {
     public class DatastoreOrmTests
     {

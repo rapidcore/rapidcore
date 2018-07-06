@@ -9,7 +9,7 @@ using RapidCore.GoogleCloud.Datastore;
 using RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal;
 using Xunit;
 
-namespace unittests.Datestore.ReflectionBased.Internal
+namespace unittests.Datastore.ReflectionBased.Internal
 {
     public class EntityValueFactoryTests
     {

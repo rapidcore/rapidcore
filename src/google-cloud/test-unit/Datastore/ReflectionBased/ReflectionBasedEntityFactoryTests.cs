@@ -7,7 +7,7 @@ using RapidCore.GoogleCloud.Datastore;
 using RapidCore.GoogleCloud.Datastore.ReflectionBased;
 using Xunit;
 
-namespace unittests.Datestore.ReflectionBased
+namespace unittests.Datastore.ReflectionBased
 {
     public class ReflectionBasedEntityFactoryTests
     {
