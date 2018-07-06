@@ -90,6 +90,19 @@ namespace functionaltests.Datastore.DatastoreConnection
         }
         
         [Fact]
+        public async void GetByIdAsync_long_returns_null_onNoMatch()
+        {
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
+            {
+                EnsureEmptyKind("NumericIdPoco");
+
+                var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(1234);
+
+                Assert.Null(actual);
+            });
+        }
+        
+        [Fact]
         public async void GetByIdAsync_string()
         {
             await WorkAroundDatastoreEmulatorIssueAsync(async () =>
@@ -130,6 +143,19 @@ namespace functionaltests.Datastore.DatastoreConnection
 
                 Assert.Equal(poco.Id, actual.Id);
                 Assert.Equal(poco.String, actual.String);
+            });
+        }
+        
+        [Fact]
+        public async void GetByIdAsync_string_returns_null_onNoMatch()
+        {
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
+            {
+                EnsureEmptyKind("StringIdPoco");
+
+                var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>("halleluja-vacation-is-coming-up");
+
+                Assert.Null(actual);
             });
         }
         #endregion

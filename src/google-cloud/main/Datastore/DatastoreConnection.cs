@@ -173,7 +173,12 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             var entity = await datastoreDb.LookupAsync(key);
 
-            return orm.EntityToPoco<TPoco>(entity);
+            if (entity != null)
+            {
+                return orm.EntityToPoco<TPoco>(entity);
+            }
+
+            return default(TPoco);
         }
         #endregion
 
