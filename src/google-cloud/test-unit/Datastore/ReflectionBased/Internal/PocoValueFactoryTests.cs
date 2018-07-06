@@ -9,7 +9,7 @@ using RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal;
 using Xunit;
 using Value = Google.Cloud.Datastore.V1.Value;
 
-namespace unittests.Datestore.ReflectionBased.Internal
+namespace unittests.Datastore.ReflectionBased.Internal
 {
     public class PocoValueFactoryTests
     {

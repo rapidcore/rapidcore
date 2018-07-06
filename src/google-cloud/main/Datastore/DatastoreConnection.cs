@@ -47,6 +47,11 @@ namespace RapidCore.GoogleCloud.Datastore
         public virtual DatastoreDb DatastoreDb => datastoreDb;
 
         /// <summary>
+        /// The underlying ORM
+        /// </summary>
+        public virtual DatastoreOrm Orm => orm;
+
+        /// <summary>
         /// Get the kind of a POCO
         ///
         /// This is meant as a convenience for consumers who might be

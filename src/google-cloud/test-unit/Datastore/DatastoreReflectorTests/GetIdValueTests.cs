@@ -3,7 +3,7 @@ using RapidCore;
 using RapidCore.GoogleCloud.Datastore;
 using Xunit;
 
-namespace unittests.Datestore.DatastoreReflectorTests
+namespace unittests.Datastore.DatastoreReflectorTests
 {
     public class GetIdValueTests
     {
