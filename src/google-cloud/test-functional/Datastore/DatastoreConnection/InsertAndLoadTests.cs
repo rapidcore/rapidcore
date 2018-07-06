@@ -18,26 +18,29 @@ namespace functionaltests.Datastore.DatastoreConnection
         [Fact]
         public async void CanInsert()
         {
-            EnsureEmptyKind("DasPoco");
-            
-            var n1 = new Nested();
-            var n2 = new Nested {Other = n1};
-            var n3 = new Nested {Other = n2};
-            var n4 = new Nested {Other = n3};
-
-            var poco = new DasPoco
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Id = Guid.NewGuid(),
-                Complex = new Sub(),
-                Nesting = n4
-            };
+                EnsureEmptyKind("DasPoco");
 
-            await connection.InsertAsync(poco, "DasPoco");
+                var n1 = new Nested();
+                var n2 = new Nested {Other = n1};
+                var n3 = new Nested {Other = n2};
+                var n4 = new Nested {Other = n3};
 
-            var all = GetAll("DasPoco");
-            
-            Assert.Equal(1, all.Count);
-            Assert.Equal(poco.Id.ToString(), all[0].Key.Path[0].Name);
+                var poco = new DasPoco
+                {
+                    Id = Guid.NewGuid(),
+                    Complex = new Sub(),
+                    Nesting = n4
+                };
+
+                await connection.InsertAsync(poco, "DasPoco");
+
+                var all = GetAll("DasPoco");
+
+                Assert.Equal(1, all.Count);
+                Assert.Equal(poco.Id.ToString(), all[0].Key.Path[0].Name);
+            });
         }
         #endregion
 
@@ -45,77 +48,89 @@ namespace functionaltests.Datastore.DatastoreConnection
         [Fact]
         public async void GetByIdAsync_long()
         {
-            EnsureEmptyKind("NumericIdPoco");
-            
-            var poco = new NumericIdPoco
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Id = random.Next(1, int.MaxValue),
-                String = Guid.NewGuid().ToString()
-            };
+                EnsureEmptyKind("NumericIdPoco");
 
-            await connection.InsertAsync(poco);
+                var poco = new NumericIdPoco
+                {
+                    Id = random.Next(1, int.MaxValue),
+                    String = Guid.NewGuid().ToString()
+                };
 
-            var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id);
-            
-            Assert.Equal(poco.Id, actual.Id);
-            Assert.Equal(poco.String, actual.String);
+                await connection.InsertAsync(poco);
+
+                var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id);
+
+                Assert.Equal(poco.Id, actual.Id);
+                Assert.Equal(poco.String, actual.String);
+            });
         }
         
         [Fact]
         public async void GetByIdAsync_long_kind()
         {
-            EnsureEmptyKind("GetByIdAsync_long_kind");
-            
-            var poco = new NumericIdPoco
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Id = random.Next(1, int.MaxValue),
-                String = Guid.NewGuid().ToString()
-            };
+                EnsureEmptyKind("GetByIdAsync_long_kind");
 
-            await connection.InsertAsync(poco, "GetByIdAsync_long_kind");
+                var poco = new NumericIdPoco
+                {
+                    Id = random.Next(1, int.MaxValue),
+                    String = Guid.NewGuid().ToString()
+                };
 
-            var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id, "GetByIdAsync_long_kind");
-            
-            Assert.Equal(poco.Id, actual.Id);
-            Assert.Equal(poco.String, actual.String);
+                await connection.InsertAsync(poco, "GetByIdAsync_long_kind");
+
+                var actual = await connection.GetByIdOrDefaultAsync<NumericIdPoco>(poco.Id, "GetByIdAsync_long_kind");
+
+                Assert.Equal(poco.Id, actual.Id);
+                Assert.Equal(poco.String, actual.String);
+            });
         }
         
         [Fact]
         public async void GetByIdAsync_string()
         {
-            EnsureEmptyKind("StringIdPoco");
-            
-            var poco = new StringIdPoco
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Id = Guid.NewGuid().ToString(),
-                String = Guid.NewGuid().ToString()
-            };
+                EnsureEmptyKind("StringIdPoco");
 
-            await connection.InsertAsync(poco);
+                var poco = new StringIdPoco
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    String = Guid.NewGuid().ToString()
+                };
 
-            var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id);
-            
-            Assert.Equal(poco.Id, actual.Id);
-            Assert.Equal(poco.String, actual.String);
+                await connection.InsertAsync(poco);
+
+                var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id);
+
+                Assert.Equal(poco.Id, actual.Id);
+                Assert.Equal(poco.String, actual.String);
+            });
         }
         
         [Fact]
         public async void GetByIdAsync_string_kind()
         {
-            EnsureEmptyKind("GetByIdAsync_string_kind");
-            
-            var poco = new StringIdPoco
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Id = Guid.NewGuid().ToString(),
-                String = Guid.NewGuid().ToString()
-            };
+                EnsureEmptyKind("GetByIdAsync_string_kind");
 
-            await connection.InsertAsync(poco, "GetByIdAsync_string_kind");
+                var poco = new StringIdPoco
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    String = Guid.NewGuid().ToString()
+                };
 
-            var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id, "GetByIdAsync_string_kind");
-            
-            Assert.Equal(poco.Id, actual.Id);
-            Assert.Equal(poco.String, actual.String);
+                await connection.InsertAsync(poco, "GetByIdAsync_string_kind");
+
+                var actual = await connection.GetByIdOrDefaultAsync<StringIdPoco>(poco.Id, "GetByIdAsync_string_kind");
+
+                Assert.Equal(poco.Id, actual.Id);
+                Assert.Equal(poco.String, actual.String);
+            });
         }
         #endregion
         

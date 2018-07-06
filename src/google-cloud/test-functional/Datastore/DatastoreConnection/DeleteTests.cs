@@ -8,69 +8,81 @@ namespace functionaltests.Datastore.DatastoreConnection
         [Fact]
         public async void Delete_long()
         {
-            EnsureEmptyKind("TheDeleter");
-            
-            Insert(new Entity
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Key = GetKey("TheDeleter", 5),
-                ["String"] = "hello"
+                EnsureEmptyKind("TheDeleter");
+
+                Insert(new Entity
+                {
+                    Key = GetKey("TheDeleter", 5),
+                    ["String"] = "hello"
+                });
+
+                await connection.DeleteAsync<TheDeleter>(5);
+
+                var all = GetAll("TheDeleter");
+                Assert.Empty(all);
             });
-
-            await connection.DeleteAsync<TheDeleter>(5);
-
-            var all = GetAll("TheDeleter");
-            Assert.Empty(all);
         }
         
         [Fact]
         public async void Delete_string()
         {
-            EnsureEmptyKind("TheDeleter");
-            
-            Insert(new Entity
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Key = GetKey("TheDeleter", "5"),
-                ["String"] = "hello"
+                EnsureEmptyKind("TheDeleter");
+
+                Insert(new Entity
+                {
+                    Key = GetKey("TheDeleter", "5"),
+                    ["String"] = "hello"
+                });
+
+                await connection.DeleteAsync<TheDeleter>("5");
+
+                var all = GetAll("TheDeleter");
+                Assert.Empty(all);
             });
-
-            await connection.DeleteAsync<TheDeleter>("5");
-
-            var all = GetAll("TheDeleter");
-            Assert.Empty(all);
         }
         
         [Fact]
         public async void Delete_long_kind()
         {
-            EnsureEmptyKind("TheDeleter");
-            
-            Insert(new Entity
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Key = GetKey("TheDeleter", 5),
-                ["String"] = "hello"
+                EnsureEmptyKind("TheDeleter");
+
+                Insert(new Entity
+                {
+                    Key = GetKey("TheDeleter", 5),
+                    ["String"] = "hello"
+                });
+
+                await connection.DeleteAsync(5, "TheDeleter");
+
+                var all = GetAll("TheDeleter");
+                Assert.Empty(all);
             });
-
-            await connection.DeleteAsync(5, "TheDeleter");
-
-            var all = GetAll("TheDeleter");
-            Assert.Empty(all);
         }
         
         [Fact]
         public async void Delete_string_kind()
         {
-            EnsureEmptyKind("TheDeleter");
-            
-            Insert(new Entity
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
             {
-                Key = GetKey("TheDeleter", "5"),
-                ["String"] = "hello"
+                EnsureEmptyKind("TheDeleter");
+
+                Insert(new Entity
+                {
+                    Key = GetKey("TheDeleter", "5"),
+                    ["String"] = "hello"
+                });
+
+                await connection.DeleteAsync("5", "TheDeleter");
+
+                var all = GetAll("TheDeleter");
+                Assert.Empty(all);
             });
-
-            await connection.DeleteAsync("5", "TheDeleter");
-
-            var all = GetAll("TheDeleter");
-            Assert.Empty(all);
         }
 
         #region POCOs
