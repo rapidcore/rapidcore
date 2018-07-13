@@ -120,11 +120,22 @@ namespace RapidCore.GoogleCloud.Datastore
         /// Get the name of the Datastore entity value for a given property
         /// </summary>
         /// <param name="propertySelectionExpression"></param>
-        /// <typeparam name="T">The type you are selecting from</typeparam>
+        /// <typeparam name="TEntity">The type you are selecting from</typeparam>
         /// <exception cref="ArgumentException">Thrown if the expression does not point to a property on the given type</exception>
-        public virtual string GetValueName<T>(Expression<Func<T, object>> propertySelectionExpression)
+        public virtual string GetValueName<TEntity>(Expression<Func<TEntity, object>> propertySelectionExpression)
         {
-            var expr = propertySelectionExpression.Body as MemberExpression;
+            MemberExpression expr = null;
+            
+            if (propertySelectionExpression.Body is UnaryExpression)
+            {
+                var unary = propertySelectionExpression.Body as UnaryExpression;
+                expr = unary.Operand as MemberExpression;
+            }
+            else
+            {
+                expr = propertySelectionExpression.Body as MemberExpression;
+            }
+            
 
             if (expr == null)
             {

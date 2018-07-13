@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore;
@@ -92,6 +93,38 @@ namespace unittests.Datastore
             Assert.StartsWith("The given expression does not point to a member", actual.Message);
         }
 
+        [Fact]
+        public void GetValueName_works_with_DateTime()
+        {
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.MyDateTime);
+            
+            Assert.Equal("MyDateTime", actual);
+        }
+        
+        [Fact]
+        public void GetValueName_works_with_Enum()
+        {
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.MyEnum);
+            
+            Assert.Equal("MyEnum", actual);
+        }
+        
+        [Fact]
+        public void GetValueName_works_with_List()
+        {
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.MyList);
+            
+            Assert.Equal("MyList", actual);
+        }
+        
+        [Fact]
+        public void GetValueName_works_with_int()
+        {
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.MyInt);
+            
+            Assert.Equal("MyInt", actual);
+        }
+
         #region POCOs
         public class Bee {}
         
@@ -102,11 +135,25 @@ namespace unittests.Datastore
             public string MyProperty { get; set; }
             
             public Deeper TheDeeper { get; set; }
+            
+            public DateTime MyDateTime { get; set; }
+            
+            public Greeting MyEnum { get; set; }
+            
+            public List<string> MyList { get; set; }
+            
+            public int MyInt { get; set; }
         }
         
         public class Deeper
         {
             public int DangerIs => 23;
+        }
+        
+        public enum Greeting
+        {
+            Hello = 0,
+            Hi
         }
         #endregion
     }
