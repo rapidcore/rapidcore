@@ -87,10 +87,8 @@ namespace unittests.Datastore
         [Fact]
         public void GetValueName_1_level_only()
         {
-            var actual = Record.Exception(() => orm.GetValueName<ValueNameVictim>(x => x.TheDeeper.DangerIs));
-
-            Assert.IsType<ArgumentException>(actual);
-            Assert.StartsWith("The given expression does not point to a member", actual.Message);
+            var actual = orm.GetValueName<ValueNameVictim>(x => x.TheDeeper.DangerIs);
+            Assert.Equal("DangerIs", actual);
         }
 
         [Fact]
