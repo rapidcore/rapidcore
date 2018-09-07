@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Renci.SshNet.Sftp;
+using Renci.SshNet.Common;
 
 namespace RapidCore.IO.FileSystem
 {
