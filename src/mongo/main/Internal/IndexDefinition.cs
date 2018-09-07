@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using MongoDB.Driver;
 using MongoDB.Bson;
 
@@ -65,7 +64,7 @@ namespace RapidCore.Mongo.Internal
         /// <summary>
         /// Generates an IndexKeysDefinition instance for this index
         /// </summary>
-        /// <returns><c>BsonDocumentIndexKeysDefinition<DocumentType></c></returns>
+        /// <returns><c>BsonDocumentIndexKeysDefinition&lt;DocumentType&gt;</c></returns>
         public virtual object GetKeySpec()
         {
             var indexDefinitionsType = typeof(BsonDocumentIndexKeysDefinition<>).MakeGenericType(DocumentType);

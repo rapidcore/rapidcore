@@ -104,7 +104,7 @@ namespace RapidCore.Mongo
         /// <summary>
         /// UNSTABLE API!!
         /// 
-        /// Get an <see cref="IMongoCollection<T>" /> to work on. This
+        /// Get an <see cref="IMongoCollection{TDocument}" /> to work on. This
         /// is to enable consumers to do advanced stuff that requires more
         /// freedom than we can provide.
         /// 

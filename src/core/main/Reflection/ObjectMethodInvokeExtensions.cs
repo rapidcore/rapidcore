@@ -68,7 +68,7 @@ namespace RapidCore.Reflection
         /// </summary>
         /// <param name="instance">The instance</param>
         /// <param name="propertyName">The name of the property</param>
-        /// <parma name="value">The value to set</param>
+        /// <param name="value">The value to set</param>
         /// <exception cref="System.MissingMethodException">Thrown if the property does not have a setter</exception>
         /// <exception cref="System.MissingMemberException">Thrown if the property does not exist</exception>
         public static void InvokeSetterRecursively(this object instance, string propertyName, object value)

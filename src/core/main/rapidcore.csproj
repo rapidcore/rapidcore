@@ -36,7 +36,4 @@
   <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Environment" />
-  </ItemGroup>
 </Project>
