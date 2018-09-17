@@ -4,9 +4,9 @@ using FakeItEasy;
 using RapidCore.Reflection;
 using Xunit;
 
-namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
+namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 {
-    public class InstanceAnalyzer_DictionaryTests : InstanceAnalyzerTestBase
+    public class InstanceTraverser_DictionaryTests : InstanceTraverserTestBase
     {
         [Fact]
         public void Dictionary_OnProperty_simpleKey_simpleValue()
@@ -30,10 +30,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -46,7 +46,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -80,10 +80,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -96,16 +96,16 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            A.CallTo(() => listener.OnProperty(GetProp(typeof(ComplexValue), "String"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(typeof(ComplexValue), "String"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.String"]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -137,10 +137,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -153,7 +153,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -185,10 +185,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -201,7 +201,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)

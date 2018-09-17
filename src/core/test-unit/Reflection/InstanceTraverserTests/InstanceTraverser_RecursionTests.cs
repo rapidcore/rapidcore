@@ -5,9 +5,9 @@ using FakeItEasy;
 using RapidCore.Reflection;
 using Xunit;
 
-namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
+namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 {
-    public class InstanceAnalyzer_RecursionTests : InstanceAnalyzerTestBase
+    public class InstanceTraverser_RecursionTests : InstanceTraverserTestBase
     {
         [Fact]
         public void RecursionDoesNotCall_OnConstructor_forRecursedTypes()
@@ -22,11 +22,11 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             victim.PropChildTwo = childTwo;
             victim.PropChildThree = childThree;
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             var victimCtor = GetConstructor(typeof(RecursionVictim), new Type[0]);
             
-            A.CallTo(() => listener.OnConstructor(A<ConstructorInfo>.That.Matches(x => x != victimCtor), A<InstanceAnalyzerContext>._)).MustNotHaveHappened();
+            A.CallTo(() => listener.OnConstructor(A<ConstructorInfo>.That.Matches(x => x != victimCtor), A<InstanceTraversalContext>._)).MustNotHaveHappened();
         }
 
         [Fact]
@@ -34,10 +34,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
         {
             var victim = new NoRecursionOnTheseTypesVictim();
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
-            A.CallTo(() => listener.OnField(A<FieldInfo>._, A<Func<object>>._, A<InstanceAnalyzerContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
-            A.CallTo(() => listener.OnProperty(A<PropertyInfo>._, A<Func<object>>._, A<InstanceAnalyzerContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
+            A.CallTo(() => listener.OnField(A<FieldInfo>._, A<Func<object>>._, A<InstanceTraversalContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
+            A.CallTo(() => listener.OnProperty(A<PropertyInfo>._, A<Func<object>>._, A<InstanceTraversalContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
         }
         
         #region Fields
@@ -70,10 +70,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // first we get a call for the top level child two field
-            A.CallTo(() => listener.OnField(GetField(type, "FieldChildTwo"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(type, "FieldChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(0, ctx.CurrentDepth);
 
                     callCounts[".FieldChildTwo"]++;
@@ -81,10 +81,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             // we then dig into the top level child two field instance
             // and this is also triggered for the FieldChildThree.ChildTwo instance
-            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 1)
                     {
@@ -103,10 +103,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // then we visit the FieldChildThree top level field
-            A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(0, ctx.CurrentDepth);
                     
                     callCounts[".FieldChildThree"]++;
@@ -114,10 +114,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             
             // next up is FieldChildThree.ChildThreeString
-            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(1, ctx.CurrentDepth);
                     Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
                     
@@ -126,17 +126,17 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             
             // next up is FieldChildThree.ChildTwo
-            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(1, ctx.CurrentDepth);
                     Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["FieldChildThree.ChildTwo"]++;
                 });
                 
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -159,9 +159,9 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             victim.FieldChildTwo = childTwo;
             victim.FieldChildThree = childThree;
 
-            analyzer.AnalyzeInstance(victim, 1, listener);
+            Traverser.TraverseInstance(victim, 1, listener);
 
-            A.CallTo(() => listener.OnMaxDepth(A<InstanceAnalyzerContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => listener.OnMaxDepth(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
         }
         #endregion
         
@@ -195,10 +195,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // first we get a call for the top level child two property
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildTwo"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(0, ctx.CurrentDepth);
 
                     callCounts[".PropChildTwo"]++;
@@ -206,10 +206,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             // we then dig into the top level child two prop instance
             // and this is also triggered for the PropChildThree.ChildTwo instance
-            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 1)
                     {
@@ -228,10 +228,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // then we visit the PropChildThree top level prop
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(0, ctx.CurrentDepth);
                     
                     callCounts[".PropChildThree"]++;
@@ -239,10 +239,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             
             // next up is PropChildThree.ChildThreeString
-            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(1, ctx.CurrentDepth);
                     Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
                     
@@ -251,17 +251,17 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             
             
             // next up is PropChildThree.ChildTwo
-            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     Assert.Equal(1, ctx.CurrentDepth);
                     Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["PropChildThree.ChildTwo"]++;
                 });
                 
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -284,9 +284,9 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             victim.PropChildTwo = childTwo;
             victim.PropChildThree = childThree;
 
-            analyzer.AnalyzeInstance(victim, 1, listener);
+            Traverser.TraverseInstance(victim, 1, listener);
 
-            A.CallTo(() => listener.OnMaxDepth(A<InstanceAnalyzerContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => listener.OnMaxDepth(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
         }
         #endregion
 

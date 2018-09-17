@@ -1,6 +1,6 @@
 ﻿namespace RapidCore.Diffing.Internal
 {
-    public enum BeingAnalyzed
+    public enum BeingTraversed
     {
         Nothing = 0,
         Old = 1,

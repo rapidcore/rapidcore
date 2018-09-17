@@ -4,10 +4,10 @@ using System.Linq;
 namespace RapidCore.Reflection
 {
     /// <summary>
-    /// A context provided by the <see cref="InstanceAnalyzer"/> whenever
+    /// A context provided by the <see cref="InstanceTraverser"/> whenever
     /// the <see cref="IInstanceListener"/> is called.
     /// </summary>
-    public class InstanceAnalyzerContext : IReadOnlyInstanceAnalyzerContext
+    public class InstanceTraversalContext : IReadOnlyInstanceTraversalContext
     {
         /// <summary>
         /// The instance that the analyzer was called with
@@ -34,12 +34,12 @@ namespace RapidCore.Reflection
         }
         
         /// <summary>
-        /// Used internally to track the breadcrumb during analysis
+        /// Used internally to track the breadcrumb during traversal
         /// </summary>
         public virtual Stack<string> BreadcrumbStack { get; set; } = new Stack<string>();
         
         /// <summary>
-        /// The max depth provided to the analyzer when it was started
+        /// The max depth provided to the traverser when it was started
         /// </summary>
         public virtual int MaxDepth { get; set; }
 

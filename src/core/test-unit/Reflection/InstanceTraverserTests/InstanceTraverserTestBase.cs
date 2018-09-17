@@ -4,18 +4,18 @@ using System.Reflection;
 using FakeItEasy;
 using RapidCore.Reflection;
 
-namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
+namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 {
-    public abstract class InstanceAnalyzerTestBase
+    public abstract class InstanceTraverserTestBase
     {
-        protected readonly InstanceAnalyzer analyzer;
+        protected readonly InstanceTraverser Traverser;
         protected readonly IInstanceListener listener;
 
-        protected InstanceAnalyzerTestBase()
+        protected InstanceTraverserTestBase()
         {
             listener = A.Fake<IInstanceListener>();
             
-            analyzer = new InstanceAnalyzer();
+            Traverser = new InstanceTraverser();
         }
         
         protected virtual ConstructorInfo GetConstructor(Type type, Type[] argTypes)

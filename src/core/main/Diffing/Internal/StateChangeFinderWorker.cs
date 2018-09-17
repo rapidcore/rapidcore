@@ -8,14 +8,14 @@ namespace RapidCore.Diffing.Internal
 {
     public class StateChangeFinderWorker : IInstanceListener
     {
-        private readonly InstanceAnalyzer analyzer;
+        private readonly InstanceTraverser traverser;
 
-        private BeingAnalyzed beingAnalyzed = BeingAnalyzed.Nothing;
+        private BeingTraversed beingTraversed = BeingTraversed.Nothing;
         private Dictionary<string, StateChange> values;
 
-        public StateChangeFinderWorker(InstanceAnalyzer analyzer)
+        public StateChangeFinderWorker(InstanceTraverser traverser)
         {
-            this.analyzer = analyzer;
+            this.traverser = traverser;
         }
 
         public virtual void FindDifferences(object oldState, object newState, StateChanges stateChanges, int maxDepth)
@@ -24,17 +24,17 @@ namespace RapidCore.Diffing.Internal
 
             if (oldState != null)
             {
-                beingAnalyzed = BeingAnalyzed.Old;
-                analyzer.AnalyzeInstance(oldState, maxDepth, this);
+                beingTraversed = BeingTraversed.Old;
+                traverser.TraverseInstance(oldState, maxDepth, this);
             }
 
             if (newState != null)
             {
-                beingAnalyzed = BeingAnalyzed.New;
-                analyzer.AnalyzeInstance(newState, maxDepth, this);
+                beingTraversed = BeingTraversed.New;
+                traverser.TraverseInstance(newState, maxDepth, this);
             }
 
-            beingAnalyzed = BeingAnalyzed.Nothing;
+            beingTraversed = BeingTraversed.Nothing;
             
             foreach (var kvp in values)
             {
@@ -52,7 +52,7 @@ namespace RapidCore.Diffing.Internal
             }
         }
 
-        private string GetKey(IReadOnlyInstanceAnalyzerContext context, MemberInfo member)
+        private string GetKey(IReadOnlyInstanceTraversalContext context, MemberInfo member)
         {
             var key = context.BreadcrumbAsString;
 
@@ -77,7 +77,7 @@ namespace RapidCore.Diffing.Internal
         /// whereas the value is a member of that list)</param>
         /// <param name="value">The value of the field/property _OR_ an element in a list _OR_ a value in a dictionary</param>
         /// <param name="context">Context</param>
-        private void SetValue(MemberInfo member, object value, IReadOnlyInstanceAnalyzerContext context)
+        private void SetValue(MemberInfo member, object value, IReadOnlyInstanceTraversalContext context)
         {
             // we are checking for the type of the
             // value directly on the value instead
@@ -103,43 +103,43 @@ namespace RapidCore.Diffing.Internal
                     });
             }
             
-            switch (beingAnalyzed)
+            switch (beingTraversed)
             {
-                    case BeingAnalyzed.Old:
+                    case BeingTraversed.Old:
                         values[key].OldValue = value;
                         break;
                     
-                    case BeingAnalyzed.New:
+                    case BeingTraversed.New:
                         values[key].NewValue = value;
                         break;
                     
-                    case BeingAnalyzed.Nothing:
+                    case BeingTraversed.Nothing:
                     default:
-                        throw new InvalidOperationException($"{nameof(beingAnalyzed)} must be set before you can {nameof(SetValue)}");
+                        throw new InvalidOperationException($"{nameof(beingTraversed)} must be set before you can {nameof(SetValue)}");
             }
         }
         
-        public void OnConstructor(ConstructorInfo ctor, IReadOnlyInstanceAnalyzerContext context)
+        public void OnConstructor(ConstructorInfo ctor, IReadOnlyInstanceTraversalContext context)
         {
             // we do not care
         }
 
-        public void OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceAnalyzerContext context)
+        public void OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             SetValue(field, valueGetter.Invoke(), context);
         }
 
-        public void OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceAnalyzerContext context)
+        public void OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             SetValue(property, valueGetter.Invoke(), context);
         }
 
-        public void OnMethod(MethodInfo method, IReadOnlyInstanceAnalyzerContext context)
+        public void OnMethod(MethodInfo method, IReadOnlyInstanceTraversalContext context)
         {
             // we do not care
         }
 
-        public void OnMaxDepth(IReadOnlyInstanceAnalyzerContext context)
+        public void OnMaxDepth(IReadOnlyInstanceTraversalContext context)
         {
             // by not blowing up, we make it possible
             // to continue working with the already

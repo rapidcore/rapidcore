@@ -14,7 +14,7 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
         {
             stateChanges = new StateChanges();
 
-            worker = new StateChangeFinderWorker(new InstanceAnalyzer());
+            worker = new StateChangeFinderWorker(new InstanceTraverser());
         }
         
         [Fact]

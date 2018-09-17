@@ -3,12 +3,12 @@
 namespace RapidCore.Reflection
 {
     /// <summary>
-    /// The reading part of <see cref="InstanceAnalyzerContext"/>
+    /// The reading part of <see cref="InstanceTraversalContext"/>
     /// </summary>
-    public interface IReadOnlyInstanceAnalyzerContext
+    public interface IReadOnlyInstanceTraversalContext
     {
         /// <summary>
-        /// The instance that the analyzer was called with
+        /// The instance that the traverser was called with
         /// </summary>
         object Instance { get; }
         
@@ -19,7 +19,7 @@ namespace RapidCore.Reflection
         IReadOnlyList<string> Breadcrumb { get; }
         
         /// <summary>
-        /// The max depth provided to the analyzer when it was started
+        /// The max depth provided to the traverser when it was started
         /// </summary>
         int MaxDepth { get; }
 

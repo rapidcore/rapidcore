@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace RapidCore.Reflection
 {
     /// <summary>
-    /// This analyzes an instance of something, meaning that
+    /// This traverses an instance of something, meaning that
     /// it uses reflection to find all members of the instance
     /// and tells you about it through <see cref="IInstanceListener"/>.
     ///
@@ -15,19 +15,20 @@ namespace RapidCore.Reflection
     /// it will...
     ///  - follow complex values (i.e. recurse into other instances held by the members)
     ///  - notify you if it hits a given maximum depth during recursion
-    ///  - analyze elements in enumerables, including recursing complex values
+    ///  - traverse elements in enumerables, including recursing complex values
+    ///  - traverse dictionaries, including recursing complex values
     /// </summary>
-    public class InstanceAnalyzer
+    public class InstanceTraverser
     {
         /// <summary>
-        /// Run the analyzer on the given instance
+        /// Traverse the given instance
         /// </summary>
-        /// <param name="instance">The object instance you want to analyze</param>
+        /// <param name="instance">The object instance you want to traverse</param>
         /// <param name="maxDepth">The max depth you find appropriate</param>
         /// <param name="listener">The listener that will be notified when we find something</param>
-        public virtual void AnalyzeInstance(object instance, int maxDepth, IInstanceListener listener)
+        public virtual void TraverseInstance(object instance, int maxDepth, IInstanceListener listener)
         {
-            var context = new InstanceAnalyzerContext
+            var context = new InstanceTraversalContext
             {
                 Instance = instance,
                 MaxDepth = maxDepth
@@ -48,7 +49,7 @@ namespace RapidCore.Reflection
             Worker(instance, listener, context);
         }
         
-        private void Worker(object instance, IInstanceListener listener, InstanceAnalyzerContext context)
+        private void Worker(object instance, IInstanceListener listener, InstanceTraversalContext context)
         {
             var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
             
@@ -94,7 +95,7 @@ namespace RapidCore.Reflection
         /// <summary>
         /// Call OnField or OnProperty for the given member
         /// </summary>
-        private void CallListener(IInstanceListener listener, InstanceAnalyzerContext context, MemberInfo memberInfo, Func<object> valueGetter)
+        private void CallListener(IInstanceListener listener, InstanceTraversalContext context, MemberInfo memberInfo, Func<object> valueGetter)
         {
             if (memberInfo.MemberType == MemberTypes.Field)
             {
@@ -112,7 +113,7 @@ namespace RapidCore.Reflection
         /// of both types, so we avoid duplication. 
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if we somehow try to iterate something that is not an IEnumerable</exception>
-        private void FieldAndPropertyHandler(IInstanceListener listener, MemberInfo memberInfo, InstanceAnalyzerContext context, object instance)
+        private void FieldAndPropertyHandler(IInstanceListener listener, MemberInfo memberInfo, InstanceTraversalContext context, object instance)
         {
             Func<object> valueGetter = () => memberInfo.GetValue(instance);
             

@@ -10,7 +10,7 @@ namespace RapidCore.Diffing
 
         public StateChangeFinder()
         {
-            worker = new StateChangeFinderWorker(new InstanceAnalyzer());
+            worker = new StateChangeFinderWorker(new InstanceTraverser());
         }
         
         /// <summary>

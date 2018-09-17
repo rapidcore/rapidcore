@@ -3,20 +3,20 @@ using Xunit;
 
 namespace RapidCore.UnitTests.Reflection
 {
-    public class InstanceAnalyzerContextTests
+    public class InstanceTraversalContextTests
     {
-        private readonly InstanceAnalyzerContext context;
+        private readonly InstanceTraversalContext context;
 
-        public InstanceAnalyzerContextTests()
+        public InstanceTraversalContextTests()
         {
-            context = new InstanceAnalyzerContext();
+            context = new InstanceTraversalContext();
         }
 
         #region CurrentDepth
         [Fact]
         public void CurrentDepth_worksWithDefaultInstance()
         {
-            Assert.Equal(0, new InstanceAnalyzerContext().CurrentDepth);
+            Assert.Equal(0, new InstanceTraversalContext().CurrentDepth);
         }
         
         [Fact]
@@ -59,7 +59,7 @@ namespace RapidCore.UnitTests.Reflection
         [Fact]
         public void BreadcrumbAsString_worksWithDefaultInstance()
         {
-            Assert.Equal(string.Empty, new InstanceAnalyzerContext().BreadcrumbAsString);
+            Assert.Equal(string.Empty, new InstanceTraversalContext().BreadcrumbAsString);
         }
         
         [Fact]

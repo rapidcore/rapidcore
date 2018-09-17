@@ -6,9 +6,9 @@ using FakeItEasy;
 using RapidCore.Reflection;
 using Xunit;
 
-namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
+namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 {
-    public class InstanceAnalyzer_EnumerableTests : InstanceAnalyzerTestBase
+    public class InstanceTraverser_EnumerableTests : InstanceTraverserTestBase
     {
         #region Field with array
         [Fact]
@@ -26,10 +26,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 {"FieldInts[2]", 0}
             };
             
-            A.CallTo(() => listener.OnField(GetField(type, "FieldInts"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(type, "FieldInts"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -42,7 +42,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -75,10 +75,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the array field and each of its elements
-            A.CallTo(() => listener.OnField(GetField(type, "FieldComplex"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(type, "FieldComplex"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -92,16 +92,16 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // the calls for the recursion of each array element
-            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -128,10 +128,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 {"PropInts[2]", 0}
             };
             
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropInts"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropInts"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -144,9 +144,9 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
-            A.CallTo(() => listener.OnField(A<FieldInfo>.That.Matches(x => x.Name.Equals("m_value")), A<Func<object>>._, A<IReadOnlyInstanceAnalyzerContext>._)).MustNotHaveHappened();
+            A.CallTo(() => listener.OnField(A<FieldInfo>.That.Matches(x => x.Name.Equals("m_value")), A<Func<object>>._, A<IReadOnlyInstanceTraversalContext>._)).MustNotHaveHappened();
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -179,10 +179,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the array Prop and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropComplex"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropComplex"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -196,16 +196,16 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // the calls for the recursion of each array element
-            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -240,10 +240,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnField(GetField(type, "FieldList"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(type, "FieldList"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -257,16 +257,16 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // the calls for the recursion of each list element
-            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -301,10 +301,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropList"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropList"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -318,16 +318,16 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                 });
             
             // the calls for the recursion of each list element
-            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
                     
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
 
             // all "methods" should have been called exactly once
             foreach (var (key, value) in callCounts)
@@ -352,10 +352,10 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
             };
             
             // the calls for the list field and each of its elements
-            A.CallTo(() => listener.OnProperty(GetProp(type, "PropIntList"), A<Func<object>>._, A<InstanceAnalyzerContext>._))
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropIntList"), A<Func<object>>._, A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
-                    var ctx = (InstanceAnalyzerContext) x.Arguments[2];
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     if (ctx.CurrentDepth == 0)
                     {
@@ -368,12 +368,12 @@ namespace RapidCore.UnitTests.Reflection.InstanceAnalyzerTests
                     callCounts[ctx.BreadcrumbAsString]++;
                 });
             
-            analyzer.AnalyzeInstance(victim, 5, listener);
+            Traverser.TraverseInstance(victim, 5, listener);
             
             A.CallTo(() => listener.OnField(
                 A<FieldInfo>.That.Not.Matches(x => x == GetField(type, "FieldList")), 
                 A<Func<object>>._, 
-                A<IReadOnlyInstanceAnalyzerContext>._)
+                A<IReadOnlyInstanceTraversalContext>._)
             ).MustNotHaveHappened();
 
             // all "methods" should have been called exactly once
