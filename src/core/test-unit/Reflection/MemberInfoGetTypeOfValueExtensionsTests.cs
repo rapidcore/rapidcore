@@ -9,7 +9,9 @@ namespace RapidCore.UnitTests.Reflection
     public class MemberInfoGetTypeOfValueExtensionsTests
     {
         private int MyField = 666;
+        private bool? MyNullableField = true;
         private string MyProp => "Sup Lucifer";
+        private int? MyNullableProp => null;
 
         public MemberInfoGetTypeOfValueExtensionsTests()
         {
@@ -25,11 +27,27 @@ namespace RapidCore.UnitTests.Reflection
         }
         
         [Fact]
+        public void GetTypeOfValue_onFieldInfo_works_withNullable()
+        {
+            var memberInfo = GetField("MyNullableField");
+            
+            Assert.Equal(typeof(bool?), memberInfo.GetTypeOfValue());
+        }
+        
+        [Fact]
         public void GetTypeOfValue_onPropertyInfo_works()
         {
             var memberInfo = GetProp("MyProp");
             
             Assert.Equal(typeof(string), memberInfo.GetTypeOfValue());
+        }
+        
+        [Fact]
+        public void GetTypeOfValue_onPropertyInfo_works_withNullable()
+        {
+            var memberInfo = GetProp("MyNullableProp");
+            
+            Assert.Equal(typeof(int?), memberInfo.GetTypeOfValue());
         }
         
         [Fact]
