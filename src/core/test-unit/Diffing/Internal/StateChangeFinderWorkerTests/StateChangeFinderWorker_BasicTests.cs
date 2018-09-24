@@ -77,8 +77,9 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
                 SomeThing = new SomeThing
                 {
                     SomeString = "Some"
-                }
-            }.SetPrivate("private");
+                },
+                InternalIsIncluded = "internal"
+            }.SetPrivate("private").SetProtected("protected");
             
             var newState = new TheVictim()
             {
@@ -96,12 +97,13 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
                 SomeThing = new SomeThing
                 {
                     SomeString = "Changed"
-                }
-            }.SetPrivate("changed");
+                },
+                InternalIsIncluded = "changed internal"
+            }.SetPrivate("changed").SetProtected("changed protected");
 
             worker.FindDifferences(oldState, newState, stateChanges, 5);
 
-            Assert.Equal(13, stateChanges.Changes.Count);
+            Assert.Equal(15, stateChanges.Changes.Count);
             
             var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
 
@@ -151,21 +153,31 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
             Assert.Equal(777, change.NewValue);
             
             change = sorted[9];
+            Assert.Equal("InternalIsIncluded", change.Breadcrumb);
+            Assert.Equal("internal", change.OldValue);
+            Assert.Equal("changed internal", change.NewValue);
+            
+            change = sorted[10];
             Assert.Equal("PrivateIsIncluded", change.Breadcrumb);
             Assert.Equal("private", change.OldValue);
             Assert.Equal("changed", change.NewValue);
             
-            change = sorted[10];
+            change = sorted[11];
+            Assert.Equal("ProtectedIsIncluded", change.Breadcrumb);
+            Assert.Equal("protected", change.OldValue);
+            Assert.Equal("changed protected", change.NewValue);
+            
+            change = sorted[12];
             Assert.Equal("SomeThing.SomeString", change.Breadcrumb);
             Assert.Equal("Some", change.OldValue);
             Assert.Equal("Changed", change.NewValue);
             
-            change = sorted[11];
+            change = sorted[13];
             Assert.Equal("String", change.Breadcrumb);
             Assert.Equal("Kewl string", change.OldValue);
             Assert.Equal("Hot string", change.NewValue);
             
-            change = sorted[12];
+            change = sorted[14];
             Assert.Equal("TimeSpan", change.Breadcrumb);
             Assert.Equal(oldState.TimeSpan, change.OldValue);
             Assert.Equal(newState.TimeSpan, change.NewValue);
@@ -225,6 +237,16 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
                 PrivateIsIncluded = value;
                 return this;
             }
+            
+            protected string ProtectedIsIncluded { get; set; }
+
+            public TheVictim SetProtected(string value)
+            {
+                ProtectedIsIncluded = value;
+                return this;
+            }
+            
+            internal string InternalIsIncluded { get; set; }
             
             public string String { get; set; }
             public char Char { get; set; }
