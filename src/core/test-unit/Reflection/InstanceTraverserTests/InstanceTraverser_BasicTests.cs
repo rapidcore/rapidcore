@@ -40,7 +40,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
             A.CallTo(() => listener.OnMethod(GetMethod(type, "OverloadedMethod", new [] { typeof(int) }), A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => listener.OnMethod(GetMethod(type, "OverloadedMethod", new [] { typeof(int), typeof(int) }), A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
             
-            A.CallTo(() => listener.OnMaxDepth(A<InstanceTraversalContext>._)).MustNotHaveHappened();
+            A.CallTo(() => listener.OnMaxDepthReached(A<InstanceTraversalContext>._)).MustNotHaveHappened();
         }
         
         [Fact]

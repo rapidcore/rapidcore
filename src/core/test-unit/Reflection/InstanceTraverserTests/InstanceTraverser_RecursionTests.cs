@@ -149,7 +149,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         }
         
         [Fact]
-        public void FieldRecursion_callsOnMaxDepth()
+        public void FieldRecursion_callsOnMaxDepthReached()
         {
             var victim = new RecursionVictim();
             var childTwo = new RecursionChildTwo();
@@ -163,7 +163,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
             Traverser.TraverseInstance(victim, 1, listener);
 
-            A.CallTo(() => listener.OnMaxDepth(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => listener.OnMaxDepthReached(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
         }
         #endregion
         
@@ -274,7 +274,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         }
         
         [Fact]
-        public void PropertyRecursion_callsOnMaxDepth()
+        public void PropertyRecursion_callsOnMaxDepthReached()
         {
             var victim = new RecursionVictim();
             var childTwo = new RecursionChildTwo();
@@ -288,7 +288,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
             Traverser.TraverseInstance(victim, 1, listener);
 
-            A.CallTo(() => listener.OnMaxDepth(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => listener.OnMaxDepthReached(A<InstanceTraversalContext>._)).MustHaveHappenedOnceExactly();
         }
         #endregion
 

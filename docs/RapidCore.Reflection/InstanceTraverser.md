@@ -19,7 +19,7 @@ It will:
 
 First you create a class implementing `IInstanceListener`. It is basically a bunch of methods that acts as "listeners" - i.e. they are called with a context, `MemberInfo` and for fields and properties, a `Func<object>`  which you can invoke to get the value of the member.
 
-It also has the `OnMaxDepth` method, which is called if the maximum recursion depth is reached. You can then handle this however you want. If you want processing to stop, you must throw an exception. Otherwise, the traversal will continue without diggin deeper.
+It also has the `OnMaxDepthReached` method, which is called if the maximum recursion depth is reached. You can then handle this however you want. If you want processing to stop, you must throw an exception. Otherwise, the traversal will continue without diggin deeper.
 
 ```csharp
 class MyListener : RapidCore.Reflection.IInstanceListener

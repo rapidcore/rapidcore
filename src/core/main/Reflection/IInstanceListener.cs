@@ -17,6 +17,6 @@ namespace RapidCore.Reflection
         /// <summary>
         /// This is called when the max depth is reached
         /// </summary>
-        void OnMaxDepth(IReadOnlyInstanceTraversalContext context);
+        void OnMaxDepthReached(IReadOnlyInstanceTraversalContext context);
     }
 }

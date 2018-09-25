@@ -139,7 +139,7 @@ namespace RapidCore.Diffing.Internal
             // we do not care
         }
 
-        public void OnMaxDepth(IReadOnlyInstanceTraversalContext context)
+        public void OnMaxDepthReached(IReadOnlyInstanceTraversalContext context)
         {
             // by not blowing up, we make it possible
             // to continue working with the already
