@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -237,7 +238,10 @@ namespace RapidCore.Reflection
         /// </summary>
         private bool ShouldRecurse(Type type)
         {
-            return !nonRecursedTypes.ContainsKey(type) && !type.GetTypeInfo().IsEnum && !type.IsNullable();
+            return !nonRecursedTypes.ContainsKey(type) // is not "blacklisted" 
+                   && !type.GetTypeInfo().IsEnum  // is not an enum
+                   && !type.IsNullable() // is not nullable
+                   && !type.IsStream(); // is not a Stream 
         }
 
         /// <summary>

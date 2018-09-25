@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using FakeItEasy;
 using RapidCore.Reflection;
@@ -347,6 +348,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
             public Guid Guid => Guid.NewGuid();
             public VictimOf Enum => VictimOf.Beauty;
             public VictimOf? EnumNullable => VictimOf.Beauty;
+            public MemoryStream Stream => new MemoryStream();
         }
         
         public enum VictimOf
