@@ -10,6 +10,8 @@ pages:
   - Mongo DB:
       - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
       - Indexes: MongoDB/Indexes.md
+  - Diffing:
+      - Diff object instances: Diffing/StateChangeFinder.md
   - Environment:
       - Variables: RapidCore.Environment/EnvironmentVariables.md
   - Generally useful attributes:
