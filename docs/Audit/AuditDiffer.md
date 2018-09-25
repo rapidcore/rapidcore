@@ -10,7 +10,7 @@ In list form it...
 
 It is built on top of the context agnostic [RapidCore.Diffing.StateChangeFinder](../../Diffing/StateChangeFinder).
 
-Note that it uses `IRapidContainerAdapter` to create `IAuditValueMasker` instances.
+Note that it uses [IRapidContainerAdapter](../../DependencyInjection/IRapidContainerAdapter) to create `IAuditValueMasker` instances.
 
 ```csharp
 using RapidCore.Audit;
