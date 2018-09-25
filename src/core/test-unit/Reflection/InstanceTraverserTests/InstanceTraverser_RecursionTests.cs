@@ -30,7 +30,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         }
 
         [Fact]
-        public void RecursionDoesNotHappenOnPrimitives_andCertain_builtIns()
+        public void RecursionDoesNotHappenOnPrimitives_nullables_andCertain_builtIns()
         {
             var victim = new NoRecursionOnTheseTypesVictim();
             
@@ -38,6 +38,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
             
             A.CallTo(() => listener.OnField(A<FieldInfo>._, A<Func<object>>._, A<InstanceTraversalContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
             A.CallTo(() => listener.OnProperty(A<PropertyInfo>._, A<Func<object>>._, A<InstanceTraversalContext>.That.Matches(x => x.CurrentDepth > 0))).MustNotHaveHappened();
+            A.CallTo(() => listener.OnMethod(A<MethodInfo>._, A<InstanceTraversalContext>._)).MustNotHaveHappened();
         }
         
         #region Fields
@@ -313,22 +314,39 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         
         public class NoRecursionOnTheseTypesVictim
         {
+            // we need the nullables to have values
+            // otherwise, recursion will not be done
+            // on account of them being null
+            
             public char Char => 'c';
+            public char? CharNullable => 'c';
             public string String => "hello";
             public bool BoolTrue => true;
             public bool BoolFalse => false;
+            public bool? BoolNullable => true;
             public byte Byte => 4;
+            public byte? ByteNullable => 4;
             public short Short => 5;
+            public short? ShortNullable => 5;
             public int Int => 12345;
+            public int? IntNullable => 12345;
             public long Long => 12352326;
+            public long? LongNullable => 12352326;
             public float Float => 1.23f;
+            public float? FloatNullable => 1.23f;
             public double Double => 123.23;
+            public double? DoubleNullable => 123.23;
             public decimal Decimal => 123.467m;
+            public decimal? DecimalNullable => 123.467m;
             public DateTime DateTime => DateTime.Now;
+            public DateTime? DateTimeNullable => DateTime.Now;
             public DateTimeOffset DateTimeOffset => DateTimeOffset.Now;
+            public DateTimeOffset? DateTimeOffsetNullable => DateTimeOffset.Now;
             public TimeSpan TimeSpan => TimeSpan.FromDays(2.1);
+            public TimeSpan? TimeSpanNullable => TimeSpan.FromDays(2.1);
             public Guid Guid => Guid.NewGuid();
             public VictimOf Enum => VictimOf.Beauty;
+            public VictimOf? EnumNullable => VictimOf.Beauty;
         }
         
         public enum VictimOf

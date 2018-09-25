@@ -237,7 +237,7 @@ namespace RapidCore.Reflection
         /// </summary>
         private bool ShouldRecurse(Type type)
         {
-            return !nonRecursedTypes.ContainsKey(type) && !type.GetTypeInfo().IsEnum;
+            return !nonRecursedTypes.ContainsKey(type) && !type.GetTypeInfo().IsEnum && !type.IsNullable();
         }
 
         /// <summary>
