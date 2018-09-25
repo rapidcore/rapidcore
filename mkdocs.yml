@@ -3,6 +3,10 @@ theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
 pages:
   - RapidCore: index.md
+  - Audit:
+      - Introduction: Audit/Introduction.md
+      - AuditDiffer: Audit/AuditDiffer.md
+      - Value masking: Audit/ValueMasking.md
   - Mongo DB:
       - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
       - Indexes: MongoDB/Indexes.md
