@@ -3,9 +3,17 @@ theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
 pages:
   - RapidCore: index.md
+  - Audit:
+      - Introduction: Audit/Introduction.md
+      - AuditDiffer: Audit/AuditDiffer.md
+      - Value masking: Audit/ValueMasking.md
   - Mongo DB:
       - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
       - Indexes: MongoDB/Indexes.md
+  - Dependency injection:
+      - IRapidContainerAdapter: DependencyInjection/IRapidContainerAdapter.md
+  - Diffing:
+      - Diff object instances: Diffing/StateChangeFinder.md
   - Environment:
       - Variables: RapidCore.Environment/EnvironmentVariables.md
   - Generally useful attributes:
@@ -31,5 +39,6 @@ pages:
       - Methods: RapidCore.Reflection/Methods.md
       - Nullable: RapidCore.Reflection/Nullable.md
       - Properties: RapidCore.Reflection/Properties.md
+      - Traversing an object instance: RapidCore.Reflection/InstanceTraverser.md
   - Threading:
       - Async/Await: RapidCore.Threading/AsyncAwait.md
