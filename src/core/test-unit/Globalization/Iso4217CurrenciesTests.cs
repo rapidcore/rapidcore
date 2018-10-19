@@ -44,6 +44,17 @@ namespace RapidCore.UnitTests.Globalization
                 }
             }
         }
+        
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("TotallyNotACurrencyCode")]
+        [InlineData("_208")] // does not register as "numeric", so ends up with null
+        public void Get_returnsNull_ifGiven(string given)
+        {
+            Assert.Null(currencies.Get(given));
+        }
 
         [Fact]
         public void Get_alpha()
@@ -99,6 +110,21 @@ namespace RapidCore.UnitTests.Globalization
         public void Matches(string theOneToCheck, string theOneItShouldBe, bool expected)
         {
             Assert.Equal(expected, currencies.Matches(theOneToCheck, theOneItShouldBe));
+        }
+        
+        [Theory]
+        // invalid
+        [InlineData("alala", false)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
+        [InlineData("   ", false)]
+        // valid
+        [InlineData("dkk", true)]
+        [InlineData("dKK", true)]
+        [InlineData("208", true)]
+        public void IsValidCurrencyCode(string currencyCodeToCheck, bool expected)
+        {
+            Assert.Equal(expected, currencies.IsValidCurrencyCode(currencyCodeToCheck));
         }
     }
 }
