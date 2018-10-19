@@ -81,3 +81,57 @@ public class SomeProcessor()
     }
 }
 ```
+
+## Validating a given country code
+
+If you need to validate whether a given country code is valid or not you have 2 options depending on what else you need.
+
+1. Use `IsValidCountryCode(string)` if you do not need the country instance, but just needs to know whether the code is valid
+2. Use `Get(string)` and check for null, if you need the country instance
+
+```csharp
+using RapidCore.Globalization;
+
+public class SomeHandler()
+{
+    private readonly Iso3166Countries countries;
+
+    public SomeHandler(Iso3166Countries countries)
+    {
+        this.countries = countries;
+    }
+
+    public void Myes(SomeThing input)
+    {
+        /**
+         * OPTION 1
+         *
+         * If you just need to know whether a given country code
+         * is valid, but you do not need the actual country instance
+         * you can use the "IsValidCountryCode" convenience method.
+         */
+        if (!countries.IsValidCountryCode(input.CountryCode))
+        {
+            throw new ArgumentException($"{input.CountryCode} is not a valid ISO 3166 country code");
+        }
+
+        /**
+         * OPTION 2
+         *
+         * If on the other hand, you actually need information about
+         * the country, you might as well just use "Get" and check for null
+         */
+        var country = countries.Get(input.CountryCode);
+
+        if (country == default(Iso3166Country))
+        {
+            throw new ArgumentException($"{input.CountryCode} is not a valid ISO 3166 country code");
+        }
+
+        var someOtherThing = new OtherThing
+        {
+            CountryCode = country.CodeNumeric
+        };
+    }
+}
+```
