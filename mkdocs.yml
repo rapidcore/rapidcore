@@ -1,7 +1,7 @@
 site_name: RapidCore Docs
 theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
-pages:
+nav:
   - RapidCore: index.md
   - Audit:
       - Introduction: Audit/Introduction.md
