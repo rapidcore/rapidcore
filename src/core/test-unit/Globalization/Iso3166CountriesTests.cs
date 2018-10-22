@@ -11,6 +11,17 @@ namespace RapidCore.UnitTests.Globalization
         {
             countries = new Iso3166Countries();
         }
+        
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData("TotallyNotACountryCode")]
+        [InlineData("_208")] // does not register as "numeric", so ends up with null
+        public void Get_returnsNull_ifGiven(string given)
+        {
+            Assert.Null(countries.Get(given));
+        }
 
         [Fact]
         public void Get_alpha2()
@@ -65,6 +76,24 @@ namespace RapidCore.UnitTests.Globalization
         public void Matches(string theOneToCheck, string theOneItShouldBe, bool expected)
         {
             Assert.Equal(expected, countries.Matches(theOneToCheck, theOneItShouldBe));
+        }
+        
+        [Theory]
+        // invalid
+        [InlineData("alala", false)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
+        [InlineData("   ", false)]
+        // valid
+        [InlineData("dk", true)]
+        [InlineData("dK", true)]
+        [InlineData("DK", true)]
+        [InlineData("dnk", true)]
+        [InlineData("dNK", true)]
+        [InlineData("208", true)]
+        public void IsValidCountryCode(string countryCodeToCheck, bool expected)
+        {
+            Assert.Equal(expected, countries.IsValidCountryCode(countryCodeToCheck));
         }
     }
 }

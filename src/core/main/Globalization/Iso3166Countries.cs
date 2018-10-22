@@ -269,6 +269,11 @@ namespace RapidCore.Globalization
         /// <returns>The matching country or null</returns>
         public virtual CountryIso3166 Get(string alpha2OrAlpha3OrNumeric)
         {
+            if (string.IsNullOrWhiteSpace(alpha2OrAlpha3OrNumeric))
+            {
+                return null;
+            }
+            
             // the input could be numeric, but sent in as a string
             if (int.TryParse(alpha2OrAlpha3OrNumeric, out int numeric))
             {
@@ -318,6 +323,16 @@ namespace RapidCore.Globalization
             }
 
             return a.Is(bAlpha2OrAlpha3OrNumeric);
+        }
+
+        /// <summary>
+        /// Check whether a given country code is valid
+        /// </summary>
+        /// <param name="alpha2OrAlpha3OrNumeric">Country code in either alpha-2, alpha-3 or numeric</param>
+        /// <returns><c>True</c> if the code is valid, <c>false</c> otherwise</returns>
+        public virtual bool IsValidCountryCode(string alpha2OrAlpha3OrNumeric)
+        {
+            return Get(alpha2OrAlpha3OrNumeric) != default(CountryIso3166);
         }
     }
 }

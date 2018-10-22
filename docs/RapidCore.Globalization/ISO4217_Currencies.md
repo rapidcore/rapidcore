@@ -81,3 +81,57 @@ public class SomeProcessor()
     }
 }
 ```
+
+## Validating a given currency code
+
+If you need to validate whether a given currency code is valid or not you have 2 options depending on what else you need.
+
+1. Use `IsValidCurrencyCode(string)` if you do not need the currency instance, but just needs to know whether the code is valid
+2. Use `Get(string)` and check for null, if you need the currency instance
+
+```csharp
+using RapidCore.Globalization;
+
+public class SomeHandler()
+{
+    private readonly Iso4217Currencies currencies;
+
+    public SomeHandler(Iso4217Currencies currencies)
+    {
+        this.currencies = currencies;
+    }
+
+    public void Myes(SomeThing input)
+    {
+        /**
+         * OPTION 1
+         *
+         * If you just need to know whether a given currency code
+         * is valid, but you do not need the actual currency instance
+         * you can use the "IsValidCurrencyCode" convenience method.
+         */
+        if (!currencies.IsValidCurrencyCode(input.CurrencyCode))
+        {
+            throw new ArgumentException($"{input.CurrencyCode} is not a valid ISO 4217 currency code");
+        }
+
+        /**
+         * OPTION 2
+         *
+         * If on the other hand, you actually need information about
+         * the currency, you might as well just use "Get" and check for null
+         */
+        var currency = currencies.Get(input.CurrencyCode);
+
+        if (currency == default(Iso4217Currency))
+        {
+            throw new ArgumentException($"{input.CurrencyCode} is not a valid ISO 4217 currency code");
+        }
+
+        var someOtherThing = new OtherThing
+        {
+            CurrencyCode = currency.CodeNumeric
+        };
+    }
+}
+```

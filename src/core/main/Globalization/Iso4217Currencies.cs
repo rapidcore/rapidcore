@@ -200,6 +200,11 @@ namespace RapidCore.Globalization
         /// <returns>The matching currency or <c>null</c></returns>
         public virtual CurrencyIso4217 Get(string alphaOrNumeric)
         {
+            if (string.IsNullOrWhiteSpace(alphaOrNumeric))
+            {
+                return null;
+            }
+            
             // the input could be numeric, but sent in as a string
             if (int.TryParse(alphaOrNumeric, out int numeric))
             {
@@ -236,6 +241,16 @@ namespace RapidCore.Globalization
             }
 
             return a.Is(bAlphaOrNumeric);
+        }
+        
+        /// <summary>
+        /// Check whether a given currency code is valid
+        /// </summary>
+        /// <param name="alphaOrNumeric">Alphabetic or numeric currency code</param>
+        /// <returns><c>True</c> if the code is valid, <c>false</c> otherwise</returns>
+        public virtual bool IsValidCurrencyCode(string alphaOrNumeric)
+        {
+            return Get(alphaOrNumeric) != default(CurrencyIso4217);
         }
     }
 }
