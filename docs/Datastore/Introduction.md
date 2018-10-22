@@ -4,5 +4,5 @@
 
 RapidCore has the following tools for working with it:
 
-- An [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) ([see docs](./Orm))
-- High-level connection class using the ORM ([see docs](./Connection))
+- An [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) ([see docs](../Orm))
+- High-level connection class using the ORM ([see docs](../Connection))

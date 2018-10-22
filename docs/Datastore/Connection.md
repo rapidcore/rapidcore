@@ -1,6 +1,6 @@
 # High-level Datastore connection
 
-`RapidCore.GoogleCloud.Datastore.DatastoreConnection` is a high-level connection class providing basic methods for working with Entities using the [the ORM](./Orm).
+`RapidCore.GoogleCloud.Datastore.DatastoreConnection` is a high-level connection class providing basic methods for working with Entities using the [the ORM](../Orm).
 
 It is not meant to cover every single use-case directly. For the more exotic use-cases, it provides direct access to the low-level connection from Google's SDK.
 
