@@ -105,7 +105,7 @@ namespace RapidCore.Globalization
             new CountryIso3166 { CodeAlpha2 = "GG", CodeAlpha3 = "GGY", CodeNumeric = 831, NameEnglish = "Guernsey" },
             new CountryIso3166 { CodeAlpha2 = "GN", CodeAlpha3 = "GIN", CodeNumeric = 324, NameEnglish = "Guinea" },
             new CountryIso3166 { CodeAlpha2 = "GW", CodeAlpha3 = "GNB", CodeNumeric = 624, NameEnglish = "Guinea-Bissau" },
-            new CountryIso3166 { CodeAlpha2 = "GY", CodeAlpha3 = "GUY", CodeNumeric = 328, NameEnglish = "Guyana" },
+            new CountryIso3166 { CodeAlpha2 = "GY", CodeAlpha3 = "GUY", CodeNumeric = 328, NameEnglish = "The Co-operative Republic of Guyana" },
             new CountryIso3166 { CodeAlpha2 = "HT", CodeAlpha3 = "HTI", CodeNumeric = 332, NameEnglish = "Haiti" },
             new CountryIso3166 { CodeAlpha2 = "HM", CodeAlpha3 = "HMD", CodeNumeric = 334, NameEnglish = "Heard Island and McDonald Islands" },
             new CountryIso3166 { CodeAlpha2 = "VA", CodeAlpha3 = "VAT", CodeNumeric = 336, NameEnglish = "Holy See" },
