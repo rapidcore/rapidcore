@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using RapidCore.GoogleCloud.Datastore.ReflectionBased;
@@ -30,7 +31,7 @@ namespace RapidCore.GoogleCloud.Datastore
             else
             {
                 var reflector = new DatastoreReflector();
-                
+
                 this.orm = new DatastoreOrm(
                     datastoreDb,
                     reflector,
@@ -39,7 +40,7 @@ namespace RapidCore.GoogleCloud.Datastore
                 );
             }
         }
-   
+
 
         /// <summary>
         /// The underlying db connection
@@ -63,8 +64,10 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return orm.GetKind(typeof(TPoco));
         }
-        
+
+
         #region Insert
+
         /// <summary>
         /// Async insert
         /// </summary>
@@ -86,33 +89,39 @@ namespace RapidCore.GoogleCloud.Datastore
             var kind = orm.GetKind(typeof(TPoco));
             return InsertAsync(poco, kind);
         }
+
         #endregion
 
         #region Upsert
+
         public virtual Task UpsertAsync<TPoco>(TPoco poco) where TPoco : new()
         {
             return UpsertAsync(poco, orm.GetKind(poco.GetType()));
         }
-        
+
         public virtual Task UpsertAsync<TPoco>(TPoco poco, string kind) where TPoco : new()
         {
             return datastoreDb.UpsertAsync(orm.PocoToEntity(poco, kind));
         }
+
         #endregion
-        
+
         #region Update
+
         public virtual Task UpdateAsync<TPoco>(TPoco poco) where TPoco : new()
         {
             return UpdateAsync(poco, orm.GetKind(poco.GetType()));
         }
-        
+
         public virtual Task UpdateAsync<TPoco>(TPoco poco, string kind) where TPoco : new()
         {
             return datastoreDb.UpdateAsync(orm.PocoToEntity(poco, kind));
         }
+
         #endregion
 
         #region Get by ID
+
         /// <summary>
         /// Get by ID
         /// </summary>
@@ -124,7 +133,7 @@ namespace RapidCore.GoogleCloud.Datastore
             var kind = orm.GetKind(typeof(TPoco));
             return GetByIdOrDefaultAsync<TPoco>(id, kind);
         }
-        
+
         /// <summary>
         /// Get by ID
         /// </summary>
@@ -136,7 +145,7 @@ namespace RapidCore.GoogleCloud.Datastore
             var kind = orm.GetKind(typeof(TPoco));
             return GetByIdOrDefaultAsync<TPoco>(id, kind);
         }
-        
+
         /// <summary>
         /// Get by ID
         /// </summary>
@@ -148,7 +157,7 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return GetByKeyOrDefaultAsync<TPoco>(orm.GetKey(kind, id));
         }
-        
+
         /// <summary>
         /// Get by ID
         /// </summary>
@@ -160,9 +169,128 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return GetByKeyOrDefaultAsync<TPoco>(orm.GetKey(kind, id));
         }
+
+        #endregion
+
+        #region Single Or Default Async
+
+        /// <summary>
+        /// Get single or default result 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<TPoco> SingleOrDefaultAsync<TPoco>(Query query) where TPoco : new()
+        {
+            if (query.Kind.Count == 0)
+            {
+                return await SingleOrDefaultAsync<TPoco>(query, orm.GetKind(typeof(TPoco)));
+            }
+
+            return await SingleOrDefaultAsync<TPoco>(query, "ignore");
+        }
+
+        /// <summary>
+        /// Get single or default result 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="kind"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<TPoco> SingleOrDefaultAsync<TPoco>(Query query, string kind) where TPoco : new()
+        {
+            var q = query;
+            if (query.Kind.Count == 0)
+            {
+                q = new Query(kind);
+                q.MergeFrom(query);
+            }
+
+            var res = await datastoreDb.RunQueryAsync(q);
+
+            return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Get single or default result
+        /// </summary>
+        /// <param name="query"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<TPoco> SingleOrDefaultAsync<TPoco>(GqlQuery query) where TPoco : new()
+        {
+            var res = await datastoreDb.RunQueryAsync(query);
+            return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Filter and get single or default async
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="key"></param>
+        /// <param name="filter"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<TPoco> SingleOrDefaultAsync<TPoco>(String kind,
+            Expression<Func<TPoco, bool>> filter)
+            where TPoco : new()
+        {
+            var res = await FilterAsync<TPoco>(kind, filter);
+            return res.SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Filter and get single or default async
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="filter"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<TPoco> SingleOrDefaultAsync<TPoco>(Expression<Func<TPoco, bool>> filter)
+            where TPoco : new()
+        {
+            var res = await FilterAsync<TPoco>(filter);
+            return res.SingleOrDefault();
+        }
+
+        #endregion
+
+        #region Filter
+
+        /// <summary>
+        /// Filter
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="key"></param>
+        /// <param name="filter"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<IList<TPoco>> FilterAsync<TPoco>(String kind,
+            Expression<Func<TPoco, bool>> filter)
+            where TPoco : new()
+        {
+            var gqlQuery = CreateGqlQuery<TPoco>(kind, filter);
+            return await Query<TPoco>(gqlQuery);
+        }
+
+        /// <summary>
+        /// Filter
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="filter"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<IList<TPoco>> FilterAsync<TPoco>(Expression<Func<TPoco, bool>> filter)
+            where TPoco : new()
+        {
+            var gqlQuery = CreateGqlQuery<TPoco>(orm.GetKind(typeof(TPoco)), filter);
+            return await Query<TPoco>(gqlQuery);
+        }
+
         #endregion
 
         #region Get by key
+
         /// <summary>
         /// Get by key
         /// </summary>
@@ -180,15 +308,17 @@ namespace RapidCore.GoogleCloud.Datastore
 
             return default(TPoco);
         }
+
         #endregion
 
         #region Delete
+
         public virtual Task DeleteAsync<TPoco>(long id) where TPoco : new()
         {
             var kind = orm.GetKind(typeof(TPoco));
             return DeleteAsync(id, kind);
         }
-        
+
         public virtual Task DeleteAsync<TPoco>(string id) where TPoco : new()
         {
             var kind = orm.GetKind(typeof(TPoco));
@@ -199,7 +329,7 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return DeleteAsync(orm.GetKey(kind, id));
         }
-        
+
         public virtual Task DeleteAsync(string id, string kind)
         {
             return DeleteAsync(orm.GetKey(kind, id));
@@ -209,9 +339,11 @@ namespace RapidCore.GoogleCloud.Datastore
         {
             return datastoreDb.DeleteAsync(key);
         }
+
         #endregion
 
         #region Query
+
         /// <summary>
         /// Get a list of POCOs from a query
         ///
@@ -225,10 +357,10 @@ namespace RapidCore.GoogleCloud.Datastore
             {
                 return Query<TPoco>(query, orm.GetKind(typeof(TPoco)));
             }
-            
+
             return Query<TPoco>(query, "ignored");
         }
-        
+
         /// <summary>
         /// Get a list of POCOs from a query
         /// </summary>
@@ -246,10 +378,10 @@ namespace RapidCore.GoogleCloud.Datastore
             }
 
             var res = await datastoreDb.RunQueryAsync(q);
-
+     
             return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).ToList();
         }
-        
+
         /// <summary>
         /// Get a list of POCOs from a query using GQL
         /// </summary>
@@ -261,6 +393,40 @@ namespace RapidCore.GoogleCloud.Datastore
 
             return res.Entities.Select(x => orm.EntityToPoco<TPoco>(x)).ToList();
         }
+
+        #endregion
+
+        #region GqlBuilder
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="key"></param>
+        /// <param name="filter"></param>
+        /// <typeparam name="TPoco"></typeparam>
+        /// <returns></returns>
+        private GqlQuery CreateGqlQuery<TPoco>(String kind, Expression<Func<TPoco, bool>> filter)
+        {
+            
+            string conditions = filter.Body.ToString();
+            var paramName = filter.Parameters[0].Name;
+            conditions = conditions
+                .Replace(paramName + ".", "")
+                .Replace("AndAlso", "And")
+                .Replace("==", "=")
+                .Replace("(", "")
+                .Replace(")", "");
+
+            conditions = conditions.Length == 0 ? "" : $" WHERE  {conditions}";
+
+            return new GqlQuery
+            {
+                QueryString = $"SELECT * FROM  {kind} {conditions}",
+                AllowLiterals = true
+            };
+        }
+
         #endregion
     }
 }
