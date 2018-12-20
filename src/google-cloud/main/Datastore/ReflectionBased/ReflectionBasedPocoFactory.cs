@@ -40,7 +40,7 @@ namespace RapidCore.GoogleCloud.Datastore.ReflectionBased
                 .ForEach(prop =>
                 {
                     var name = reflector.GetValueName(prop);
-                    var value = entity[name];
+                    var value = entity[prop.Name];
                     
                     prop.SetValue(poco, PocoValueFactory.FromEntityValue(prop, value, this));
                 });

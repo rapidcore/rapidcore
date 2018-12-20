@@ -1,5 +1,6 @@
 ﻿using System;
 using Google.Cloud.Datastore.V1;
+using RapidCore.GoogleCloud.Datastore;
 using Xunit;
 
 namespace functionaltests.Datastore.DatastoreConnection
@@ -149,6 +150,7 @@ namespace functionaltests.Datastore.DatastoreConnection
         public class Full
         {
             public int Id { get; set; }
+            [Name("SomeValue")]
             public string String { get; set; }
             public int X { get; set; }
         }
@@ -156,6 +158,7 @@ namespace functionaltests.Datastore.DatastoreConnection
         public class FullLight
         {
             public int Id { get; set; }
+            [Name("GOODNAME")]
             public string String { get; set; }
         }
         #endregion
