@@ -3,42 +3,62 @@ theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
 nav:
   - RapidCore: index.md
+  - Packages: packages.md
   - Audit:
-      - Introduction: Audit/Introduction.md
-      - AuditDiffer: Audit/AuditDiffer.md
-      - Value masking: Audit/ValueMasking.md
-  - Mongo DB:
-      - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
-      - Indexes: MongoDB/Indexes.md
-  - Dependency injection:
-      - IRapidContainerAdapter: DependencyInjection/IRapidContainerAdapter.md
+    - Audit: Audit/Audit.md
+    - ValueMasker: Audit/ValueMasker.md
+    - Examples: Audit/Examples.md
   - Diffing:
-      - Diff object instances: Diffing/StateChangeFinder.md
-  - Environment:
-      - Variables: RapidCore.Environment/EnvironmentVariables.md
-  - Generally useful attributes:
-      - Ignore: Attributes/Ignore.md
+    - Diffing: Diffing/Diffing.md
+    - Examples: Diffing/Examples.md
   - Globalization:
-      - Countries: RapidCore.Globalization/ISO3166_Countries.md
-      - Currencies: RapidCore.Globalization/ISO4217_Currencies.md
-      - Date and time: RapidCore.Globalization/DateAndTime.md
-  - Google Cloud Datastore:
-      - Introduction: Datastore/Introduction.md
-      - ORM: Datastore/Orm.md
-      - Connection: Datastore/Connection.md
-      - Connected test base: Datastore/TestBase.md
-  - Locking:
-      - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
-  - SqlServer:
-      - Distributed app lock: SqlServer/Locking.md
-  - Network:
-      - DNS: RapidCore.Network/HostnameToIP.md
-      - Predictable http client: RapidCore.Network/HttpClient.md
-  - Reflection:
-      - Attributes: RapidCore.Reflection/Attributes.md
-      - Methods: RapidCore.Reflection/Methods.md
-      - Nullable: RapidCore.Reflection/Nullable.md
-      - Properties: RapidCore.Reflection/Properties.md
-      - Traversing an object instance: RapidCore.Reflection/InstanceTraverser.md
+    - DateAndTime: Globalization/DateAndTime.md
+    - ISO3166 Countries: Globalization/ISO3166_Countries.md
+    - ISO4217 Currencies: Globalization/ISO4217_Currencies.md
+    - Examples: Globalization/Examples.md
   - Threading:
-      - Async/Await: RapidCore.Threading/AsyncAwait.md
+    - AsyncAwait: Threading/AsyncAwait.md
+    - Examples: Threading/Examples.md
+  - Environment Variables:
+    - Environment Variables: EnvironmentVariables/EnvironmentVariables.md
+    - Examples: EnvironmentVariables/Examples.md
+  - Generally useful attributes:
+    - Ignore: Attributes/Ignore.md
+    - Examples: Attributes/Examples.md
+  - Distributed app lock:
+    - Locking: Locking/DistributedAppLock.md
+    - Examples: Locking/Examples.md
+  - Network:
+    - DNS: Network/DNS.md
+    - Mockable Http clients: Network/HttpClients.md
+    - Examples: Network/Examples.md
+  - Reflection:
+    - Attributes: Reflection/Attributes.md
+    - Methods: Reflection/Methods.md
+    - Nullable: Reflection/Nullable.md
+    - Properties: Reflection/Properties.md
+    - Traversing an object instance: Reflection/InstanceTraverser.md
+    - Examples: Reflection/Examples.md
+  - Dependency injection:
+    - IRapidContainerAdapter: DependencyInjection/IRapidContainerAdapter.md
+  - Google Cloud Datastore:
+    - Introduction: Datastore/Introduction.md
+    - ORM: Datastore/Orm.md
+    - Connection: Datastore/Connection.md
+    - Connected test base: Datastore/TestBase.md
+  - Mongo DB:
+    - Connection: MongoDB/Connection.md
+    - Indexes: MongoDB/Indexes.md
+    - Examples: MongoDB/Examples.md
+  - PostgreSql:
+    - PostgreSql: PostgreSql/PostgreSql.md
+    - Examples: PostgreSql/Examples.md
+  - Redis:
+    - Redis: Redis/Redis.md
+    - Examples: Redis/Examples.md
+  - SqlServer:
+    - Distributed app lock: SqlServer/Locking.md
+    - Examples: SqlServer/Examples.md
+  - Xunit:
+    - Xunit: Xunit/Xunit.md
+    - Examples: Xunit/Examples.md
