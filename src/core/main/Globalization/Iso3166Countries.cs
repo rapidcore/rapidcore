@@ -224,7 +224,7 @@ namespace RapidCore.Globalization
             new CountryIso3166 { CodeAlpha2 = "SD", CodeAlpha3 = "SDN", CodeNumeric = 729, NameEnglish = "Sudan" },
             new CountryIso3166 { CodeAlpha2 = "SR", CodeAlpha3 = "SUR", CodeNumeric = 740, NameEnglish = "Suriname" },
             new CountryIso3166 { CodeAlpha2 = "SJ", CodeAlpha3 = "SJM", CodeNumeric = 744, NameEnglish = "Svalbard and Jan Mayen" },
-            new CountryIso3166 { CodeAlpha2 = "SZ", CodeAlpha3 = "SWZ", CodeNumeric = 748, NameEnglish = "Swaziland" },
+            new CountryIso3166 { CodeAlpha2 = "SZ", CodeAlpha3 = "SWZ", CodeNumeric = 748, NameEnglish = "Eswatini" },
             new CountryIso3166 { CodeAlpha2 = "SE", CodeAlpha3 = "SWE", CodeNumeric = 752, NameEnglish = "Sweden" },
             new CountryIso3166 { CodeAlpha2 = "CH", CodeAlpha3 = "CHE", CodeNumeric = 756, NameEnglish = "Switzerland" },
             new CountryIso3166 { CodeAlpha2 = "SY", CodeAlpha3 = "SYR", CodeNumeric = 760, NameEnglish = "Syrian Arab Republic" },
