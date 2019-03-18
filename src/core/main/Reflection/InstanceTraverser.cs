@@ -166,6 +166,12 @@ namespace RapidCore.Reflection
                         var index = 0;
                         foreach (var element in enumerable)
                         {
+                            // If TraverseInstance is called directly on a list with capacity greater than the size
+                            // Then null elements will be present
+                            if (element == null)
+                            {
+                                continue;
+                            }
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{index}]");
                             CallListener(listener, context, memberInfo, () => element);
 
