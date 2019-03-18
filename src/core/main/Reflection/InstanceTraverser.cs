@@ -73,7 +73,10 @@ namespace RapidCore.Reflection
             var props = typeInfo.GetProperties(bindingFlags);
             foreach (var propertyInfo in props)
             {
-                FieldAndPropertyHandler(listener, propertyInfo, context, instance);
+                if (!IsIndexProperty(propertyInfo))
+                {
+                    FieldAndPropertyHandler(listener, propertyInfo, context, instance);
+                }
             }
             
             //
@@ -273,6 +276,16 @@ namespace RapidCore.Reflection
         private bool IsBackingMethod(MethodBase method)
         {
             return BackingMethodNameRegex.IsMatch(method.Name);
+        }
+
+        /// <summary>
+        /// Is the given property an index property - i.e.
+        /// a property that requires additional parameters
+        /// in order to access it.
+        /// </summary>
+        private bool IsIndexProperty(PropertyInfo prop)
+        {
+            return prop.GetIndexParameters().Length > 0;
         }
     }
 }
