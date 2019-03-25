@@ -213,6 +213,32 @@ namespace RapidCore.GoogleCloud.Datastore
 
         #region Query
         /// <summary>
+        /// Get a list of POCOs from a filter
+        ///
+        /// The filter is applied to a new Query instance.
+        /// And the kind will be determined by lookup in ORM.
+        /// </summary>
+        /// <param name="filter">The filter to be queried</param>
+        /// <typeparam name="TPoco">The POCO you want back</typeparam>
+        public virtual async Task<IList<TPoco>> Query<TPoco>(Filter filter) where TPoco : new()
+        {
+            return await Query<TPoco>(new Query { Filter = filter });
+        }
+        
+        /// <summary>
+        /// Get a list of POCOs from a filter
+        ///
+        /// The filter is applied to a new Query instance.
+        /// And the kind will be determined by lookup in ORM.
+        /// </summary>
+        /// <param name="filter">The filter to be queried</param>
+        /// <typeparam name="TPoco">The POCO you want back</typeparam>
+        public virtual async Task<IList<TPoco>> Query<TPoco>(Filter filter, string kind) where TPoco : new()
+        {
+            return await Query<TPoco>(new Query { Filter = filter }, kind);
+        }
+        
+        /// <summary>
         /// Get a list of POCOs from a query
         ///
         /// You can ignore the kind, as we look it up with the ORM anyway.
@@ -225,7 +251,6 @@ namespace RapidCore.GoogleCloud.Datastore
             {
                 return Query<TPoco>(query, orm.GetKind(typeof(TPoco)));
             }
-            
             return Query<TPoco>(query, "ignored");
         }
         

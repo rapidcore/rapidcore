@@ -49,6 +49,38 @@ namespace functionaltests.Datastore.DatastoreConnection
         #endregion
 
         [Fact]
+        public async void Query_filter_withoutSettingKind()
+        {
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
+            {
+                PrepareData("Full");
+
+                var actual = await connection.Query<Full>(Filter.LessThanOrEqual("X", new Value {IntegerValue = 4}));
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+            });
+        }
+        
+        [Fact]
+        public async void Query_filter_withSettingKind()
+        {
+            await WorkAroundDatastoreEmulatorIssueAsync(async () =>
+            {
+                PrepareData("IceCreamWaffles");
+
+                var actual = await connection.Query<Full>(Filter.LessThanOrEqual("X", new Value {IntegerValue = 4}), "IceCreamWaffles");
+
+                Assert.Equal(3, actual.Count);
+                Assert.Contains(actual, x => x.Id == 1 && x.String == "one");
+                Assert.Contains(actual, x => x.Id == 2 && x.String == "two");
+                Assert.Contains(actual, x => x.Id == 5 && x.String == "five");
+            });
+        }
+        
+        [Fact]
         public async void Query_query_withKindSet()
         {
             await WorkAroundDatastoreEmulatorIssueAsync(async () =>
