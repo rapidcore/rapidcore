@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 using RapidCore.Environment;
 using RapidCore.Locking;
@@ -118,10 +119,19 @@ namespace functionaltests.Locking
             var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
             firstLock = (SqlServerDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
 
-            // Create task to dispose of loclk at some point
+            var threadStarted = false;
+            // Create task to dispose of lock at some point
             Task.Factory.StartNew(() =>
             {
-                Task.Delay(TimeSpan.FromMilliseconds(700));
+                threadStarted = true;
+                
+                // Wait 700 ms to allow the main thread to start acquiring second lock
+                var timeStart = DateTime.UtcNow;
+                while (DateTime.UtcNow.Subtract(timeStart).TotalMilliseconds < 700)
+                {
+                    // Do nothing
+                }
+                
                 // release the first lock
                 firstLock.Dispose();
 
@@ -131,7 +141,11 @@ namespace functionaltests.Locking
                 Assert.True(secondLock.IsActive);
                 secondLock.Dispose();
             });
-
+            
+            // Thread creation can take some time
+            // This waits for the thread to be created
+            SpinWait.SpinUntil(() => threadStarted);
+            
             // this second lock now enters retry mode
             secondLock = (SqlServerDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
         }
