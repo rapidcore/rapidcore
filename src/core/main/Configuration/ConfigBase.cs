@@ -23,30 +23,21 @@ namespace RapidCore.Configuration
 
         protected T Get<T>(string key, T defaultValue)
         {
-            string value = configuration[key];
+            var value = configuration[key];
 
             if (string.IsNullOrEmpty(value))
             {
                 return defaultValue;
             }
 
-            if (typeof(T).GetTypeInfo().IsEnum)
-            {
-                // try..catch is not as pretty as Enum.TryParse, but
-                // TryParse requires T to be non-nullable, which is
-                // not a constraint for us
-                try
-                {
-                    return (T)Enum.Parse(typeof(T), value, true);
-                }
-                catch (Exception)
-                {
-                    return defaultValue;
-                }
-            }
+            var converted = TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
 
-            return (T)Convert.ChangeType(value, typeof(T));
+            if (converted == null)
+            {
+                return defaultValue;
+            }
+            
+            return (T) converted;
         }
     }
 }
-#endif
