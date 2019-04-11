@@ -10,6 +10,134 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 {
     public class InstanceTraverser_EnumerableTests : InstanceTraverserTestBase
     {
+        #region List with elements
+        [Fact]
+        public void List_withEqualSizeAndCapacity_isDirectlyPassedTo_TraverseInstance_OnField_isCalled_forEachElement_andRecurses()
+        {
+            var victim = new List<InnocentBystander>
+            {
+                new InnocentBystander(),
+                new InnocentBystander()
+            };
+            victim.Capacity = 2;
+
+            var type = victim.GetType();
+            var complexType = typeof(InnocentBystander);
+            
+            var callCounts = new Dictionary<string, int>
+            {
+                {".Root", 0},
+                {"_items[0]", 0},
+                {"_items[0].FieldString", 0},
+                {"_items[1]", 0},
+                {"_items[1].FieldString", 0}
+            };
+            
+            A.CallTo(() =>
+                    listener.OnField(GetField(type, "_items"), A<Func<object>>._, A<IReadOnlyInstanceTraversalContext>._))
+                .Invokes(
+                    x =>
+                    {
+                        var ctx = (InstanceTraversalContext) x.Arguments[2];
+                        
+                        if (ctx.CurrentDepth == 0)
+                        {
+                            callCounts[".Root"]++;
+                            return;
+                        }
+                        
+                        // for the individual elements
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        callCounts[ctx.BreadcrumbAsString]++;
+                    });
+            
+            
+            A.CallTo(() =>
+                    listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<IReadOnlyInstanceTraversalContext>._))
+                .Invokes(
+                    x =>
+                    {
+                        var ctx = (InstanceTraversalContext) x.Arguments[2];
+                        
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
+                    });
+
+            
+            Traverser.TraverseInstance(victim, 10, listener);
+            
+            // all "methods" should have been called exactly once
+            foreach (var (key, value) in callCounts)
+            {
+                // this sillyness provides us with a hint for which thing was not called as expected
+                Assert.Equal($"{key}=1", $"{key}={value}");
+            }
+        }
+        
+        [Fact]
+        public void List_withNotEqualSizeAndCapacity_isDirectlyPassedTo_TraverseInstance_OnField_isCalled_forEachElement_andRecurses()
+        {
+            var victim = new List<InnocentBystander>
+            {
+                new InnocentBystander(),
+                new InnocentBystander()
+            };
+            victim.Capacity = 4;
+
+            var type = victim.GetType();
+            var complexType = typeof(InnocentBystander);
+            
+            var callCounts = new Dictionary<string, int>
+            {
+                {".Root", 0},
+                {"_items[0]", 0},
+                {"_items[0].FieldString", 0},
+                {"_items[1]", 0},
+                {"_items[1].FieldString", 0}
+            };
+            
+            A.CallTo(() =>
+                    listener.OnField(GetField(type, "_items"), A<Func<object>>._, A<IReadOnlyInstanceTraversalContext>._))
+                .Invokes(
+                    x =>
+                    {
+                        var ctx = (InstanceTraversalContext) x.Arguments[2];
+                        
+                        if (ctx.CurrentDepth == 0)
+                        {
+                            callCounts[".Root"]++;
+                            return;
+                        }
+                        
+                        // for the individual elements
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        callCounts[ctx.BreadcrumbAsString]++;
+                    });
+            
+            
+            A.CallTo(() =>
+                    listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<IReadOnlyInstanceTraversalContext>._))
+                .Invokes(
+                    x =>
+                    {
+                        var ctx = (InstanceTraversalContext) x.Arguments[2];
+                        
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
+                    });
+
+            
+            Traverser.TraverseInstance(victim, 10, listener);
+            
+            // all "methods" should have been called exactly once
+            foreach (var (key, value) in callCounts)
+            {
+                // this sillyness provides us with a hint for which thing was not called as expected
+                Assert.Equal($"{key}=1", $"{key}={value}");
+            }
+        }
+        #endregion
+        
         #region Field with array
         [Fact]
         public void Array_OnField_isCalled_forEachElement_simpleType()
