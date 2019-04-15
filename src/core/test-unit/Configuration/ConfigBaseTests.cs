@@ -1,6 +1,7 @@
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using RapidCore.Configuration;
 using Xunit;
 
 namespace RapidCore.UnitTests.Configuration
