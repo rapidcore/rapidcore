@@ -27,14 +27,11 @@ namespace RapidCore.Environment
                 return defaultValue;
             }
 
-            var converted = TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
-
-            if (converted == null)
+            if (TypeDescriptor.GetConverter(typeof(T)).IsValid(value))
             {
-                return defaultValue;
+                return (T) TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
             }
-            
-            return (T) converted;
+            return defaultValue;
         }
 
         /// <summary>
