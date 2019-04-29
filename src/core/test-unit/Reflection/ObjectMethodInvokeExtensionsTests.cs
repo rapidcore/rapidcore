@@ -163,7 +163,7 @@ namespace RapidCore.UnitTests.Reflection
         }
 
         [Fact]
-        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenNoParametersAreNull()
+        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenOnlyOneMethodMatch()
         {
             guineaPig.InvokeMethodRecursively("OverloadedMethod", "one", "two");
         }
@@ -178,6 +178,18 @@ namespace RapidCore.UnitTests.Reflection
         public void InvokeMethodRecursively_Throws_Overloaded_ifMoreThanOneMethodMatch()
         {
             Assert.Throws<AmbiguousMatchException>(() => guineaPig.InvokeMethodRecursively("OverloadedMethod", null, "two"));
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_Throws_Overloaded_ifMoreThanOneMethodMatch_evenWhenNoParametersAreNull()
+        {
+            Assert.Throws<AmbiguousMatchException>(() => guineaPig.InvokeMethodRecursively("WeirdOverloadedMethod", 5));
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenParameterIsNullButStillOnlyOneMatch()
+        {
+            guineaPig.InvokeMethodRecursively("WeirdOverloadedMethod", new object[] { null });
         }
 
         #region GuineaPig
@@ -219,6 +231,10 @@ namespace RapidCore.UnitTests.Reflection
             public void OverloadedMethod(string one, string two) { }
             
             public void OverloadedMethod(GuineaPig one, string two) { }
+            
+            public void WeirdOverloadedMethod(int one) { }
+            
+            public void WeirdOverloadedMethod(int? one) { }
         }
         #endregion
     }
