@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace RapidCore.Reflection
 {
@@ -15,6 +16,16 @@ namespace RapidCore.Reflection
         public static bool IsNullable(this Type type)
         {
             return type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        /// <summary>
+        /// Can objects of this type be set to null
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <returns><c>True</c> for something like <c>string</c> and <c>false</c> for something like <c>int</c></returns>
+        public static bool CanBeSetToNull(this Type type)
+        {
+            return !(type.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(type) == null);
         }
         
         /// <summary>

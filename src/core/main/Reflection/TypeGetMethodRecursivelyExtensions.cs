@@ -36,7 +36,7 @@ namespace RapidCore.Reflection
                         if (argTypes[parameterIndex] == null)
                         {
                             var parameter = m.GetParameters()[parameterIndex].ParameterType;
-                            if (parameter.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(parameter) == null)
+                            if (!parameter.CanBeSetToNull())
                             {
                                 // If the argument given is null but the parameter is not nullable
                                 return false;

@@ -39,6 +39,37 @@ namespace RapidCore.UnitTests.Reflection
         }
         
         [Theory]
+        // no
+        [InlineData(typeof(bool), false)]
+        [InlineData(typeof(byte), false)]
+        [InlineData(typeof(sbyte), false)]
+        [InlineData(typeof(short), false)]
+        [InlineData(typeof(ushort), false)]
+        [InlineData(typeof(int), false)]
+        [InlineData(typeof(uint), false)]
+        [InlineData(typeof(long), false)]
+        [InlineData(typeof(ulong), false)]
+        [InlineData(typeof(float), false)]
+        [InlineData(typeof(double), false)]
+        [InlineData(typeof(decimal), false)]
+        [InlineData(typeof(char), false)]
+        [InlineData(typeof(DateTime), false)]
+        [InlineData(typeof(DateTimeOffset), false)]
+        [InlineData(typeof(TimeSpan), false)]
+        // yes
+        [InlineData(typeof(string), true)]
+        [InlineData(typeof(List<string>), true)]
+        [InlineData(typeof(int[]), true)]
+        [InlineData(typeof(SomeClass), true)]
+        [InlineData(typeof(Type), true)]
+        [InlineData(typeof(bool?), true)]
+        [InlineData(typeof(DateTime?), true)]
+        public void CanBeSetToNull(Type type, bool expected)
+        {
+            Assert.Equal(expected, type.CanBeSetToNull());
+        }
+        
+        [Theory]
         [InlineData(typeof(bool?), typeof(bool))]
         [InlineData(typeof(byte?), typeof(byte))]
         [InlineData(typeof(sbyte?), typeof(sbyte))]
