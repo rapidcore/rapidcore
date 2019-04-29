@@ -44,9 +44,11 @@ namespace RapidCore.Reflection
                         }
                         else
                         {
-                            if (m.GetParameters()[parameterIndex].ParameterType != argTypes[parameterIndex])
+                            var parameter = m.GetParameters()[parameterIndex].ParameterType;
+                            if (parameter != argTypes[parameterIndex] &&
+                                parameter.GetTypeOrUnderlyingNullableType() != argTypes[parameterIndex])
                             {
-                                // If the argument given is not null but the types does not match
+                                // If the argument and parameter does not match
                                 return false;
                             }
                         }
