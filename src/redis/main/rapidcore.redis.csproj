@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <RootNamespace>RapidCore.Redis</RootNamespace>
     <Version>0.21.0</Version>
     <Title>RapidCore.Redis</Title>
@@ -20,10 +20,6 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
     <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_6</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45'">
-    <DefineConstants>NET45;NETFULL</DefineConstants>
-  </PropertyGroup>
-  
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
