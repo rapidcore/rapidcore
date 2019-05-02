@@ -29,11 +29,18 @@ namespace RapidCore.Globalization
         public virtual string NameEnglish { get; set; }
 
         /// <summary>
-        /// Does this country have the given country code
+        /// Does this country have the given country code.
+        ///
+        /// If given <c>null</c>, <c>false</c> is returned.
         /// </summary>
-        /// <param name="alpha2OrAlpha3OrNumeric">Country code to check as either alpha-2, alpha-3 or numeric</param>
+        /// <param name="alpha2OrAlpha3OrNumeric">Country code to check as either alpha-2, alpha-3 or numeric (null is handled)</param>
         public virtual bool Is(string alpha2OrAlpha3OrNumeric)
         {
+            if (string.IsNullOrEmpty(alpha2OrAlpha3OrNumeric))
+            {
+                return false;
+            }
+            
             if (int.TryParse(alpha2OrAlpha3OrNumeric, out int numeric))
             {
                 return numeric == CodeNumeric;

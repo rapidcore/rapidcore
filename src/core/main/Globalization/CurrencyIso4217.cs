@@ -27,11 +27,18 @@ namespace RapidCore.Globalization
         public virtual int MinorUnit { get; set; }
         
         /// <summary>
-        /// Does this currency have the given currency code
+        /// Does this currency have the given currency code.
+        ///
+        /// If given <c>null</c>, <c>false</c> is returned.
         /// </summary>
-        /// <param name="alphaOrNumeric">Currency code to check as either alpha or numeric</param>
+        /// <param name="alphaOrNumeric">Currency code to check as either alpha or numeric (null is handled)</param>
         public virtual bool Is(string alphaOrNumeric)
         {
+            if (string.IsNullOrEmpty(alphaOrNumeric))
+            {
+                return false;
+            }
+            
             if (int.TryParse(alphaOrNumeric, out int numeric))
             {
                 return numeric == CodeNumeric;
