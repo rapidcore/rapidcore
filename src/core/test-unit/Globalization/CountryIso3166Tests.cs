@@ -13,6 +13,7 @@ namespace RapidCore.UnitTests.Globalization
         }
 
         [Theory]
+        [InlineData("dk", null, false)] // null is not a country
         [InlineData("dk", "dk", true)] // same alpha-2
         [InlineData("dk", "dnk", true)] // same alpha-3
         [InlineData("dk", "208", true)] // same numeric
