@@ -20,33 +20,55 @@
 
 ## Packages
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ja3vf8fp1ros6q4t/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore/branch/master)
+[![Build status][appveyor-image]][appveyor-url]
 
-- [![nuget version][core-nuget-image]][core-nuget-url] RapidCore
-- [![nuget version][google-cloud-nuget-image]][google-cloud-nuget-url] RapidCore.GoogleCloud
-- [![nuget version][mongo-nuget-image]][mongo-nuget-url] RapidCore.Mongo
-- [![nuget version][postgres-nuget-image]][postgres-nuget-url] RapidCore.PostgreSql
-- [![nuget version][redis-nuget-image]][redis-nuget-url] RapidCore.Redis
-- [![nuget version][sqlserver-nuget-image]][sqlserver-nuget-url] RapidCore.SqlServer
-- [![nuget version][xunit-nuget-image]][xunit-nuget-url] RapidCore.Xunit
 
-[core-nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg
+| Package | Latest stable | Latest | Downloads |
+|---------|---------------|--------|-----------|
+| RapidCore | [![latest stable nuget version][core-nuget-image]][core-nuget-url] | [![latest nuget version][core-nuget-image-pre]][core-nuget-url] | [![Number of downloads][core-nuget-image-downloads]][core-nuget-url] |
+| RapidCore.GoogleCloud | [![latest stable nuget version][google-cloud-nuget-image]][google-cloud-nuget-url] | [![latest nuget version][google-cloud-nuget-image-pre]][google-cloud-nuget-url] | [![Number of downloads][google-cloud-nuget-image-downloads]][google-cloud-nuget-url] |
+| RapidCore.Mongo | [![latest stable nuget version][mongo-nuget-image]][mongo-nuget-url] | [![latest nuget version][mongo-nuget-image-pre]][mongo-nuget-url] | [![Number of downloads][mongo-nuget-image-downloads]][mongo-nuget-url] |
+| RapidCore.PostgreSql | [![latest stable nuget version][postgres-nuget-image]][postgres-nuget-url] | [![latest nuget version][postgres-nuget-image-pre]][postgres-nuget-url] | [![Number of downloads][postgres-nuget-image-downloads]][postgres-nuget-url] |
+| RapidCore.Redis | [![latest stable nuget version][redis-nuget-image]][redis-nuget-url] | [![latest nuget version][redis-nuget-image-pre]][redis-nuget-url] | [![Number of downloads][redis-nuget-image-downloads]][redis-nuget-url] |
+| RapidCore.SqlServer | [![latest stable nuget version][sqlserver-nuget-image]][sqlserver-nuget-url] | [![latest nuget version][sqlserver-nuget-image-pre]][sqlserver-nuget-url] | [![Number of downloads][sqlserver-nuget-image-downloads]][sqlserver-nuget-url] |
+| RapidCore.Xunit | [![latest stable nuget version][xunit-nuget-image]][xunit-nuget-url] | [![latest nuget version][xunit-nuget-image-pre]][xunit-nuget-url] | [![Number of downloads][xunit-nuget-image-downloads]][xunit-nuget-url] |
+
+
+[core-nuget-image]: https://img.shields.io/nuget/v/RapidCore.svg?style=flat-square
+[core-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.svg?style=flat-square
+[core-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.svg?style=flat-square
 [core-nuget-url]: https://www.nuget.org/packages/RapidCore
 
-[google-cloud-nuget-image]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg
+[google-cloud-nuget-image]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg?style=flat-square
+[google-cloud-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.GoogleCloud.svg?style=flat-square
+[google-cloud-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.GoogleCloud.svg?style=flat-square
 [google-cloud-nuget-url]: https://www.nuget.org/packages/RapidCore.GoogleCloud
 
-[mongo-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
+[mongo-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg?style=flat-square
+[mongo-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.Mongo.svg?style=flat-square
+[mongo-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.Mongo.svg?style=flat-square
 [mongo-nuget-url]: https://www.nuget.org/packages/RapidCore.Mongo
 
-[postgres-nuget-image]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg
+[postgres-nuget-image]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg?style=flat-square
+[postgres-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.PostgreSql.svg?style=flat-square
+[postgres-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.PostgreSql.svg?style=flat-square
 [postgres-nuget-url]: https://www.nuget.org/packages/RapidCore.PostgreSql
 
-[redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
+[redis-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Redis.svg?style=flat-square
+[redis-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.Redis.svg?style=flat-square
+[redis-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.Redis.svg?style=flat-square
 [redis-nuget-url]: https://www.nuget.org/packages/RapidCore.Redis
 
-[sqlserver-nuget-image]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg
+[sqlserver-nuget-image]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg?style=flat-square
+[sqlserver-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.SqlServer.svg?style=flat-square
+[sqlserver-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.SqlServer.svg?style=flat-square
 [sqlserver-nuget-url]: https://www.nuget.org/packages/RapidCore.SqlServer
 
-[xunit-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
+[xunit-nuget-image]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg?style=flat-square
+[xunit-nuget-image-downloads]: https://img.shields.io/nuget/dt/RapidCore.Xunit.svg?style=flat-square
+[xunit-nuget-image-pre]: https://img.shields.io/nuget/vpre/RapidCore.Xunit.svg?style=flat-square
 [xunit-nuget-url]: https://www.nuget.org/packages/RapidCore.Xunit
+
+
+[appveyor-image]: https://img.shields.io/appveyor/ci/nover/rapidcore/master.svg?style=flat-square
+[appveyor-url]: https://ci.appveyor.com/project/nover/rapidcore/branch/master

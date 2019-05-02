@@ -1,4 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/ja3vf8fp1ros6q4t/branch/master?svg=true)](https://ci.appveyor.com/project/nover/rapidcore/branch/master)
+[![Number of downloads][nuget-image-core-downloads]][nuget-url-core]
+[![Build status][appveyor-image]][appveyor-url]
 
 # RapidCore
 
@@ -20,37 +21,37 @@ The library is split into multiple packages (based on external dependencies).
 
 ### RapidCore (the base library)
 
-[![nuget version][nuget-image-core]][nuget-url-core]
+[![nuget version][nuget-image-core]][nuget-url-core] [![nuget version][nuget-image-core-pre]][nuget-url-core]
 
 ### RapidCore.GoogleCloud
 
 RapidCore classes for [Google Cloud Platform](https://cloud.google.com) that depend on various SDKs.
 
-[![nuget version][nuget-image-google-cloud]][nuget-url-google-cloud]
+[![nuget version][nuget-image-google-cloud]][nuget-url-google-cloud] [![nuget version][nuget-image-google-cloud-pre]][nuget-url-google-cloud]
 
 ### RapidCore.Mongo
 
 RapidCore classes that depend on MongoDB.
 
-[![nuget version][nuget-image-mongo]][nuget-url-mongo]
+[![nuget version][nuget-image-mongo]][nuget-url-mongo] [![nuget version][nuget-image-mongo-pre]][nuget-url-mongo]
 
 ### RapidCore.PostgreSql
 
 RapidCore classes that depend on PostgreSql.
 
-[![nuget version][nuget-image-postgres]][nuget-url-postgres]
+[![nuget version][nuget-image-postgres]][nuget-url-postgres] [![nuget version][nuget-image-postgres-pre]][nuget-url-postgres]
 
 ### RapidCore.SqlServer
 
 RapidCore classes that depend on SqlServer.
 
-[![nuget version][nuget-image-sqlserver]][nuget-url-sqlserver]
+[![nuget version][nuget-image-sqlserver]][nuget-url-sqlserver] [![nuget version][nuget-image-sqlserver-pre]][nuget-url-sqlserver]
 
 ### RapidCore.Redis
 
 RapidCore classes that depend on Redis.
 
-[![nuget version][nuget-image-redis]][nuget-url-redis]
+[![nuget version][nuget-image-redis]][nuget-url-redis] [![nuget version][nuget-image-redis-pre]][nuget-url-redis]
 
 ### RapidCore.Xunit
 
@@ -60,29 +61,42 @@ Current features
 
 - Provides an `ILoggerFactory` extension for adding an `ILogger` that writes to the xunit output buffer. Simply issue: `LogFactory.AddXunitOutput(output)` passing it the `ITestOutputHelper` instance
 
-[![nuget version][nuget-image-xunit]][nuget-url-xunit]
+[![nuget version][nuget-image-xunit]][nuget-url-xunit] [![nuget version][nuget-image-xunit-pre]][nuget-url-xunit]
 
 
-[nuget-image-core]: https://img.shields.io/nuget/v/RapidCore.svg
+[nuget-image-core]: https://img.shields.io/nuget/v/RapidCore.svg?style=flat-square
+[nuget-image-core-downloads]: https://img.shields.io/nuget/dt/RapidCore.svg?style=flat-square
+[nuget-image-core-pre]: https://img.shields.io/nuget/vpre/RapidCore.svg?style=flat-square
 [nuget-url-core]: https://www.nuget.org/packages/RapidCore
 
-[nuget-image-google-cloud]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg
+[nuget-image-google-cloud]: https://img.shields.io/nuget/v/RapidCore.GoogleCloud.svg?style=flat-square
+[nuget-image-google-cloud-pre]: https://img.shields.io/nuget/vpre/RapidCore.GoogleCloud.svg?style=flat-square
 [nuget-url-google-cloud]: https://www.nuget.org/packages/RapidCore.GoogleCloud
 
-[nuget-image-mongo]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg
+[nuget-image-mongo]: https://img.shields.io/nuget/v/RapidCore.Mongo.svg?style=flat-square
+[nuget-image-mongo-pre]: https://img.shields.io/nuget/vpre/RapidCore.Mongo.svg?style=flat-square
 [nuget-url-mongo]: https://www.nuget.org/packages/RapidCore.Mongo
 
-[nuget-image-postgres]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg
+[nuget-image-postgres]: https://img.shields.io/nuget/v/RapidCore.PostgreSql.svg?style=flat-square
+[nuget-image-postgres-pre]: https://img.shields.io/nuget/vpre/RapidCore.PostgreSql.svg?style=flat-square
 [nuget-url-postgres]: https://www.nuget.org/packages/RapidCore.PostgreSql
 
-[nuget-image-redis]: https://img.shields.io/nuget/v/RapidCore.Redis.svg
+[nuget-image-redis]: https://img.shields.io/nuget/v/RapidCore.Redis.svg?style=flat-square
+[nuget-image-redis-pre]: https://img.shields.io/nuget/vpre/RapidCore.Redis.svg?style=flat-square
 [nuget-url-redis]: https://www.nuget.org/packages/RapidCore.Redis
 
-[nuget-image-sqlserver]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg
+[nuget-image-sqlserver]: https://img.shields.io/nuget/v/RapidCore.SqlServer.svg?style=flat-square
+[nuget-image-sqlserver-pre]: https://img.shields.io/nuget/vpre/RapidCore.SqlServer.svg?style=flat-square
 [nuget-url-sqlserver]: https://www.nuget.org/packages/RapidCore.SqlServer
 
-[nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg
+[nuget-image-xunit]: https://img.shields.io/nuget/v/RapidCore.Xunit.svg?style=flat-square
+[nuget-image-xunit-pre]: https://img.shields.io/nuget/vpre/RapidCore.Xunit.svg?style=flat-square
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
+
+
+[appveyor-image]: https://img.shields.io/appveyor/ci/nover/rapidcore/master.svg?style=flat-square
+[appveyor-url]: https://ci.appveyor.com/project/nover/rapidcore/branch/master
+
 
 ## Notes for devs
 
