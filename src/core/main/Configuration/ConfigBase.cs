@@ -1,5 +1,6 @@
 #if NETSTANDARD2_0
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
@@ -38,3 +39,4 @@ namespace RapidCore.Configuration
         }
     }
 }
+#endif
