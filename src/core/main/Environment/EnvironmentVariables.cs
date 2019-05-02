@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace RapidCore.Environment
 {
@@ -27,7 +27,11 @@ namespace RapidCore.Environment
                 return defaultValue;
             }
 
-            return (T)Convert.ChangeType(value, typeof(T));
+            if (TypeDescriptor.GetConverter(typeof(T)).IsValid(value))
+            {
+                return (T) TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
+            }
+            return defaultValue;
         }
 
         /// <summary>
