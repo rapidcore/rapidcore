@@ -97,11 +97,9 @@ namespace RapidCore.Migration
         /// <summary>
         /// Downgrade the enviroment
         /// </summary>
-        public virtual async Task DowngradeAsync()
+        public virtual Task DowngradeAsync()
         {
-            await Task.FromResult(0);
-            throw new NotImplementedException(
-                "Downgrade has not been implemented yet. Provide your input in https://github.com/rapidcore/issues/issues/14");
+            return Task.FromException(new NotImplementedException("Downgrade has not been implemented yet. Provide your input in https://github.com/rapidcore/rapidcore/issues/30"));
         }
     }
 }
