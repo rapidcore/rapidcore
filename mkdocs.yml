@@ -29,6 +29,8 @@ nav:
       - Connected test base: Datastore/TestBase.md
   - Locking:
       - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
+  - Migration:
+      - Introduction: Migration/Introduction.md
   - SqlServer:
       - Distributed app lock: SqlServer/Locking.md
   - Network:
