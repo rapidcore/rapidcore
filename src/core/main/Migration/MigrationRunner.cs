@@ -56,7 +56,7 @@ namespace RapidCore.Migration
         }
 
         /// <summary>
-        /// Upgrade the enviroment
+        /// Upgrade the environment
         /// </summary>
         public virtual async Task UpgradeAsync()
         {
@@ -95,7 +95,7 @@ namespace RapidCore.Migration
         }
 
         /// <summary>
-        /// Downgrade the enviroment
+        /// Downgrade the environment
         /// </summary>
         public virtual Task DowngradeAsync()
         {
