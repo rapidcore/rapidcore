@@ -30,6 +30,7 @@ nav:
   - Locking:
       - Distributed app lock: RapidCore.Locking/DistributedAppLock.md
   - Migration:
+      - Getting started: Migration/GettingStarted.md
       - Introduction: Migration/Introduction.md
   - SqlServer:
       - Distributed app lock: SqlServer/Locking.md
