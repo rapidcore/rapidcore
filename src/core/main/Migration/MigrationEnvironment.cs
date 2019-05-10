@@ -9,6 +9,16 @@
         
         public string Environment { get; protected set; }
         
+        public bool IsDevelopment()
+        {
+            return Environment.ToLowerInvariant().Equals("development");
+        }
+        
+        public bool IsCi()
+        {
+            return Environment.ToLowerInvariant().Equals("ci");
+        }
+        
         public bool IsTesting()
         {
             return Environment.ToLowerInvariant().Equals("testing");

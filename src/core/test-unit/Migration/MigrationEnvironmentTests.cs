@@ -6,6 +6,18 @@ namespace RapidCore.UnitTests.Migration
     public class MigrationEnvironmentTests
     {
         [Fact]
+        public void IsDevelopment_works_caseInsensitive()
+        {
+            Assert.True(new MigrationEnvironment("deveLOPmeNT").IsDevelopment());
+        }
+        
+        [Fact]
+        public void IsCi_works_caseInsensitive()
+        {
+            Assert.True(new MigrationEnvironment("cI").IsCi());
+        }
+        
+        [Fact]
         public void IsTesting_works_caseInsensitive()
         {
             Assert.True(new MigrationEnvironment("teSTiNg").IsTesting());
