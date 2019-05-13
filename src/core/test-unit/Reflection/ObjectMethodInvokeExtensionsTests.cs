@@ -143,6 +143,54 @@ namespace RapidCore.UnitTests.Reflection
         {
             Assert.ThrowsAny<MissingMemberException>(() => guineaPig.InvokeSetterRecursively("DoesNotExist", "!"));
         }
+        
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_lastOne()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", "one", "two", null);
+        }
+
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_notFirstNotLast()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", "one", null, "three");
+        }
+
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_NullParams_firstOne()
+        {
+            guineaPig.InvokeMethodRecursively("MultipleParams", null, "two", "three");
+        }
+
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenOnlyOneMethodMatch()
+        {
+            guineaPig.InvokeMethodRecursively("OverloadedMethod", "one", "two");
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenParametersAreNullButStillOnlyOneMatch()
+        {
+            guineaPig.InvokeMethodRecursively("OverloadedMethod", "one", null);
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_Throws_Overloaded_ifMoreThanOneMethodMatch()
+        {
+            Assert.Throws<AmbiguousMatchException>(() => guineaPig.InvokeMethodRecursively("OverloadedMethod", null, "two"));
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_Throws_Overloaded_ifMoreThanOneMethodMatch_evenWhenNoParametersAreNull()
+        {
+            Assert.Throws<AmbiguousMatchException>(() => guineaPig.InvokeMethodRecursively("WeirdOverloadedMethod", 5));
+        }
+        
+        [Fact]
+        public void InvokeMethodRecursively_CanInvoke_Overloaded_whenParameterIsNullButStillOnlyOneMatch()
+        {
+            guineaPig.InvokeMethodRecursively("WeirdOverloadedMethod", new object[] { null });
+        }
 
         #region GuineaPig
         private class GuineaPig : GuineaPigBase
@@ -177,6 +225,16 @@ namespace RapidCore.UnitTests.Reflection
             public string Generic<T>(string b, string c) { return $"{b} {c} {typeof(T).Name}"; }
 
             public string AllAboutThatBase { get; set; }
+            
+            public void MultipleParams(string one, string two, string three) { }
+            
+            public void OverloadedMethod(string one, string two) { }
+            
+            public void OverloadedMethod(GuineaPig one, string two) { }
+            
+            public void WeirdOverloadedMethod(int one) { }
+            
+            public void WeirdOverloadedMethod(int? one) { }
         }
         #endregion
     }

@@ -88,7 +88,7 @@ namespace RapidCore.Reflection
 
         private static Type[] GetTypeArray(object[] args)
         {
-            return args.Select(a => a.GetType()).ToArray();
+            return args.Select(a => a?.GetType()).ToArray();
         }
     }
 }

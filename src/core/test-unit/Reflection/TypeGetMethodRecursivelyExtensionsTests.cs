@@ -88,6 +88,36 @@ namespace RapidCore.UnitTests.Reflection
 
             Assert.Equal("Could not find method HasOverload(Int64, Int32, Attribute)", ex.Message);
         }
+        
+        [Fact]
+        public void GetMethodRecursively_Throws_ifOverloadedMethodExists_withSameParameterButNullable()
+        {
+            var ex = Assert.Throws<AmbiguousMatchException>(() => typeof(GuineaPig).GetMethodRecursively("WeirdOverload", typeof(int)));
+
+            Assert.Equal("Two or more methods match the method definition WeirdOverload(Int32)", ex.Message);
+        }
+        
+        [Fact]
+        public void GetMethodRecursively_FindsOverloadedMethod_WhenTypeProvidedIsNullable()
+        {
+            var actual = typeof(GuineaPig).GetMethodRecursively("WeirdOverload", typeof(int?));
+            
+            Assert.NotNull(actual);
+            Assert.Equal("WeirdOverload", actual.Name);
+            Assert.Single(actual.GetParameters());
+            Assert.Equal(typeof(int?), actual.GetParameters()[0].ParameterType);
+        }
+        
+        [Fact]
+        public void GetMethodRecursively_FindsOverloadedMethod_WhenNullIsProvided()
+        {
+            var actual = typeof(GuineaPig).GetMethodRecursively("WeirdOverload", new Type [] { null });
+            
+            Assert.NotNull(actual);
+            Assert.Equal("WeirdOverload", actual.Name);
+            Assert.Single(actual.GetParameters());
+            Assert.Equal(typeof(int?), actual.GetParameters()[0].ParameterType);
+        }
 
         #region GuineaPig
         private class GuineaPig
@@ -99,6 +129,10 @@ namespace RapidCore.UnitTests.Reflection
             public void HasOverload() { }
 
             public void HasOverload(Attribute attrib) { }
+            
+            public void WeirdOverload(int a) { }
+            
+            public void WeirdOverload(int? a) { }
         }
         #endregion
     }
