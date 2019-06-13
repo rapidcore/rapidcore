@@ -20,12 +20,11 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="dapper" Version="1.50.4" />
-    <PackageReference Include="Npgsql" Version="3.2.6" />
+    <PackageReference Include="dapper" Version="1.60.6" />
+    <PackageReference Include="Npgsql" Version="4.0.7" />
   </ItemGroup>
 
 </Project>

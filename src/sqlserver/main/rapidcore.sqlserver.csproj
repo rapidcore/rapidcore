@@ -20,7 +20,7 @@
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.50.4" />
+    <PackageReference Include="Dapper" Version="1.60.6" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
 </Project>
