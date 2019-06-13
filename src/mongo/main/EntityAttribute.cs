@@ -8,5 +8,6 @@ namespace RapidCore.Mongo
     [AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
     public class EntityAttribute : Attribute
     {
+        public string CollectionName { get; set; }
     }
 }

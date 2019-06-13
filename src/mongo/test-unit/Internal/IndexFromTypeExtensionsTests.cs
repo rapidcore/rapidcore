@@ -8,6 +8,24 @@ namespace RapidCore.Mongo.UnitTests.Internal
 {
     public class IndexFromTypeExtensionsTests
     {
+        #region GetCollectionName
+        [Fact]
+        public void GetCollectionName_default_collectionName_is_theNameOfTheType()
+        {
+            var actual = typeof(EntityWithDefaultCollectionName).GetTypeInfo().GetCollectionName();
+            
+            Assert.Equal("EntityWithDefaultCollectionName", actual);
+        }
+        
+        [Fact]
+        public void GetCollectionName_canTakeName_fromEntityAttribute()
+        {
+            var actual = typeof(EntityWithCollectionName).GetTypeInfo().GetCollectionName();
+            
+            Assert.Equal("DonaldDucks", actual);
+        }
+        #endregion
+        
         [Fact]
         public void DetectsRecursionAndStops()
         {
@@ -47,6 +65,18 @@ namespace RapidCore.Mongo.UnitTests.Internal
 
             [Index]
             public string ThisIsOk { get; set; }
+        }
+        #endregion
+
+        #region Collection name victims
+        [Entity]
+        private class EntityWithDefaultCollectionName
+        {
+        }
+        
+        [Entity(CollectionName = "DonaldDucks")]
+        private class EntityWithCollectionName
+        {
         }
         #endregion
     }

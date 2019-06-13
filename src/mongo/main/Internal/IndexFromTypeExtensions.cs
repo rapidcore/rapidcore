@@ -10,7 +10,16 @@ namespace RapidCore.Mongo.Internal
     {
         public static string GetCollectionName(this TypeInfo type)
         {
-            return type.Name;
+            var entityAttributes = type.GetSpecificAttribute<EntityAttribute>();
+
+            string collectionName = null;
+            
+            if (entityAttributes.Count > 0)
+            {
+                collectionName = entityAttributes.FirstOrDefault()?.CollectionName;
+            }
+            
+            return collectionName ?? type.Name;
         }
 
         public static IndexDefinitionCollection GetIndexDefinitions(this TypeInfo type)
