@@ -34,21 +34,12 @@ function Use-NuGetReference {
 
 if (Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
+#
+# install Sonar Scanner (from SonarQube)
+#
 exec { & dotnet tool install --global dotnet-sonarscanner }
 
 exec { & dotnet restore }
-
-exec { & dotnet sonarscanner begin /k:"rapidcore_rapidcore" /o:"rapidcore" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
-
-exec { & dotnet build -c Release }
-
-$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
-
-foreach ($testProject in $testProjects) {
-    exec { & dotnet test $testProject -c Release }
-}
-
-exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
 ##
 # Get current version of project and append commit count, if we are not building a tag (thus creating a pre-release)
@@ -64,7 +55,43 @@ if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
     $version = "$($version)-preview-$($revCount)".Trim()
 }
 
+$sonarProjectKey = "rapidcore_rapidcore"
+$sonarHostUrl = "https://sonarcloud.io"
+
 Set-Location ..\..\..\
+# initialize Sonar Scanner
+exec {
+    & dotnet sonarscanner begin `
+        /k:rapidcore_rapidcore `
+        /o:rapidcore `
+        /v:$version `
+        /d:sonar.host.url=$sonarHostUrl `
+        /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
+        /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
+        /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
+        /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
+}
+
+
+exec { & dotnet build -c Release }
+
+$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
+
+foreach ($testProject in $testProjects) {
+    exec { & dotnet test $testProject -c Release }
+}
+
+# trigger Sonar Scanner analysis
+exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
+
+$response = Invoke-WebRequest -URI "$sonarHostUrl/api/qualitygates/project_status?projectKey=$sonarProjectKey&pullRequest=$Env:APPVEYOR_PULL_REQUEST_NUMBER" | ConvertFrom-Json
+
+if($response.projectStatus.status -eq "ERROR") {
+    Write-Host "The code is not approved by the SonarCloud Quality Gates"
+    exit 1
+}
+
+Write-Host "Not ERROR: " $response.projectStatus.status
 
 ##
 # Update all packages to use nuget reference and pack them up as nugets
