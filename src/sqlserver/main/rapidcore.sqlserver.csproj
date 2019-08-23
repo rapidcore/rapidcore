@@ -15,6 +15,7 @@
     <PackageId>RapidCore.SqlServer</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ProjectGuid>af6fbb76-726e-48f1-90bc-428b9791295c</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />

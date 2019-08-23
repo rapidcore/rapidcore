@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>RapidCore.Mongo.UnitTests</RootNamespace>
+    <ProjectGuid>afa54037-6e04-474b-ab52-15e6b0b685e1</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.2" />

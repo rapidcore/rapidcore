@@ -6,6 +6,9 @@ branches:
   - master
 nuget:  
   disable_publish_on_pr: true
+environment:
+  SONARCLOUD_TOKEN:
+    secure: Tf/wMjCgA2eNaYLOWhCCUGRD6I5V75LNmfMHx54IOJZq2HX/VDpzTgDb1UUlxmt+
 build_script:
 - ps: .\Build.ps1
 test: off

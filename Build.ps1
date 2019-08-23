@@ -34,7 +34,11 @@ function Use-NuGetReference {
 
 if (Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
+exec { & dotnet tool install --global dotnet-sonarscanner }
+
 exec { & dotnet restore }
+
+exec { & dotnet sonarscanner begin /k:"rapidcore_rapidcore" /o:"rapidcore" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
 exec { & dotnet build -c Release }
 
@@ -43,6 +47,8 @@ $testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\tes
 foreach ($testProject in $testProjects) {
     exec { & dotnet test $testProject -c Release }
 }
+
+exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
 ##
 # Get current version of project and append commit count, if we are not building a tag (thus creating a pre-release)
