@@ -40,3 +40,12 @@ deploy:
       repo: rapidcore/rapidcore
       tags: false
       branch: master
+addons:
+  sonarcloud:
+    organization: "rapidcore"
+    token:
+      secure: "SN4dRpE/DPio6b1IZfqdPGOGpZYjPdB2iSE6tF3Uf7/8Dm4tWZwgfHBfCb6ezfKZWzz5nSOASEoKM5ySLJPgCUR53KxCf6E2D10IFMJPYI58L4abdJQP+UBEbmT+LOEnsoR07p+LG4YMRQdf359rXeOOM7z25D+I3orayTtVdhn0JyOIxV3C9uLAWc+2f0sVbHDA6zPYnrhpFmPrQ/J8slrCC6o+n+GhSf5BhZIJMhIuAEg2KWaE88gDV0ebuCjA+ImGafIHSPBaBddE1I9qUMXgLn7nqv5Mdj3tgNminvEEz2duThp+l8Ym0rIfsLANPNH2i+iVG26j1OepjAw/RQNxQgnxqbaghebnPmrBuMsIT1GgZLtEyNyTPl92e8BXZ3IxQLQQXi2iksleR2BDbTpy/QKg33XLSDpbjnYAEuPBgBPZ27h3tHw4xsAMgIw8wrRlAoSkdmWHIOrgP+pKEHiLKUcAYuVKH9IVTOXHCiB0Cee6AMsEs46h0ZgpE5JkWzsy+k6RzrwmD64RxBUsGuDkupEm5BpMOj2AXsTa6nqcEKh6PEwnCHuRvPJawpn6M0RHIBN0GsI/V8FH7hMJ8MJ+957LAk4YGLt1FhC/aQDiwASPImBE/cDhi5uFFcFBblYxN0PEIM+YePhohTN/Pc8d/A+hn6pLPrwwhkWfSCw="
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - sonar-scanner
