@@ -84,15 +84,6 @@ foreach ($testProject in $testProjects) {
 # trigger Sonar Scanner analysis
 exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
-$response = Invoke-WebRequest -URI "$sonarHostUrl/api/qualitygates/project_status?projectKey=$sonarProjectKey&pullRequest=$Env:APPVEYOR_PULL_REQUEST_NUMBER" | ConvertFrom-Json
-
-if($response.projectStatus.status -eq "ERROR") {
-    Write-Host "The code is not approved by the SonarCloud Quality Gates"
-    exit 1
-}
-
-Write-Host "Not ERROR: " $response.projectStatus.status
-
 ##
 # Update all packages to use nuget reference and pack them up as nugets
 ##
