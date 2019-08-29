@@ -38,8 +38,7 @@ if (Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 # install Sonar Scanner (from SonarQube)
 #
 exec { & dotnet tool install --global dotnet-sonarscanner }
-
-exec { & dotnet restore }
+exec { & dotnet tool install --global dotnet-version-cli }
 
 ##
 # Get current version of project and append commit count, if we are not building a tag (thus creating a pre-release)
@@ -54,6 +53,8 @@ if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
     $version = & dotnet version --output-format=json --dry-run patch | ConvertFrom-Json | Select-Object -ExpandProperty newVersion
     $version = "$($version)-preview-$($revCount)".Trim()
 }
+
+exec { & dotnet restore }
 
 $sonarProjectKey = "rapidcore_rapidcore"
 $sonarHostUrl = "https://sonarcloud.io"
@@ -71,7 +72,6 @@ exec {
         /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
         /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
 }
-
 
 exec { & dotnet build -c Release }
 

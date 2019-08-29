@@ -24,7 +24,6 @@
     <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
     <PackageReference Include="ServiceStack.Text.Core" Version="1.0.43" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
