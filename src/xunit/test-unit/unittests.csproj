@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>RapidCore.Xunit.UnitTest</AssemblyName>
     <RootNamespace>RapidCore.Xunit.UnitTest</RootNamespace>
+    <ProjectGuid>fcc991f7-8faf-4414-802e-869d244db59e</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.2" />

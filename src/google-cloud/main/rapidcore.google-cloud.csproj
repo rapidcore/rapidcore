@@ -14,6 +14,7 @@
     <PackageId>RapidCore.GoogleCloud</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ProjectGuid>fe0be911-f3dc-40f2-bf32-65566d7706f1</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />

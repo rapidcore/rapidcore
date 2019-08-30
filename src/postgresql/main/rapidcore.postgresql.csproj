@@ -16,11 +16,11 @@
     <PackageId>RapidCore.PostgreSql</PackageId>
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ProjectGuid>5c82298e-ff93-4cd2-8ad8-6000de74a4b5</ProjectGuid>
   </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.7.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -34,15 +34,11 @@ function Use-NuGetReference {
 
 if (Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
-exec { & dotnet restore }
-
-exec { & dotnet build -c Release }
-
-$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
-
-foreach ($testProject in $testProjects) {
-    exec { & dotnet test $testProject -c Release }
-}
+#
+# install Sonar Scanner (from SonarQube)
+#
+exec { & dotnet tool install --global dotnet-sonarscanner }
+exec { & dotnet tool install --global dotnet-version-cli }
 
 ##
 # Get current version of project and append commit count, if we are not building a tag (thus creating a pre-release)
@@ -58,7 +54,47 @@ if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
     $version = "$($version)-preview-$($revCount)".Trim()
 }
 
+exec { & dotnet restore }
+
+$sonarProjectKey = "rapidcore_rapidcore"
+$sonarHostUrl = "https://sonarcloud.io"
+
 Set-Location ..\..\..\
+# initialize Sonar Scanner
+# If the environment variable APPVEYOR_PULL_REQUEST_NUMBER is not present, then this is not a pull request
+if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+    exec {
+        & dotnet sonarscanner begin `
+            /k:rapidcore_rapidcore `
+            /o:rapidcore `
+            /v:$version `
+            /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.login="$Env:SONARCLOUD_TOKEN"
+    }
+} else {
+    exec {
+        & dotnet sonarscanner begin `
+            /k:rapidcore_rapidcore `
+            /o:rapidcore `
+            /v:$version `
+            /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
+            /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
+            /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
+            /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
+    }
+}
+
+exec { & dotnet build -c Release }
+
+$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
+
+foreach ($testProject in $testProjects) {
+    exec { & dotnet test $testProject -c Release }
+}
+
+# trigger Sonar Scanner analysis
+exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
 ##
 # Update all packages to use nuget reference and pack them up as nugets

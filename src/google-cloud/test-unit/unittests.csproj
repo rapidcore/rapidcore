@@ -4,6 +4,7 @@
     <RootNamespace>unittests</RootNamespace>
     <IsPackable>false</IsPackable>
     <NoWarn>CS0169</NoWarn>
+    <ProjectGuid>c9627b38-1a2f-4281-8044-9d38a53e64b6</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.2" />

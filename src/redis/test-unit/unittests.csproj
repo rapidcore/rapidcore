@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>RapidCore.Redis.UnitTests</RootNamespace>
     <AssemblyName>RapidCore.Redis.UnitTests</AssemblyName>
+    <ProjectGuid>8b960783-40d8-4ac1-96e4-08b7dcedde74</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fakeiteasy" Version="4.9.2" />
