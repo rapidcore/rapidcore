@@ -124,14 +124,16 @@ namespace RapidCore.Diffing.Internal
             // we do not care
         }
 
-        public void OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
+        public bool OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             SetValue(field, valueGetter.Invoke(), context);
+            return true;
         }
 
-        public void OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
+        public bool OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             SetValue(property, valueGetter.Invoke(), context);
+            return true;
         }
 
         public void OnMethod(MethodInfo method, IReadOnlyInstanceTraversalContext context)

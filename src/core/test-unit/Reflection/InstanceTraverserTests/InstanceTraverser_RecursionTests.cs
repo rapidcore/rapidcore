@@ -43,6 +43,120 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         }
         
         #region Fields
+
+        [Fact]
+        public void FieldRecursion_stopsWhenOnFieldReturnsFalse()
+        {
+            var victim = new RecursionVictim();
+            var childTwo = new RecursionChildTwo();
+            var childThree = new RecursionChildThree
+            {
+                ChildTwo = childTwo
+            };
+
+            victim.FieldChildTwo = childTwo;
+            victim.FieldChildThree = childThree;
+
+            var type = victim.GetType();
+            var child2Type = typeof(RecursionChildTwo);
+            var child3Type = typeof(RecursionChildThree);
+
+
+            var callCounts = new Dictionary<string, int>
+            {
+                {".FieldChildTwo", 0},
+                {"FieldChildTwo.ChildTwoString", 0},
+                {".FieldChildThree", 0},
+                {"FieldChildThree.ChildThreeString", 0},
+                {"FieldChildThree.ChildTwo", 0},
+                {"FieldChildThree.ChildTwo.ChildTwoString", 0}
+            };
+            
+            // first we get a call for the top level child two field
+            A.CallTo(() => listener.OnField(GetField(type, "FieldChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(0, ctx.CurrentDepth);
+
+                    callCounts[".FieldChildTwo"]++;
+                })
+                .Returns(true);
+            
+            // we then dig into the top level child two field instance
+            // and this is also triggered for the FieldChildThree.ChildTwo instance
+            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+
+                    if (ctx.CurrentDepth == 1)
+                    {
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        Assert.Equal("FieldChildTwo", ctx.BreadcrumbAsString);
+                    
+                        callCounts["FieldChildTwo.ChildTwoString"]++;
+                    }
+                    else if (ctx.CurrentDepth == 2)
+                    {
+                        Assert.Equal(2, ctx.CurrentDepth);
+                        Assert.Equal("FieldChildThree.ChildTwo", ctx.BreadcrumbAsString);
+                    
+                        callCounts["FieldChildThree.ChildTwo.ChildTwoString"]++;
+                    }
+                })
+                .Returns(true);
+            
+            // then we visit the FieldChildThree top level field
+            A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(0, ctx.CurrentDepth);
+                    
+                    callCounts[".FieldChildThree"]++;
+                })
+                .Returns(false); // do not traverse further down this path
+            
+            
+            // if traversal continues although it should not, then FieldChildThree.ChildThreeString is next
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(1, ctx.CurrentDepth);
+                    Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
+                    
+                    callCounts["FieldChildThree.ChildThreeString"]++;
+                })
+                .Returns(true);
+            
+            
+            // if traversal continues although it should not, then FieldChildThree.ChildTwo is next
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(1, ctx.CurrentDepth);
+                    Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
+                    
+                    callCounts["FieldChildThree.ChildTwo"]++;
+                })
+                .Returns(true);
+                
+            Traverser.TraverseInstance(victim, 5, listener);
+            
+            // these should have been called exactly once
+            Assert.Equal(1, callCounts[".FieldChildTwo"]);
+            Assert.Equal(1, callCounts["FieldChildTwo.ChildTwoString"]);
+            Assert.Equal(1, callCounts[".FieldChildThree"]);
+
+            // these should not have been called as traversal should stop at .FieldChildThree
+            Assert.Equal(0, callCounts["FieldChildThree.ChildThreeString"]);
+            Assert.Equal(0, callCounts["FieldChildThree.ChildTwo"]);
+            Assert.Equal(0, callCounts["FieldChildThree.ChildTwo.ChildTwoString"]);
+        }
+        
         [Fact]
         public void FieldRecursion_withinDepth_works()
         {
@@ -79,7 +193,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(0, ctx.CurrentDepth);
 
                     callCounts[".FieldChildTwo"]++;
-                });
+                })
+                .Returns(true);
             
             // we then dig into the top level child two field instance
             // and this is also triggered for the FieldChildThree.ChildTwo instance
@@ -102,7 +217,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                         callCounts["FieldChildThree.ChildTwo.ChildTwoString"]++;
                     }
-                });
+                })
+                .Returns(true);
             
             // then we visit the FieldChildThree top level field
             A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -112,7 +228,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(0, ctx.CurrentDepth);
                     
                     callCounts[".FieldChildThree"]++;
-                });
+                })
+                .Returns(true);
             
             
             // next up is FieldChildThree.ChildThreeString
@@ -124,7 +241,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["FieldChildThree.ChildThreeString"]++;
-                });
+                })
+                .Returns(true);
             
             
             // next up is FieldChildThree.ChildTwo
@@ -136,7 +254,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal("FieldChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["FieldChildThree.ChildTwo"]++;
-                });
+                })
+                .Returns(true);
                 
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -168,6 +287,119 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         #endregion
         
         #region Properties
+        [Fact]
+        public void PropertyRecursion_stopsWhenOnPropertyReturnsFalse()
+        {
+            var victim = new RecursionVictim();
+            var childTwo = new RecursionChildTwo();
+            var childThree = new RecursionChildThree
+            {
+                ChildTwo = childTwo
+            };
+
+            victim.PropChildTwo = childTwo;
+            victim.PropChildThree = childThree;
+
+            var type = victim.GetType();
+            var child2Type = typeof(RecursionChildTwo);
+            var child3Type = typeof(RecursionChildThree);
+
+
+            var callCounts = new Dictionary<string, int>
+            {
+                {".PropChildTwo", 0},
+                {"PropChildTwo.ChildTwoString", 0},
+                {".PropChildThree", 0},
+                {"PropChildThree.ChildThreeString", 0},
+                {"PropChildThree.ChildTwo", 0},
+                {"PropChildThree.ChildTwo.ChildTwoString", 0}
+            };
+            
+            // first we get a call for the top level child two property
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(0, ctx.CurrentDepth);
+
+                    callCounts[".PropChildTwo"]++;
+                })
+                .Returns(true);
+            
+            // we then dig into the top level child two prop instance
+            // and this is also triggered for the PropChildThree.ChildTwo instance
+            A.CallTo(() => listener.OnProperty(GetProp(child2Type, "ChildTwoString"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+
+                    if (ctx.CurrentDepth == 1)
+                    {
+                        Assert.Equal(1, ctx.CurrentDepth);
+                        Assert.Equal("PropChildTwo", ctx.BreadcrumbAsString);
+                    
+                        callCounts["PropChildTwo.ChildTwoString"]++;
+                    }
+                    else if (ctx.CurrentDepth == 2)
+                    {
+                        Assert.Equal(2, ctx.CurrentDepth);
+                        Assert.Equal("PropChildThree.ChildTwo", ctx.BreadcrumbAsString);
+                    
+                        callCounts["PropChildThree.ChildTwo.ChildTwoString"]++;
+                    }
+                })
+                .Returns(true);
+            
+            // then we visit the PropChildThree top level prop
+            A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(0, ctx.CurrentDepth);
+                    
+                    callCounts[".PropChildThree"]++;
+                })
+                .Returns(false); // do not traverse further down this path
+            
+            
+            // if traversal continues although it should not, then PropChildThree.ChildThreeString is next
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildThreeString"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(1, ctx.CurrentDepth);
+                    Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
+                    
+                    callCounts["PropChildThree.ChildThreeString"]++;
+                })
+                .Returns(true);
+            
+            
+            // if traversal continues although it should not, then PropChildThree.ChildTwo is next
+            A.CallTo(() => listener.OnProperty(GetProp(child3Type, "ChildTwo"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+                    Assert.Equal(1, ctx.CurrentDepth);
+                    Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
+                    
+                    callCounts["PropChildThree.ChildTwo"]++;
+                })
+                .Returns(true);
+                
+            Traverser.TraverseInstance(victim, 5, listener);
+            
+            // these should have been called exactly once
+            Assert.Equal(1, callCounts[".PropChildTwo"]);
+            Assert.Equal(1, callCounts["PropChildTwo.ChildTwoString"]);
+            Assert.Equal(1, callCounts[".PropChildThree"]);
+
+            // these should not have been called as traversal should stop at .PropChildThree
+            Assert.Equal(0, callCounts["PropChildThree.ChildThreeString"]);
+            Assert.Equal(0, callCounts["PropChildThree.ChildTwo"]);
+            Assert.Equal(0, callCounts["PropChildThree.ChildTwo.ChildTwoString"]);
+        }
+        
         [Fact]
         public void PropertyRecursion_withinDepth_works()
         {
@@ -204,7 +436,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(0, ctx.CurrentDepth);
 
                     callCounts[".PropChildTwo"]++;
-                });
+                })
+                .Returns(true);
             
             // we then dig into the top level child two prop instance
             // and this is also triggered for the PropChildThree.ChildTwo instance
@@ -227,7 +460,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                         callCounts["PropChildThree.ChildTwo.ChildTwoString"]++;
                     }
-                });
+                })
+                .Returns(true);
             
             // then we visit the PropChildThree top level prop
             A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -237,7 +471,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(0, ctx.CurrentDepth);
                     
                     callCounts[".PropChildThree"]++;
-                });
+                })
+                .Returns(true);
             
             
             // next up is PropChildThree.ChildThreeString
@@ -249,7 +484,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["PropChildThree.ChildThreeString"]++;
-                });
+                })
+                .Returns(true);
             
             
             // next up is PropChildThree.ChildTwo
@@ -261,7 +497,8 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal("PropChildThree", ctx.BreadcrumbAsString);
                     
                     callCounts["PropChildThree.ChildTwo"]++;
-                });
+                })
+                .Returns(true);
                 
             Traverser.TraverseInstance(victim, 5, listener);
             
