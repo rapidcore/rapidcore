@@ -61,16 +61,28 @@ $sonarHostUrl = "https://sonarcloud.io"
 
 Set-Location ..\..\..\
 # initialize Sonar Scanner
-exec {
-    & dotnet sonarscanner begin `
-        /k:rapidcore_rapidcore `
-        /o:rapidcore `
-        /v:$version `
-        /d:sonar.host.url=$sonarHostUrl `
-        /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
-        /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
-        /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
-        /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
+# If the environment variable APPVEYOR_PULL_REQUEST_NUMBER is not present, then this is not a pull request
+if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+    exec {
+        & dotnet sonarscanner begin `
+            /k:rapidcore_rapidcore `
+            /o:rapidcore `
+            /v:$version `
+            /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.login="$Env:SONARCLOUD_TOKEN"
+    }
+} else {
+    exec {
+        & dotnet sonarscanner begin `
+            /k:rapidcore_rapidcore `
+            /o:rapidcore `
+            /v:$version `
+            /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
+            /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
+            /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
+            /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
+    }
 }
 
 exec { & dotnet build -c Release }
