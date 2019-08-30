@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RapidCore.Audit;
 using RapidCore.DependencyInjection;
 using Xunit;
@@ -43,6 +44,60 @@ namespace RapidCore.UnitTests.Audit
             Assert.Equal("******", actual.Changes[1].OldValue);
             Assert.Equal("******", actual.Changes[1].NewValue);
         }
+        
+        [Fact]
+        public void GetAuditReadyDiff_ignoresListWhenNotIncluded()
+        {
+            var oldState = new ThingWithIgnoredList
+            {
+                ThisShouldBeInTheLog = "Old string",
+                TheseShouldNotBeInTheLog = new List<UnimportantThing>
+                {
+                    new UnimportantThing {SomeString = "Old unimportant string"}
+                }
+            };
+            
+            var newState = new ThingWithIgnoredList
+            {
+                ThisShouldBeInTheLog = "New string",
+                TheseShouldNotBeInTheLog = new List<UnimportantThing>
+                {
+                    new UnimportantThing {SomeString = "New unimportant string"}
+                }
+            };
+            
+            var actual = auditDiffer.GetAuditReadyDiff(oldState, newState);
+            
+            Assert.Single(actual.Changes);
+            
+            Assert.Equal("ThisShouldBeInTheLog", actual.Changes[0].Breadcrumb);
+            Assert.Equal("Old string", actual.Changes[0].OldValue);
+            Assert.Equal("New string", actual.Changes[0].NewValue);
+        }
+        
+        [Fact]
+        public void GetAuditReadyDiff_ignoresComplexPropertyWhenNotIncluded()
+        {
+            var oldState = new ThingWithIgnoredComplex
+            {
+                ThisShouldBeInTheLog = "Old string",
+                ThisShouldNotBeInTheLog = new UnimportantThing {SomeString = "Old unimportant string"}
+            };
+            
+            var newState = new ThingWithIgnoredComplex
+            {
+                ThisShouldBeInTheLog = "New string",
+                ThisShouldNotBeInTheLog = new UnimportantThing {SomeString = "New unimportant string"}
+            };
+            
+            var actual = auditDiffer.GetAuditReadyDiff(oldState, newState);
+            
+            Assert.Single(actual.Changes);
+            
+            Assert.Equal("ThisShouldBeInTheLog", actual.Changes[0].Breadcrumb);
+            Assert.Equal("Old string", actual.Changes[0].OldValue);
+            Assert.Equal("New string", actual.Changes[0].NewValue);
+        }
 
         [Fact]
         public void ThrowOnInvalidValueMasker()
@@ -59,6 +114,27 @@ namespace RapidCore.UnitTests.Audit
         }
 
         #region Victims
+        public class UnimportantThing
+        {
+            public string SomeString { get; set; }
+        }
+        
+        public class ThingWithIgnoredComplex
+        {
+            public string ThisShouldBeInTheLog { get; set; }
+            
+            [Audit(Include = false)]
+            public UnimportantThing ThisShouldNotBeInTheLog { get; set; }
+        }
+        
+        public class ThingWithIgnoredList
+        {
+            public string ThisShouldBeInTheLog { get; set; }
+            
+            [Audit(Include = false)]
+            public List<UnimportantThing> TheseShouldNotBeInTheLog { get; set; }
+        }
+        
         public class UserProfile
         {
             private string PrivateShouldBeIgnored { get; set; } = "ignore me";
