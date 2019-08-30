@@ -6,6 +6,7 @@
 - [Report an issue](https://github.com/rapidcore/rapidcore/issues)
 - [Request a feature](https://github.com/rapidcore/rapidcore/issues)
 - [Release notes](https://github.com/rapidcore/rapidcore/releases)
+- [SonarCloud report][sonarcloud-url]
 
 ## Our goals
 
@@ -21,6 +22,7 @@
 ## Packages
 
 [![Build status][appveyor-image]][appveyor-url]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rapidcore_rapidcore&metric=alert_status)][sonarcloud-url]
 
 
 | Package | Latest stable | Latest | Downloads |
@@ -72,3 +74,5 @@
 
 [appveyor-image]: https://img.shields.io/appveyor/ci/nover/rapidcore/master.svg?style=flat-square
 [appveyor-url]: https://ci.appveyor.com/project/nover/rapidcore/branch/master
+
+[sonarcloud-url]: https://sonarcloud.io/dashboard?id=rapidcore_rapidcore
