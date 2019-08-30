@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using RapidCore.Diffing.Internal;
 using RapidCore.Reflection;
 
@@ -27,7 +28,13 @@ namespace RapidCore.Diffing
         /// </summary>
         public virtual int MaxDepth { get; set; } = 10;
         
-        public virtual StateChanges GetChanges(object oldState, object newState)
+        public virtual StateChanges GetChanges
+        (
+            object oldState,
+            object newState,
+            Func<FieldInfo, IReadOnlyInstanceTraversalContext, bool> fieldIgnoreFunc = null,
+            Func<PropertyInfo, IReadOnlyInstanceTraversalContext, bool> propertyIgnoreFunc = null
+        )
         {
             var changes = new StateChanges
             {
@@ -64,7 +71,7 @@ namespace RapidCore.Diffing
             //
             // ok, time to work
             //
-            worker.FindDifferences(oldState, newState, changes, MaxDepth);
+            worker.FindDifferences(oldState, newState, changes, MaxDepth, fieldIgnoreFunc, propertyIgnoreFunc);
 
             return changes;
         }

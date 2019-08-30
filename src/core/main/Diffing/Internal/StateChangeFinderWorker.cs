@@ -6,20 +6,51 @@ using RapidCore.Reflection;
 
 namespace RapidCore.Diffing.Internal
 {
+    /// <summary>
+    /// This class is used for finding changes between two changes
+    /// </summary>
+    /// <remarks>
+    /// This class MUST NOT be registered as a singleton
+    /// </remarks>
     public class StateChangeFinderWorker : IInstanceListener
     {
         private readonly InstanceTraverser traverser;
 
         private BeingTraversed beingTraversed = BeingTraversed.Nothing;
         private Dictionary<string, StateChange> values;
+        private Func<FieldInfo, IReadOnlyInstanceTraversalContext, bool> fieldIgnoreFn;
+        private Func<PropertyInfo, IReadOnlyInstanceTraversalContext, bool> propertyIgnoreFn;
 
         public StateChangeFinderWorker(InstanceTraverser traverser)
         {
             this.traverser = traverser;
+            this.fieldIgnoreFn = (field, context) => false;
+            this.propertyIgnoreFn = (prop, context) => false;
         }
 
-        public virtual void FindDifferences(object oldState, object newState, StateChanges stateChanges, int maxDepth)
+        public virtual void FindDifferences
+        (
+            object oldState,
+            object newState,
+            StateChanges stateChanges,
+            int maxDepth,
+            Func<FieldInfo, IReadOnlyInstanceTraversalContext, bool> fieldIgnoreFunc = null,
+            Func<PropertyInfo, IReadOnlyInstanceTraversalContext, bool> propertyIgnoreFunc = null
+        )
         {
+            if (fieldIgnoreFunc == null)
+            {
+                fieldIgnoreFunc = (field, context) => false;
+            }
+
+            if (propertyIgnoreFunc == null)
+            {
+                propertyIgnoreFunc = (prop, context) => false;
+            }
+
+            fieldIgnoreFn = fieldIgnoreFunc;
+            propertyIgnoreFn = propertyIgnoreFunc;
+            
             values = new Dictionary<string, StateChange>();
 
             if (oldState != null)
@@ -126,12 +157,20 @@ namespace RapidCore.Diffing.Internal
 
         public bool OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
+            if (fieldIgnoreFn.Invoke(field, context))
+            {
+                return false;
+            }
             SetValue(field, valueGetter.Invoke(), context);
             return true;
         }
 
         public bool OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
+            if (propertyIgnoreFn.Invoke(property, context))
+            {
+                return false;
+            }
             SetValue(property, valueGetter.Invoke(), context);
             return true;
         }
