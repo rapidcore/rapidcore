@@ -48,10 +48,17 @@ $revCount = & git rev-list HEAD --count | Out-String
 Set-Location .\src\core\main
 $version = & dotnet version --output-format=json | ConvertFrom-Json | Select-Object -ExpandProperty currentVersion
 
+# If the environment variable APPVEYOR_PULL_REQUEST_NUMBER is not present, then this is not a pull request
+$isNotPullRequest = -not $env:APPVEYOR_PULL_REQUEST_NUMBER
+
 # If we are not building a tag, update the version to include a version suffix and a minor bump
 if ( (!$Env:APPVEYOR_REPO_TAG) -or ( $Env:APPVEYOR_REPO_TAG -ne "true") ) {
     $version = & dotnet version --output-format=json --dry-run patch | ConvertFrom-Json | Select-Object -ExpandProperty newVersion
-    $version = "$($version)-preview-$($revCount)".Trim()
+    if($isNotPullRequest) {
+        $version = "$($version)-preview-$($revCount)".Trim()
+    } else {
+        $version = "$($version)-pr-$($env:APPVEYOR_PULL_REQUEST_NUMBER)".Trim()
+    }
 }
 
 exec { & dotnet restore }
@@ -62,7 +69,7 @@ $sonarHostUrl = "https://sonarcloud.io"
 Set-Location ..\..\..\
 # initialize Sonar Scanner
 # If the environment variable APPVEYOR_PULL_REQUEST_NUMBER is not present, then this is not a pull request
-if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+if($isNotPullRequest) {
     exec {
         & dotnet sonarscanner begin `
             /k:rapidcore_rapidcore `
