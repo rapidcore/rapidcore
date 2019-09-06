@@ -16,10 +16,10 @@ namespace RapidCore.Audit
         private readonly IRapidContainerAdapter container;
         private readonly StateChangeFinder stateChangeFinder;
 
-        public AuditDiffer(IRapidContainerAdapter container)
+        public AuditDiffer(IRapidContainerAdapter container, StateChangeFinder stateChangeFinder)
         {
             this.container = container;
-            stateChangeFinder = new StateChangeFinder();
+            this.stateChangeFinder = stateChangeFinder;
         }
         
         /// <summary>

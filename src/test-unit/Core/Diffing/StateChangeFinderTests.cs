@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using FakeItEasy;
 using RapidCore.Diffing;
@@ -20,7 +20,7 @@ namespace UnitTests.Core.Diffing
         {
             worker = A.Fake<StateChangeFinderWorker>();
             
-            stateChangeFinder = new TestableStateChangeFinder(worker);
+            stateChangeFinder = new TestableStateChangeFinder(worker, A.Fake<InstanceTraverser>());
 
             fieldIgnoreFn = A.Fake<Func<FieldInfo, IReadOnlyInstanceTraversalContext, bool>>();
             propertyIgnoreFn = A.Fake<Func<PropertyInfo, IReadOnlyInstanceTraversalContext, bool>>();
@@ -83,7 +83,8 @@ namespace UnitTests.Core.Diffing
         
         public class TestableStateChangeFinder : StateChangeFinder
         {
-            public TestableStateChangeFinder(StateChangeFinderWorker worker) : base(worker)
+            public TestableStateChangeFinder(StateChangeFinderWorker worker, InstanceTraverser instanceTraverser) 
+                : base((traverser) => worker, instanceTraverser)
             {
             }
         }
