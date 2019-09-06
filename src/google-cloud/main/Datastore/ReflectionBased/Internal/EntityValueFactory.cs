@@ -11,7 +11,7 @@ using Value = Google.Cloud.Datastore.V1.Value;
 
 namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
 {
-    public class EntityValueFactory
+    public static class EntityValueFactory
     {
         public static Value FromPropertyInfo(object poco, PropertyInfo prop, IEntityFactory entityFactory, IList<string> recursionPath)
         {
