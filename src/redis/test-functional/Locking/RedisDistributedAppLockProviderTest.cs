@@ -136,5 +136,32 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             // this second lock now enters retry mode
             secondLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(20));
         }
+
+        [Fact]
+        public async void Test_that_lock_is_released_on_exception_in_using_block()
+        {
+            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            var lockName = "is_released_on_exception";
+            var lockWait = TimeSpan.FromSeconds(3);
+            var autoExpire = TimeSpan.MaxValue;
+
+            try
+            {
+                using (await locker.AcquireAsync(lockName, lockWait, autoExpire))
+                {
+                    throw new InvalidOperationException("oh shit");
+                }
+            }
+            catch (Exception)
+            {
+                // nothing to do
+            }
+            
+            // we should be able to acquire the same lock now
+            using (await locker.AcquireAsync(lockName, lockWait, autoExpire))
+            {
+                // yay
+            }
+        }
     }
 }
