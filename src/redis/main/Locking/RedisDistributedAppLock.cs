@@ -157,7 +157,7 @@ namespace RapidCore.Redis.Locking
         /// </summary>
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) below.
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -180,6 +180,11 @@ namespace RapidCore.Redis.Locking
             }
 
             _disposedValue = true;
+        }
+
+        ~RedisDistributedAppLock()
+        {
+            Dispose(false);
         }
     }
 }
