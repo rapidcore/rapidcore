@@ -127,7 +127,6 @@ namespace RapidCore.Redis.Locking
             finally
             {
                 stopWatch?.Stop();
-                stopWatch = null;
             }
         }
 
