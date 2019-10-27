@@ -171,7 +171,9 @@ namespace RapidCore.Redis.Locking
             if (disposing)
             {
                 // DISPOSE THE UNDERLYING REDIS STUFF
-                // TODO Lock release can return false!!! So deal with that biatch..
+                // see issue: https://github.com/rapidcore/rapidcore/issues/26
+                // for discussion about what to do if we fail while
+                // disposing the lock
                 _redisDb?.LockRelease(Name, LockHandle);
                 Name = default(string);
                 LockHandle = default(string);
