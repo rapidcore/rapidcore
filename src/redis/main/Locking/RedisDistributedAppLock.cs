@@ -9,16 +9,19 @@ namespace RapidCore.Redis.Locking
     public class RedisDistributedAppLock : IDistributedAppLock
     {
         private bool _disposedValue = false; // To detect redundant calls
-        private IConnectionMultiplexer _redisMuxer;
+        private readonly IConnectionMultiplexer _redisMuxer;
         private IDatabase _redisDb;
+        private readonly Random _rng;
 
         /// <summary>
         /// Create a new instance of an actual distributed app lock
         /// </summary>
         /// <param name="redisMuxer">An instance of a connected Redis Muxer</param>
-        public RedisDistributedAppLock(IConnectionMultiplexer redisMuxer)
+        /// <param name="rng">A pre-instantiated random generator to spread poll-waits</param>
+        public RedisDistributedAppLock(IConnectionMultiplexer redisMuxer, Random rng)
         {
             _redisMuxer = redisMuxer;
+            _rng = rng;
         }
 
         /// <summary>
@@ -75,7 +78,11 @@ namespace RapidCore.Redis.Locking
 
                     if (!lockWasAcquired)
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(50));
+                        var timeout = _rng.Next(
+                            1,
+                            (int) Math.Min(2500, lockWaitTimeout.Value.TotalMilliseconds)
+                        ); // wait between 1 ms and either  2,5 seconds OR lockwaitTimeout if this is smaller than 2.5 secondss
+                        await Task.Delay(TimeSpan.FromMilliseconds(timeout));
                         continue;
                     }
 

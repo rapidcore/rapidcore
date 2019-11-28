@@ -10,12 +10,13 @@ namespace RapidCore.Redis.UnitTests.Locking
 {
     public class RedisDistributedAppLockTest
     {
+        private readonly Random _rng;
         private readonly string _defaultLockName;
         private IDatabase _client;
         private IConnectionMultiplexer _manager;
-
         public RedisDistributedAppLockTest()
         {
+            _rng = new Random();
             _defaultLockName = "the-lock";
             
             _client = A.Fake<IDatabase>(o => o.Strict());
@@ -35,7 +36,7 @@ namespace RapidCore.Redis.UnitTests.Locking
         [Fact]
         public async Task Does_acquire_lock_using_redisclient()
         {
-            var handle = new RedisDistributedAppLock(_manager);
+            var handle = new RedisDistributedAppLock(_manager, _rng);
             await handle.AcquireLockAsync(_defaultLockName);
 
             A.CallTo(() => _client.LockTake(
@@ -51,7 +52,7 @@ namespace RapidCore.Redis.UnitTests.Locking
         [Fact]
         public async Task Does_acquire_lock_with_ttl_if_passed()
         {
-            var handle = new RedisDistributedAppLock(_manager);
+            var handle = new RedisDistributedAppLock(_manager, _rng);
             await handle.AcquireLockAsync(_defaultLockName, TimeSpan.MaxValue, TimeSpan.FromSeconds(2));
             
             A.CallTo(() => _client.LockTake(
@@ -67,7 +68,7 @@ namespace RapidCore.Redis.UnitTests.Locking
         [Fact]
         public async Task Does_dispose_of_underlying_resources()
         {
-            var handle = new RedisDistributedAppLock(_manager);
+            var handle = new RedisDistributedAppLock(_manager, _rng);
 
             using (await handle.AcquireLockAsync(_defaultLockName, TimeSpan.FromSeconds(2)))
             {
@@ -84,7 +85,7 @@ namespace RapidCore.Redis.UnitTests.Locking
         [Fact]
         public void Does_throw_if_lock_not_active()
         {
-            var handle = new RedisDistributedAppLock(_manager);
+            var handle = new RedisDistributedAppLock(_manager, _rng);
             var ex = Assert.Throws<InvalidOperationException>(() => handle.ThrowIfNotActiveWithGivenName(_defaultLockName));
             Assert.Equal(
                 $"Lock precondition mismatch, required IsActive=true with name '{_defaultLockName}' but IsActive=false with name ''",
@@ -94,14 +95,14 @@ namespace RapidCore.Redis.UnitTests.Locking
         [Fact]
         public void Does_throw_if_lock_name_does_not_match()
         {
-            var handle = new RedisDistributedAppLock(_manager);
+            var handle = new RedisDistributedAppLock(_manager, _rng);
             var ex = Assert.Throws<InvalidOperationException>(() => handle.ThrowIfNotActiveWithGivenName("this-is-the-wrong-name"));
         }
         
         [Fact]
         public async Task Does_not_throw_when_name_matches_and_lock_is_active()
         {
-            using (var handle = await new RedisDistributedAppLock(_manager).AcquireLockAsync(_defaultLockName))
+            using (var handle = await new RedisDistributedAppLock(_manager, _rng).AcquireLockAsync(_defaultLockName))
             {
                 handle.ThrowIfNotActiveWithGivenName(_defaultLockName);
             }
@@ -122,7 +123,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                  A<TimeSpan>.Ignored,
                  A<CommandFlags>.Ignored)).Throws(new Exception("test is faking it!"));
 
-            var handle = new RedisDistributedAppLock(manager);
+            var handle = new RedisDistributedAppLock(manager, _rng);
 
             var ex = await Assert.ThrowsAsync<DistributedAppLockException>(
                 async () => await handle.AcquireLockAsync(lockName, TimeSpan.FromSeconds(2)));
@@ -145,7 +146,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                  A<TimeSpan>.Ignored,
                  A<CommandFlags>.Ignored)).Throws(exceptionThrownDuringTest);
 
-            var handle = new RedisDistributedAppLock(manager);
+            var handle = new RedisDistributedAppLock(manager, _rng);
 
 
             var ex = await Assert.ThrowsAsync<DistributedAppLockException>(
@@ -171,7 +172,7 @@ namespace RapidCore.Redis.UnitTests.Locking
                  A<TimeSpan>.Ignored,
                  A<CommandFlags>.Ignored)).Throws(new OperationCanceledException("test is faking it!"));
 
-            var handle = new RedisDistributedAppLock(manager);
+            var handle = new RedisDistributedAppLock(manager, _rng);
 
             var ex = await Assert.ThrowsAsync<DistributedAppLockException>(
                 async () => await handle.AcquireLockAsync(lockName, TimeSpan.FromSeconds(2)));
