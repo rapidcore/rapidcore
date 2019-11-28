@@ -12,6 +12,7 @@ namespace RapidCore.Redis.Locking
     public class RedisDistributedAppLockProvider : IDistributedAppLockProvider
     {
         private readonly IConnectionMultiplexer _redisMuxer;
+        private readonly Random _rng;
 
         /// <summary>
         /// Create a new instance of the locker
@@ -20,6 +21,7 @@ namespace RapidCore.Redis.Locking
         public RedisDistributedAppLockProvider(IConnectionMultiplexer redisMuxer)
         {
             _redisMuxer = redisMuxer;
+            _rng = new Random();
         }
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace RapidCore.Redis.Locking
         public IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = default(TimeSpan?),
             TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
-            var handle = new RedisDistributedAppLock(_redisMuxer);
+            var handle = new RedisDistributedAppLock(_redisMuxer, _rng);
             var task = handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
 
             try
@@ -59,7 +61,7 @@ namespace RapidCore.Redis.Locking
         public async Task<IDistributedAppLock> AcquireAsync(string lockName,
             TimeSpan? lockWaitTimeout = default(TimeSpan?), TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
-            var handle = new RedisDistributedAppLock(_redisMuxer);
+            var handle = new RedisDistributedAppLock(_redisMuxer, _rng);
             return await handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
         }
     }
