@@ -82,6 +82,16 @@ namespace RapidCore.PostgreSql.FunctionalTests.Migrations
                 new PostgreSqlMigrationStorage()
             );
 
+            /**
+             * Actually "run" the first step from Migration01,
+             * as this will make the migration fail, if it tries
+             * to rerun the step.
+             */
+            await db.ExecuteAsync(@"
+                    alter table __Counter
+                    add column At timestamp
+                    ;");
+            
             await InsertMigrationInfo(new MigrationInfo
             {
                 Id = "1",
