@@ -3,6 +3,7 @@ using RapidCore.Migration;
 using RapidCore.PostgreSql.Internal;
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using RapidCore.PostgreSql.Migration.Internal;
 
@@ -44,6 +45,19 @@ namespace RapidCore.PostgreSql.Migration
                 new {
                     MigrationName = migrationName
                 });
+
+            if (migrationInfo != null)
+            {
+                var completedStepsFromDb = await db.QueryAsync<string>(
+                    $"select * from {PostgreSqlConstants.CompletedStepsTableName} where migrationinfoid=@MigrationInfoId",
+                    new
+                    {
+                        MigrationInfoId = int.Parse(migrationInfo.Id)
+                    });
+            
+                migrationInfo.StepsCompleted = completedStepsFromDb.ToList();
+            }
+
             return migrationInfo;
         }
 
