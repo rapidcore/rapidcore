@@ -25,8 +25,14 @@ namespace RapidCore.Xunit.Logging
             return new XUnitOutputLogger(categoryName, _output);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

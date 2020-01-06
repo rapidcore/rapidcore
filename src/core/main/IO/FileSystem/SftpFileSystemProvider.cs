@@ -11,6 +11,7 @@ namespace RapidCore.IO.FileSystem
     public class SftpFileSystemProvider : IFileSystemProvider, IDisposable
     {
         private ISftpClient _sftpClient;
+        private bool disposed = false;
 
         public SftpFileSystemProvider(ISftpClient sftpClient)
         {
@@ -173,10 +174,29 @@ namespace RapidCore.IO.FileSystem
         {
             _sftpClient.CreateDirectory(path);
         }
-
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            // Do not dispose this object multiple times
+            if (this.disposed)
+            {
+                return;
+            }
+            
+            // If the method has been called by user code then it is safe to access objects
+            if (disposing)
+            {
+                _sftpClient?.Dispose();
+            }
+        
+            // Mark this object as disposed (so it does not happen twice)
+            this.disposed = true;
+        }
+    
         public void Dispose()
         {
-            _sftpClient?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

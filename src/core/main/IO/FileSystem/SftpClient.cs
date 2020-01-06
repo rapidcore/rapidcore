@@ -12,6 +12,7 @@ namespace RapidCore.IO.FileSystem
     private readonly string _host;
     private readonly string _username;
     private readonly string _password;
+    private bool disposed = false;
 
     public SftpClient(string host, string username, string password)
     {
@@ -35,9 +36,28 @@ namespace RapidCore.IO.FileSystem
       GetSftpClient().CreateDirectory(path);
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+      // Do not dispose this object multiple times
+      if (this.disposed)
+      {
+        return;
+      }
+      
+      // If the method has been called by user code then it is safe to access objects
+      if (disposing)
+      {
+        _client?.Dispose();
+      }
+        
+      // Mark this object as disposed (so it does not happen twice)
+      this.disposed = true;
+    }
+    
     public void Dispose()
     {
-      _client?.Dispose();
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
 
     public bool Exists(string path)
