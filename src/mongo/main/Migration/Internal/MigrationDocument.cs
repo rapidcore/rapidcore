@@ -10,7 +10,8 @@ namespace RapidCore.Mongo.Migration.Internal
     /// </summary>
     public class MigrationDocument
     {
-        [BsonIgnore] public static string CollectionName = "__RapidCoreMigrations";
+        [BsonIgnore]
+        public const string CollectionName = "__RapidCoreMigrations";
 
         [BsonIgnoreIfDefault]
         public ObjectId Id { get; set; }

@@ -8,7 +8,7 @@ namespace RapidCore.Redis.Migration
 {
     public class RedisMigrationStorage : IMigrationStorage
     {
-        public static string KeyPrefix = "__rapidcore:migrations:";
+        public const string KeyPrefix = "__rapidcore:migrations:";
         
         private IDatabase GetDatabase(IMigrationContext context)
         {
