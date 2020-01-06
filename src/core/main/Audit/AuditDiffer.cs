@@ -37,7 +37,7 @@ namespace RapidCore.Audit
         {
             var auditChanges = new StateChanges();
             
-            var changes = stateChangeFinder.GetChanges(oldState, newState);
+            var changes = stateChangeFinder.GetChanges(oldState, newState, ShouldIgnoreMember, ShouldIgnoreMember);
             
             foreach (var change in changes.Changes)
             {
@@ -57,11 +57,6 @@ namespace RapidCore.Audit
                 {
                     var attr = change.MemberInfo.GetCustomAttribute<AuditAttribute>();
 
-                    if (!attr.Include)
-                    {
-                        continue;
-                    }
-
                     if (attr.DoMaskValue)
                     {
                         if (!attr.ValueMasker.ImplementsInterface(typeof(IAuditValueMasker)))
@@ -79,6 +74,18 @@ namespace RapidCore.Audit
             }
             
             return auditChanges;
+        }
+
+        private static bool ShouldIgnoreMember(MemberInfo member, IReadOnlyInstanceTraversalContext context)
+        {
+            if (!member.HasAttribute(typeof(AuditAttribute)))
+            {
+                return false;
+            }
+
+            var attr = member.GetCustomAttribute<AuditAttribute>();
+
+            return !attr.Include;
         }
     }
 }

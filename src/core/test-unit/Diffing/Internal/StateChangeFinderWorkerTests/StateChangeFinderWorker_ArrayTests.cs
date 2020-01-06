@@ -107,6 +107,47 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
         }
         
         [Fact]
+        public void FindDifferences_Array_int_newIsLonger_differentValues_withIgnore()
+        {
+            var oldState = new ArrayVictim
+            {
+                IntArray = new [] { 11, 22, 33 }
+            };
+            
+            var newState = new ArrayVictim
+            {
+                IntArray = new [] { 44, 55, 66, 77 }
+            };
+
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                5,
+                (field, context) => false,
+                (prop, context) => context.BreadcrumbAsString.Equals("IntArray[3]")
+            );
+            
+            Assert.Equal(3, stateChanges.Changes.Count);
+            
+            var change = stateChanges.Changes[0];
+            Assert.Equal("IntArray[0]", change.Breadcrumb);
+            Assert.Equal(11, change.OldValue);
+            Assert.Equal(44, change.NewValue);
+            
+            change = stateChanges.Changes[1];
+            Assert.Equal("IntArray[1]", change.Breadcrumb);
+            Assert.Equal(22, change.OldValue);
+            Assert.Equal(55, change.NewValue);
+            
+            change = stateChanges.Changes[2];
+            Assert.Equal("IntArray[2]", change.Breadcrumb);
+            Assert.Equal(33, change.OldValue);
+            Assert.Equal(66, change.NewValue);
+        }
+        
+        [Fact]
         public void FindDifferences_Array_int_oldIsLonger_differentValues()
         {
             var oldState = new ArrayVictim
@@ -137,6 +178,42 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
             Assert.Equal("IntArray[2]", change.Breadcrumb);
             Assert.Equal(33, change.OldValue);
             Assert.Equal(null, change.NewValue);
+        }
+        
+        [Fact]
+        public void FindDifferences_Array_int_oldIsLonger_differentValues_withIgnore()
+        {
+            var oldState = new ArrayVictim
+            {
+                IntArray = new [] { 11, 22, 33 }
+            };
+            
+            var newState = new ArrayVictim
+            {
+                IntArray = new [] { 44, 55 }
+            };
+
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                5,
+                (field, context) => false,
+                (prop, context) => context.BreadcrumbAsString.Equals("IntArray[2]")
+            );
+            
+            Assert.Equal(2, stateChanges.Changes.Count);
+            
+            var change = stateChanges.Changes[0];
+            Assert.Equal("IntArray[0]", change.Breadcrumb);
+            Assert.Equal(11, change.OldValue);
+            Assert.Equal(44, change.NewValue);
+            
+            change = stateChanges.Changes[1];
+            Assert.Equal("IntArray[1]", change.Breadcrumb);
+            Assert.Equal(22, change.OldValue);
+            Assert.Equal(55, change.NewValue);
         }
         
         [Fact]
@@ -171,6 +248,42 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
             Assert.Equal(33, change.OldValue);
             Assert.Equal(11, change.NewValue);
         }
+        
+        [Fact]
+        public void FindDifferences_Array_int_sameValues_differentOrder_withIgnore()
+        {
+            var oldState = new ArrayVictim
+            {
+                IntArray = new [] { 11, 22 ,33 }
+            };
+            
+            var newState = new ArrayVictim
+            {
+                IntArray = new [] { 22, 33, 11 }
+            };
+
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                5,
+                (field, context) => false,
+                (prop, context) => context.BreadcrumbAsString.Equals("IntArray[1]")
+            );
+            
+            Assert.Equal(2, stateChanges.Changes.Count);
+            
+            var change = stateChanges.Changes[0];
+            Assert.Equal("IntArray[0]", change.Breadcrumb);
+            Assert.Equal(11, change.OldValue);
+            Assert.Equal(22, change.NewValue);
+            
+            change = stateChanges.Changes[1];
+            Assert.Equal("IntArray[2]", change.Breadcrumb);
+            Assert.Equal(33, change.OldValue);
+            Assert.Equal(11, change.NewValue);
+        }
 
         [Fact]
         public void FindDifferences_Array_complex()
@@ -186,6 +299,37 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
             };
             
             worker.FindDifferences(oldState, newState, stateChanges, 5);
+            
+            Assert.Equal(1, stateChanges.Changes.Count);
+            
+            var change = stateChanges.Changes[0];
+            Assert.Equal("ComplexArray[1].String", change.Breadcrumb);
+            Assert.Equal("yo", change.OldValue);
+            Assert.Equal("different", change.NewValue);
+        }
+
+        [Fact]
+        public void FindDifferences_Array_complex_withIgnore()
+        {
+            var oldState = new ComplexArrayVictim
+            {
+                ComplexArray = new[] {new Complex(), new Complex(), new Complex() }
+            };
+            
+            var newState = new ComplexArrayVictim
+            {
+                ComplexArray = new[] {new Complex(), new Complex { String = "different" }, new Complex { String = "also different" } }
+            };
+
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                5,
+                (field, context) => false,
+                (prop, context) => context.BreadcrumbAsString.Equals("ComplexArray[2]")
+            );
             
             Assert.Equal(1, stateChanges.Changes.Count);
             

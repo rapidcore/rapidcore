@@ -9,6 +9,54 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
     public class InstanceTraverser_DictionaryTests : InstanceTraverserTestBase
     {
         [Fact]
+        public void Dictionary_OnProperty_stopTraversing_becauseOnPropertyReturnsFalse()
+        {
+            var victim = new SimpleKeyValueVictim
+            {
+                Dictionary = new Dictionary<string, int>
+                {
+                    {"one", 1},
+                    {"two", 2}
+                }
+            };
+
+            var type = victim.GetType();
+            
+            var callCounts = new Dictionary<string, int>
+            {
+                {".Root", 0},
+                {"Dictionary[one]", 0},
+                {"Dictionary[two]", 0}
+            };
+            
+            
+            // the calls for the list field and each of its elements
+            A.CallTo(() => listener.OnProperty(GetProp(type, "Dictionary"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                .Invokes(x =>
+                {
+                    var ctx = (InstanceTraversalContext) x.Arguments[2];
+
+                    if (ctx.CurrentDepth == 0)
+                    {
+                        callCounts[".Root"]++;
+                        return;
+                    }
+
+                    // for the individual elements
+                    Assert.Equal(1, ctx.CurrentDepth);
+                    callCounts[ctx.BreadcrumbAsString]++;
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
+            
+            Traverser.TraverseInstance(victim, 5, listener);
+            
+            Assert.Equal(1, callCounts[".Root"]);
+            
+            Assert.Equal(0, callCounts["Dictionary[one]"]);
+            Assert.Equal(0, callCounts["Dictionary[two]"]);
+        }
+        
+        [Fact]
         public void Dictionary_OnProperty_simpleKey_simpleValue()
         {
             var victim = new SimpleKeyValueVictim
@@ -40,11 +88,12 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts[".Root"]++;
                         return;
                     }
-                    
+
                     // for the individual elements
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
-                });
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -90,20 +139,23 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts[".Root"]++;
                         return;
                     }
-                    
+
                     // for the individual elements
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
-                });
-            
-            A.CallTo(() => listener.OnProperty(GetProp(typeof(ComplexValue), "String"), A<Func<object>>._, A<InstanceTraversalContext>._))
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
+
+            A.CallTo(() => listener.OnProperty(GetProp(typeof(ComplexValue), "String"), A<Func<object>>._,
+                    A<InstanceTraversalContext>._))
                 .Invokes(x =>
                 {
                     var ctx = (InstanceTraversalContext) x.Arguments[2];
 
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.String"]++;
-                });
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -147,11 +199,12 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts[".Root"]++;
                         return;
                     }
-                    
+
                     // for the individual elements
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
-                });
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -195,11 +248,12 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts[".Root"]++;
                         return;
                     }
-                    
+
                     // for the individual elements
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
-                });
+                })
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             

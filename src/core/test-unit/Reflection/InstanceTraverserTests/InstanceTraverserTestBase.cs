@@ -14,6 +14,15 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
         protected InstanceTraverserTestBase()
         {
             listener = A.Fake<IInstanceListener>();
+            // traversal should continue through the objects by default
+            A.CallTo(() =>
+                    listener.OnField(A<FieldInfo>._, A<Func<object>>._,
+                        A<IReadOnlyInstanceTraversalContext>._))
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
+            A.CallTo(() =>
+                    listener.OnProperty(A<PropertyInfo>._, A<Func<object>>._,
+                        A<IReadOnlyInstanceTraversalContext>._))
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser = new InstanceTraverser();
         }

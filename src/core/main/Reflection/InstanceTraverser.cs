@@ -98,16 +98,14 @@ namespace RapidCore.Reflection
         /// <summary>
         /// Call OnField or OnProperty for the given member
         /// </summary>
-        private void CallListener(IInstanceListener listener, InstanceTraversalContext context, MemberInfo memberInfo, Func<object> valueGetter)
+        private static IInstanceListenerOnFieldOrPropResult CallListener(IInstanceListener listener, InstanceTraversalContext context, MemberInfo memberInfo, Func<object> valueGetter)
         {
             if (memberInfo.MemberType == MemberTypes.Field)
             {
-                listener.OnField((FieldInfo) memberInfo, valueGetter, context);
+                return listener.OnField((FieldInfo) memberInfo, valueGetter, context);
             }
-            else
-            {
-                listener.OnProperty((PropertyInfo) memberInfo, valueGetter, context);
-            }
+
+            return listener.OnProperty((PropertyInfo) memberInfo, valueGetter, context);
         }
 
         /// <summary>
@@ -119,8 +117,11 @@ namespace RapidCore.Reflection
         private void FieldAndPropertyHandler(IInstanceListener listener, MemberInfo memberInfo, InstanceTraversalContext context, object instance)
         {
             Func<object> valueGetter = () => memberInfo.GetValue(instance);
-            
-            CallListener(listener, context, memberInfo, valueGetter);
+
+            if (!CallListener(listener, context, memberInfo, valueGetter).DoContinueRecursion)
+            {
+                return;
+            }
             
             var valueType = memberInfo.GetTypeOfValue();
 
@@ -137,9 +138,12 @@ namespace RapidCore.Reflection
                         foreach (DictionaryEntry entry in dictionary)
                         {
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{entry.Key}]");
-                            CallListener(listener, context, memberInfo, () => entry.Value);
-
-                            if (ShouldRecurse(entry.Value.GetType()))
+                            
+                            if (
+                                CallListener(listener, context, memberInfo, () => entry.Value).DoContinueRecursion
+                                &&
+                                ShouldRecurse(entry.Value.GetType())
+                            )
                             {
                                 if (context.CanGoDeeper())
                                 {
@@ -150,7 +154,7 @@ namespace RapidCore.Reflection
                                     listener.OnMaxDepthReached(context);
                                 }
                             }
-                        
+                            
                             context.BreadcrumbStack.Pop();
                         }
                     }
@@ -173,9 +177,12 @@ namespace RapidCore.Reflection
                                 continue;
                             }
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{index}]");
-                            CallListener(listener, context, memberInfo, () => element);
-
-                            if (ShouldRecurse(element.GetType()))
+                            
+                            if (
+                                CallListener(listener, context, memberInfo, () => element).DoContinueRecursion
+                                &&
+                                ShouldRecurse(element.GetType())
+                            )
                             {
                                 if (context.CanGoDeeper())
                                 {
@@ -186,7 +193,7 @@ namespace RapidCore.Reflection
                                     listener.OnMaxDepthReached(context);
                                 }
                             }
-                        
+
                             context.BreadcrumbStack.Pop();
                             index++;
                         }

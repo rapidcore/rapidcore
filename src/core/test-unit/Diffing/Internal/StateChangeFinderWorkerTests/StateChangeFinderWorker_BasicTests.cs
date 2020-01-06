@@ -182,7 +182,139 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
             Assert.Equal(oldState.TimeSpan, change.OldValue);
             Assert.Equal(newState.TimeSpan, change.NewValue);
         }
-        
+
+        [Fact]
+        public void FindDifferences_works_withIgnoredField()
+        {
+            var oldState = new SimpleVictim
+            {
+                Property1 = "Old prop1",
+                Property2 = "Old prop2",
+                field1 = "Old field1",
+                field2 = "Old field2"
+            };
+
+            var newState = new SimpleVictim
+            {
+                Property1 = "New prop1",
+                Property2 = "New prop2",
+                field1 = "New field1",
+                field2 = "New field2"
+            };
+            
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                3,
+                (field, context) => field.Name.Equals("field1"),
+                (prop, context) => false
+            );
+            
+            Assert.Equal(3, stateChanges.Changes.Count);
+            
+            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
+            
+            Assert.Equal("Old field2", sorted[0].OldValue);
+            Assert.Equal("New field2", sorted[0].NewValue);
+
+            Assert.Equal("Old prop1", sorted[1].OldValue);
+            Assert.Equal("New prop1", sorted[1].NewValue);
+
+            Assert.Equal("Old prop2", sorted[2].OldValue);
+            Assert.Equal("New prop2", sorted[2].NewValue);
+        }
+
+        [Fact]
+        public void FindDifferences_works_withIgnoredProperty()
+        {
+            var oldState = new SimpleVictim
+            {
+                Property1 = "Old prop1",
+                Property2 = "Old prop2",
+                field1 = "Old field1",
+                field2 = "Old field2"
+            };
+
+            var newState = new SimpleVictim
+            {
+                Property1 = "New prop1",
+                Property2 = "New prop2",
+                field1 = "New field1",
+                field2 = "New field2"
+            };
+            
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                3,
+                (field, context) => false,
+                (prop, context) => prop.Name.Equals("Property1")
+            );
+            
+            Assert.Equal(3, stateChanges.Changes.Count);
+            
+            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
+            
+            Assert.Equal("Old field1", sorted[0].OldValue);
+            Assert.Equal("New field1", sorted[0].NewValue);
+
+            Assert.Equal("Old field2", sorted[1].OldValue);
+            Assert.Equal("New field2", sorted[1].NewValue);
+
+            Assert.Equal("Old prop2", sorted[2].OldValue);
+            Assert.Equal("New prop2", sorted[2].NewValue);
+        }
+
+        [Fact]
+        public void FindDifferences_works_nothingIsIgnoredWhenIgnoreFuncsAreNull()
+        {
+            var oldState = new SimpleVictim
+            {
+                Property1 = "Old prop1",
+                Property2 = "Old prop2",
+                field1 = "Old field1",
+                field2 = "Old field2"
+            };
+
+            var newState = new SimpleVictim
+            {
+                Property1 = "New prop1",
+                Property2 = "New prop2",
+                field1 = "New field1",
+                field2 = "New field2"
+            };
+            
+            worker.FindDifferences
+            (
+                oldState,
+                newState,
+                stateChanges,
+                3,
+                null,
+                null
+            );
+            
+            Assert.Equal(4, stateChanges.Changes.Count);
+            
+            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
+            
+            Assert.Equal("Old field1", sorted[0].OldValue);
+            Assert.Equal("New field1", sorted[0].NewValue);
+
+            Assert.Equal("Old field2", sorted[1].OldValue);
+            Assert.Equal("New field2", sorted[1].NewValue);
+
+            Assert.Equal("Old prop1", sorted[2].OldValue);
+            Assert.Equal("New prop1", sorted[2].NewValue);
+
+            Assert.Equal("Old prop2", sorted[3].OldValue);
+            Assert.Equal("New prop2", sorted[3].NewValue);
+        }
+
         [Fact]
         public void FindDifferences_recursionDepthHandling_bailButDoNotBlow()
         {
@@ -228,6 +360,14 @@ namespace RapidCore.UnitTests.Diffing.Internal.StateChangeFinderWorkerTests
         }
 
         #region Victims
+        public class SimpleVictim
+        {
+            public string Property1 { get; set; }
+            public string Property2 { get; set; }
+            public string field1;
+            public string field2;
+        }
+        
         public class TheVictim
         {
             private string PrivateIsIncluded { get; set; }
