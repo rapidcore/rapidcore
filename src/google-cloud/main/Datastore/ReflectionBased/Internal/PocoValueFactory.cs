@@ -7,7 +7,7 @@ using RapidCore.Reflection;
 
 namespace RapidCore.GoogleCloud.Datastore.ReflectionBased.Internal
 {
-    public class PocoValueFactory
+    public static class PocoValueFactory
     {
         public static object FromEntityValue(PropertyInfo prop, Value value, IPocoFactory pocoFactory)
         {
