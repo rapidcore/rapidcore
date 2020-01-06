@@ -11,6 +11,13 @@ services:
     ports:
       - "6379:6379"
 
+  redis-ui:
+    image: rediscommander/redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - 63791:8081
+
   postgresdb:
     image: postgres:10.1-alpine
     environment:

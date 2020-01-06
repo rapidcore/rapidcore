@@ -127,7 +127,6 @@ namespace RapidCore.Redis.Locking
             finally
             {
                 stopWatch?.Stop();
-                stopWatch = null;
             }
         }
 
@@ -157,7 +156,7 @@ namespace RapidCore.Redis.Locking
         /// </summary>
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) below.
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -172,7 +171,9 @@ namespace RapidCore.Redis.Locking
             if (disposing)
             {
                 // DISPOSE THE UNDERLYING REDIS STUFF
-                // TODO Lock release can return false!!! So deal with that biatch..
+                // see issue: https://github.com/rapidcore/rapidcore/issues/26
+                // for discussion about what to do if we fail while
+                // disposing the lock
                 _redisDb?.LockRelease(Name, LockHandle);
                 Name = default(string);
                 LockHandle = default(string);
@@ -180,6 +181,11 @@ namespace RapidCore.Redis.Locking
             }
 
             _disposedValue = true;
+        }
+
+        ~RedisDistributedAppLock()
+        {
+            Dispose(false);
         }
     }
 }
