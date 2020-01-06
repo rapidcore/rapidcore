@@ -52,7 +52,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[ctx.BreadcrumbAsString]++;
                     })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
 
 
             A.CallTo(() =>
@@ -65,7 +65,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                     })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
 
             
             Traverser.TraverseInstance(victim, 10, listener);
@@ -119,7 +119,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[ctx.BreadcrumbAsString]++;
                     })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
 
 
             A.CallTo(() =>
@@ -132,7 +132,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                     })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
 
             
             Traverser.TraverseInstance(victim, 10, listener);
@@ -184,7 +184,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[ctx.BreadcrumbAsString]++;
                     })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
 
 
             A.CallTo(() =>
@@ -197,7 +197,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         Assert.Equal(1, ctx.CurrentDepth);
                         callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                     })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
 
             
             Traverser.TraverseInstance(victim, 10, listener);
@@ -242,7 +242,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -283,7 +283,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -333,7 +333,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // the calls for the recursion of each array element
             A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -344,7 +344,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -389,7 +389,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -432,7 +432,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -484,7 +484,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // the calls for the recursion of each array element
             A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -495,7 +495,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -548,7 +548,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             // the calls for the recursion of each list element
             A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -559,7 +559,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -611,7 +611,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // the calls for the recursion of each list element
             A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -622,7 +622,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -666,7 +666,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -720,7 +720,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // the calls for the recursion of each list element
             A.CallTo(() => listener.OnField(GetField(complexType, "FieldString"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -731,7 +731,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[$"{ctx.BreadcrumbAsString}.FieldString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
 
@@ -774,7 +774,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     Assert.Equal(1, ctx.CurrentDepth);
                     callCounts[ctx.BreadcrumbAsString]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser.TraverseInstance(victim, 5, listener);
             

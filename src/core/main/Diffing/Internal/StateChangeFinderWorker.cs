@@ -155,24 +155,28 @@ namespace RapidCore.Diffing.Internal
             // we do not care
         }
 
-        public bool OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
+        public IInstanceListenerOnFieldOrPropResult OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             if (fieldIgnoreFn.Invoke(field, context))
             {
-                return false;
+                return new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false };
             }
+            
             SetValue(field, valueGetter.Invoke(), context);
-            return true;
+            
+            return new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true };
         }
 
-        public bool OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
+        public IInstanceListenerOnFieldOrPropResult OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context)
         {
             if (propertyIgnoreFn.Invoke(property, context))
             {
-                return false;
+                return new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false };
             }
+            
             SetValue(property, valueGetter.Invoke(), context);
-            return true;
+            
+            return new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true };
         }
 
         public void OnMethod(MethodInfo method, IReadOnlyInstanceTraversalContext context)

@@ -18,11 +18,11 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
             A.CallTo(() =>
                     listener.OnField(A<FieldInfo>._, A<Func<object>>._,
                         A<IReadOnlyInstanceTraversalContext>._))
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             A.CallTo(() =>
                     listener.OnProperty(A<PropertyInfo>._, A<Func<object>>._,
                         A<IReadOnlyInstanceTraversalContext>._))
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             Traverser = new InstanceTraverser();
         }

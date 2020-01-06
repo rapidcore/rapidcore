@@ -22,8 +22,7 @@ namespace RapidCore.Reflection
         /// <param name="field">The field info of the found field</param>
         /// <param name="valueGetter">A function for getting the value</param>
         /// <param name="context">The context of the instance traversal</param>
-        /// <returns>True if traversal should continue deeper down this field. False otherwise</returns>
-        bool OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context);
+        IInstanceListenerOnFieldOrPropResult OnField(FieldInfo field, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context);
         
         /// <summary>
         /// This is called when a property is found
@@ -31,8 +30,7 @@ namespace RapidCore.Reflection
         /// <param name="property">The property info of the found property</param>
         /// <param name="valueGetter">A function for getting the value</param>
         /// <param name="context">The context of the instance traversal</param>
-        /// <returns>True if traversal should continue deeper down this property. False otherwise</returns>
-        bool OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context);
+        IInstanceListenerOnFieldOrPropResult OnProperty(PropertyInfo property, Func<object> valueGetter, IReadOnlyInstanceTraversalContext context);
 
         /// <summary>
         /// This is called when a method is found

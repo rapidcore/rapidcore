@@ -81,7 +81,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
                     callCounts[".FieldChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // we then dig into the top level child two field instance
             // and this is also triggered for the FieldChildThree.ChildTwo instance
@@ -105,7 +105,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts["FieldChildThree.ChildTwo.ChildTwoString"]++;
                     }
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // then we visit the FieldChildThree top level field
             A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -116,7 +116,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts[".FieldChildThree"]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             
             // if traversal continues although it should not, then FieldChildThree.ChildThreeString is next
@@ -129,7 +129,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["FieldChildThree.ChildThreeString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // if traversal continues although it should not, then FieldChildThree.ChildTwo is next
@@ -142,7 +142,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["FieldChildThree.ChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
                 
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -194,7 +194,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
                     callCounts[".FieldChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // we then dig into the top level child two field instance
             // and this is also triggered for the FieldChildThree.ChildTwo instance
@@ -218,7 +218,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts["FieldChildThree.ChildTwo.ChildTwoString"]++;
                     }
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // then we visit the FieldChildThree top level field
             A.CallTo(() => listener.OnField(GetField(type, "FieldChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -229,7 +229,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts[".FieldChildThree"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // next up is FieldChildThree.ChildThreeString
@@ -242,7 +242,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["FieldChildThree.ChildThreeString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // next up is FieldChildThree.ChildTwo
@@ -255,7 +255,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["FieldChildThree.ChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
                 
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -324,7 +324,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
                     callCounts[".PropChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // we then dig into the top level child two prop instance
             // and this is also triggered for the PropChildThree.ChildTwo instance
@@ -348,7 +348,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts["PropChildThree.ChildTwo.ChildTwoString"]++;
                     }
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // then we visit the PropChildThree top level prop
             A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -359,7 +359,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts[".PropChildThree"]++;
                 })
-                .Returns(false); // do not traverse further down this path
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = false }); // do not traverse further down this path
             
             
             // if traversal continues although it should not, then PropChildThree.ChildThreeString is next
@@ -372,7 +372,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["PropChildThree.ChildThreeString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // if traversal continues although it should not, then PropChildThree.ChildTwo is next
@@ -385,7 +385,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["PropChildThree.ChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
                 
             Traverser.TraverseInstance(victim, 5, listener);
             
@@ -437,7 +437,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
 
                     callCounts[".PropChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // we then dig into the top level child two prop instance
             // and this is also triggered for the PropChildThree.ChildTwo instance
@@ -461,7 +461,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                         callCounts["PropChildThree.ChildTwo.ChildTwoString"]++;
                     }
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             // then we visit the PropChildThree top level prop
             A.CallTo(() => listener.OnProperty(GetProp(type, "PropChildThree"), A<Func<object>>._, A<InstanceTraversalContext>._))
@@ -472,7 +472,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts[".PropChildThree"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // next up is PropChildThree.ChildThreeString
@@ -485,7 +485,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["PropChildThree.ChildThreeString"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
             
             
             // next up is PropChildThree.ChildTwo
@@ -498,7 +498,7 @@ namespace RapidCore.UnitTests.Reflection.InstanceTraverserTests
                     
                     callCounts["PropChildThree.ChildTwo"]++;
                 })
-                .Returns(true);
+                .Returns(new SimpleInstanceListenerOnFieldOrPropResult { DoContinueRecursion = true });
                 
             Traverser.TraverseInstance(victim, 5, listener);
             

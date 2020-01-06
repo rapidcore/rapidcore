@@ -98,7 +98,7 @@ namespace RapidCore.Reflection
         /// <summary>
         /// Call OnField or OnProperty for the given member
         /// </summary>
-        private static bool CallListener(IInstanceListener listener, InstanceTraversalContext context, MemberInfo memberInfo, Func<object> valueGetter)
+        private static IInstanceListenerOnFieldOrPropResult CallListener(IInstanceListener listener, InstanceTraversalContext context, MemberInfo memberInfo, Func<object> valueGetter)
         {
             if (memberInfo.MemberType == MemberTypes.Field)
             {
@@ -118,7 +118,7 @@ namespace RapidCore.Reflection
         {
             Func<object> valueGetter = () => memberInfo.GetValue(instance);
 
-            if (!CallListener(listener, context, memberInfo, valueGetter))
+            if (!CallListener(listener, context, memberInfo, valueGetter).DoContinueRecursion)
             {
                 return;
             }
@@ -139,7 +139,7 @@ namespace RapidCore.Reflection
                         {
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{entry.Key}]");
                             
-                            if (CallListener(listener, context, memberInfo, () => entry.Value))
+                            if (CallListener(listener, context, memberInfo, () => entry.Value).DoContinueRecursion)
                             {
                                 
                                 if (ShouldRecurse(entry.Value.GetType()))
@@ -179,7 +179,7 @@ namespace RapidCore.Reflection
                             }
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{index}]");
                             
-                            if (CallListener(listener, context, memberInfo, () => element))
+                            if (CallListener(listener, context, memberInfo, () => element).DoContinueRecursion)
                             {
                                 
                                 if (ShouldRecurse(element.GetType()))
