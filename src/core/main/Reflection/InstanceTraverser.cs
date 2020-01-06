@@ -139,21 +139,20 @@ namespace RapidCore.Reflection
                         {
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{entry.Key}]");
                             
-                            if (CallListener(listener, context, memberInfo, () => entry.Value).DoContinueRecursion)
+                            if (
+                                CallListener(listener, context, memberInfo, () => entry.Value).DoContinueRecursion
+                                &&
+                                ShouldRecurse(entry.Value.GetType())
+                            )
                             {
-                                
-                                if (ShouldRecurse(entry.Value.GetType()))
+                                if (context.CanGoDeeper())
                                 {
-                                    if (context.CanGoDeeper())
-                                    {
-                                        Worker(entry.Value, listener, context);
-                                    }
-                                    else
-                                    {
-                                        listener.OnMaxDepthReached(context);
-                                    }
+                                    Worker(entry.Value, listener, context);
                                 }
-                                
+                                else
+                                {
+                                    listener.OnMaxDepthReached(context);
+                                }
                             }
                             
                             context.BreadcrumbStack.Pop();
@@ -179,21 +178,20 @@ namespace RapidCore.Reflection
                             }
                             context.BreadcrumbStack.Push($"{memberInfo.Name}[{index}]");
                             
-                            if (CallListener(listener, context, memberInfo, () => element).DoContinueRecursion)
+                            if (
+                                CallListener(listener, context, memberInfo, () => element).DoContinueRecursion
+                                &&
+                                ShouldRecurse(element.GetType())
+                            )
                             {
-                                
-                                if (ShouldRecurse(element.GetType()))
+                                if (context.CanGoDeeper())
                                 {
-                                    if (context.CanGoDeeper())
-                                    {
-                                        Worker(element, listener, context);
-                                    }
-                                    else
-                                    {
-                                        listener.OnMaxDepthReached(context);
-                                    }
-                                }                                
-                                
+                                    Worker(element, listener, context);
+                                }
+                                else
+                                {
+                                    listener.OnMaxDepthReached(context);
+                                }
                             }
 
                             context.BreadcrumbStack.Pop();
