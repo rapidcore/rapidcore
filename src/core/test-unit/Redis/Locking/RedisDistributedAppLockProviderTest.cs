@@ -4,7 +4,7 @@ using RapidCore.Redis.Locking;
 using StackExchange.Redis;
 using Xunit;
 
-namespace RapidCore.Redis.UnitTests.Locking
+namespace UnitTests.Redis.Locking
 {
     public class RedisDistributedAppLockProviderTest
     {

@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\mongo\main\rapidcore.mongo.csproj" />
     <ProjectReference Include="..\..\postgresql\main\rapidcore.postgresql.csproj" />
+    <ProjectReference Include="..\..\redis\main\rapidcore.redis.csproj" />
     <ProjectReference Include="..\main\rapidcore.csproj" />
   </ItemGroup>
 </Project>
