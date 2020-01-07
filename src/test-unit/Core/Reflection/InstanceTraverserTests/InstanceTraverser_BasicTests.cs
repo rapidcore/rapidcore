@@ -128,9 +128,15 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
             
             public Victim(string x) { }
 
+#pragma warning disable 414
+            // this is used by reflection / is meant to be ignored
             private static string PrivateStaticField = "private static field";
+#pragma warning restore 414
             
+#pragma warning disable 414
+            // this is used by reflection / is meant to be ignored
             private string PrivateField = "private field";
+#pragma warning restore 414
 
             public string PublicField = "public field";
 

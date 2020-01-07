@@ -8,7 +8,11 @@ namespace UnitTests.Core.Reflection
 {
     public class MemberInfoGetValueExtensionsTests
     {
+#pragma warning disable 414
+        // this is used by reflection / is meant to be ignored
         private int MyField = 666;
+#pragma warning restore 414
+        
         private string MyProp => "Sup Lucifer";
 
         public MemberInfoGetValueExtensionsTests()

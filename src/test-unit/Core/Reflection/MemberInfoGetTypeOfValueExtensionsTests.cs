@@ -8,8 +8,16 @@ namespace UnitTests.Core.Reflection
 {
     public class MemberInfoGetTypeOfValueExtensionsTests
     {
+#pragma warning disable 414
+        // this is used by reflection / is meant to be ignored
         private int MyField = 666;
+#pragma warning restore 414
+
+#pragma warning disable 414
+        // this is used by reflection / is meant to be ignored
         private bool? MyNullableField = true;
+#pragma warning restore 414
+
         private string MyProp => "Sup Lucifer";
         private int? MyNullableProp => null;
 
