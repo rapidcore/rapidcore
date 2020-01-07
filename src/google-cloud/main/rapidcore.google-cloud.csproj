@@ -5,7 +5,7 @@
     <Title>RapidCore.GoogleCloud</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
-    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;google cloud;datastore</PackageTags>
+    <PackageTags>dotnet core;core;rapidcore;business;business logic;help;helpers;library;google cloud</PackageTags>
     <PackageProjectUrl>https://github.com/rapidcore/rapidcore/</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/rapidcore/rapidcore/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -18,8 +18,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\main\rapidcore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Google.Cloud.Datastore.V1" Version="2.1.0" />
   </ItemGroup>
 </Project>

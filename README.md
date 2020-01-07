@@ -108,10 +108,6 @@ Start by running `docker-compose up -d`.
 
 The documentation is available with live-reload at http://localhost:8000.
 
-### Google Cloud Datastore
-
-The setup made by `docker-compose` includes a [UI for datastore](http://localhost:8282).
-
 ### SonarCloud
 
 We scan the code using [SonarCloud](https://sonarcloud.io/dashboard?id=rapidcore_rapidcore).

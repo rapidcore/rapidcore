@@ -34,27 +34,6 @@ services:
       MSSQL_PID: Developer
     ports:
       - "1433:1433"
-  
-  datastore:
-    image: singularities/datastore-emulator
-    environment:
-      - DATASTORE_PROJECT_ID=rapidcore-local
-      - DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081
-    ports:
-      - 8081:8081
-
-  datastore-ui:
-    image: skarpdev/google-datastore-ui:1.0.0
-    environment:
-      DSUI_PROJECT_ID: rapidcore-local
-      DSUI_PORT: 8282
-      DSUI_DATASTORE_ENDPOINT: datastore:8081
-    ports:
-      - 8282:8282
-    depends_on:
-      - datastore
-    links:
-      - datastore
 
   mkdocs:
     image: rapidcore:mkdocs
