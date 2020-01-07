@@ -59,12 +59,8 @@ namespace RapidCore.Audit
 
                     if (attr.DoMaskValue)
                     {
-                        if (!attr.ValueMasker.ImplementsInterface(typeof(IAuditValueMasker)))
-                        {
-                            throw new ArgumentException($"A {nameof(AuditAttribute.ValueMasker)} must implement {typeof(IAuditValueMasker).Name}, which {attr.ValueMasker.Name} does not.");
-                        }
-                        
-                        var masker = (IAuditValueMasker)container.Resolve(attr.ValueMasker);
+                        var masker = GetValidValueMaskerOrThrow(attr);
+
                         change.OldValue = masker.MaskValue(change.OldValue);
                         change.NewValue = masker.MaskValue(change.NewValue);
                     }
@@ -86,6 +82,32 @@ namespace RapidCore.Audit
             var attr = member.GetCustomAttribute<AuditAttribute>();
 
             return !attr.Include;
+        }
+
+        private IAuditValueMasker GetValidValueMaskerOrThrow(AuditAttribute attr)
+        {
+            if (!attr.ValueMasker.ImplementsInterface(typeof(IAuditValueMasker)))
+            {
+                throw new ArgumentException($"A {nameof(AuditAttribute.ValueMasker)} must implement {typeof(IAuditValueMasker).Name}, which {attr.ValueMasker.Name} does not.");
+            }
+
+            try
+            {
+                // this cast should be ok, as we have just checked the type above
+                var masker = (IAuditValueMasker)container.Resolve(attr.ValueMasker);
+
+                if (masker == null)
+                {
+                    throw new NullReferenceException("container.Resolve returned null");
+                }
+
+                return masker;
+            }
+            catch (Exception e)
+            {
+                
+                throw new FailureToResolveException($"The value masker \"{attr.ValueMasker.Name}\" could not be resolved through the container adapter \"{container.GetType().Name}\". Has it been registered in the container?", e);
+            }
         }
     }
 }
