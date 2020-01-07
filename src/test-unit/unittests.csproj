@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>UnitTests</RootNamespace>
+    <ProjectGuid>d0c5a83a-179a-4efd-92fa-53b7d60507d9</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="4.9.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit" Version="2.2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Core\IO\FileSystem\Files\CsvFile1.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Core\IO\FileSystem\Files\TextFile1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Core\IO\FileSystem\OriginFolder\FileToMove.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\main\rapidcore.csproj" />
+    <ProjectReference Include="..\google-cloud\main\rapidcore.google-cloud.csproj" />
+    <ProjectReference Include="..\mongo\main\rapidcore.mongo.csproj" />
+    <ProjectReference Include="..\postgresql\main\rapidcore.postgresql.csproj" />
+    <ProjectReference Include="..\redis\main\rapidcore.redis.csproj" />
+    <ProjectReference Include="..\sqlserver\main\rapidcore.sqlserver.csproj" />
+    <ProjectReference Include="..\xunit\main\rapidcore.xunit.csproj" />
+  </ItemGroup>
+</Project>

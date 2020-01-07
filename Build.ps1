@@ -93,12 +93,7 @@ if($isNotPullRequest) {
 }
 
 exec { & dotnet build -c Release }
-
-$testProjects = '.\src\core\test-unit\unittests.csproj', '.\src\google-cloud\test-unit\unittests.csproj', '.\src\mongo\test-unit\unittests.csproj', '.\src\postgresql\test-unit\unittests.csproj', '.\src\redis\test-unit\unittests.csproj', '.\src\xunit\test-unit\unittests.csproj', '.\src\sqlserver\test-unit\unittests.csproj' 
-
-foreach ($testProject in $testProjects) {
-    exec { & dotnet test $testProject -c Release }
-}
+exec { & dotnet test '.\src\test-unit\unittests.csproj' -c Release }
 
 # trigger Sonar Scanner analysis
 exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
