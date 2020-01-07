@@ -112,6 +112,34 @@ namespace RapidCore.UnitTests.Audit
             Assert.IsType<ArgumentException>(actual);
             Assert.Equal("A ValueMasker must implement IAuditValueMasker, which UserProfile does not.", actual.Message);
         }
+        
+        [Fact]
+        public void ThrowOnMissingValueMasker_containerThrows()
+        {
+            var oldState = new ThrowingMissingMaskerVictim
+            {
+                Yo = "der"
+            };
+
+            var actual = Record.Exception(() => auditDiffer.GetAuditReadyDiff(oldState, null));
+
+            Assert.IsType<ArgumentException>(actual);
+            Assert.Equal("The value masker \"ThrowInContainerValueMasker\" could not be resolved through the container adapter \"TheContainer\". Has it been registered in the container?", actual.Message);
+        }
+        
+        [Fact]
+        public void ThrowOnMissingValueMasker_containerReturnsNull()
+        {
+            var oldState = new NullingMissingMaskerVictim
+            {
+                Yo = "der"
+            };
+
+            var actual = Record.Exception(() => auditDiffer.GetAuditReadyDiff(oldState, null));
+
+            Assert.IsType<ArgumentException>(actual);
+            Assert.Equal("The value masker \"ReturnNullFromContainerValueMasker\" could not be resolved through the container adapter \"TheContainer\". Has it been registered in the container?", actual.Message);
+        }
 
         #region Victims
         public class UnimportantThing
@@ -154,6 +182,34 @@ namespace RapidCore.UnitTests.Audit
             public string Yo { get; set; } = "my man";
         }
         
+        public class ThrowInContainerValueMasker : IAuditValueMasker
+        {
+            public string MaskValue(object value)
+            {
+                return "no";
+            }
+        }
+        
+        public class ThrowingMissingMaskerVictim
+        {
+            [Audit(ValueMasker = typeof(ThrowInContainerValueMasker))]
+            public string Yo { get; set; } = "my man";
+        }
+        
+        public class ReturnNullFromContainerValueMasker : IAuditValueMasker
+        {
+            public string MaskValue(object value)
+            {
+                return "no";
+            }
+        }
+        
+        public class NullingMissingMaskerVictim
+        {
+            [Audit(ValueMasker = typeof(ReturnNullFromContainerValueMasker))]
+            public string Yo { get; set; } = "my man";
+        }
+        
         public class TheContainer : IRapidContainerAdapter
         {
             public T Resolve<T>()
@@ -168,6 +224,16 @@ namespace RapidCore.UnitTests.Audit
 
             public object Resolve(Type type)
             {
+                if (type == typeof(ThrowInContainerValueMasker))
+                {
+                    throw new InvalidOperationException("just throw something");
+                }
+
+                if (type == typeof(ReturnNullFromContainerValueMasker))
+                {
+                    return null;
+                }
+                
                 return Activator.CreateInstance(type);
             }
         }
