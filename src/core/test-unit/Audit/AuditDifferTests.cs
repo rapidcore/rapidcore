@@ -123,7 +123,7 @@ namespace RapidCore.UnitTests.Audit
 
             var actual = Record.Exception(() => auditDiffer.GetAuditReadyDiff(oldState, null));
 
-            Assert.IsType<ArgumentException>(actual);
+            Assert.IsType<FailureToResolveException>(actual);
             Assert.Equal("The value masker \"ThrowInContainerValueMasker\" could not be resolved through the container adapter \"TheContainer\". Has it been registered in the container?", actual.Message);
         }
         
@@ -137,7 +137,7 @@ namespace RapidCore.UnitTests.Audit
 
             var actual = Record.Exception(() => auditDiffer.GetAuditReadyDiff(oldState, null));
 
-            Assert.IsType<ArgumentException>(actual);
+            Assert.IsType<FailureToResolveException>(actual);
             Assert.Equal("The value masker \"ReturnNullFromContainerValueMasker\" could not be resolved through the container adapter \"TheContainer\". Has it been registered in the container?", actual.Message);
         }
 

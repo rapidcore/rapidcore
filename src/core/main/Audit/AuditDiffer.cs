@@ -105,7 +105,8 @@ namespace RapidCore.Audit
             }
             catch (Exception e)
             {
-                throw new ArgumentException($"The value masker \"{attr.ValueMasker.Name}\" could not be resolved through the container adapter \"{container.GetType().Name}\". Has it been registered in the container?", e);
+                
+                throw new FailureToResolveException($"The value masker \"{attr.ValueMasker.Name}\" could not be resolved through the container adapter \"{container.GetType().Name}\". Has it been registered in the container?", e);
             }
         }
     }
