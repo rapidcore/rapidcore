@@ -1,7 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using FakeItEasy;
 using RapidCore.Audit;
 using RapidCore.DependencyInjection;
+using RapidCore.Diffing;
+using RapidCore.Reflection;
 using Xunit;
 
 namespace RapidCore.UnitTests.Audit
@@ -12,7 +15,7 @@ namespace RapidCore.UnitTests.Audit
 
         public AuditDifferTests()
         {
-            auditDiffer = new AuditDiffer(new TheContainer());
+            auditDiffer = new AuditDiffer(new TheContainer(), new StateChangeFinder(new InstanceTraverser()));
         }
 
         [Fact]
