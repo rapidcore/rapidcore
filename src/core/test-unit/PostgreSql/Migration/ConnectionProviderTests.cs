@@ -1,10 +1,10 @@
-using FakeItEasy;
-using RapidCore.PostgreSql.Migration;
 using System;
 using System.Data;
+using FakeItEasy;
+using RapidCore.PostgreSql.Migration;
 using Xunit;
 
-namespace RapidCore.PostgreSql.UnitTests.Migration
+namespace UnitTests.PostgreSql.Migration
 {
     public class ConnectionProviderTests
     {

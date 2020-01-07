@@ -28,9 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\mongo\main\rapidcore.mongo.csproj" />
+    <ProjectReference Include="..\..\postgresql\main\rapidcore.postgresql.csproj" />
     <ProjectReference Include="..\main\rapidcore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mongo" />
   </ItemGroup>
 </Project>
