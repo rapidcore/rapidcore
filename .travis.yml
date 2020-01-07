@@ -11,8 +11,6 @@ dotnet: 2.1.200
 addons:
   postgresql: '9.5'
 before_install:
-  - docker pull singularities/datastore-emulator
-  - docker run --rm -d -e DATASTORE_PROJECT_ID=rapidcore-local -e DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081 -p 8081:8081 singularities/datastore-emulator
   - docker run --rm -d -e ACCEPT_EULA=Y -e SA_PASSWORD="sql-s3rv3r%" -e MSSQL_PID=Developer -p 1433:1433 microsoft/mssql-server-linux:2017-CU6
 script:
   - chmod +x ./Build.sh && ./Build.sh --quiet verify
