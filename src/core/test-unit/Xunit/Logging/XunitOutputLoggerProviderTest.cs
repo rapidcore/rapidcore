@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FakeItEasy;
+﻿using FakeItEasy;
 using RapidCore.Xunit.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace RapidCore.Xunit.UnitTest.Logging
+namespace UnitTests.Xunit.Logging
 {
     public class XunitOutputLoggerProviderTest
     {

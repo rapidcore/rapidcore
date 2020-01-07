@@ -1,10 +1,10 @@
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
-using Xunit;
 using RapidCore.Xunit.Logging;
+using Xunit;
 using Xunit.Abstractions;
 
-namespace RapidCore.Xunit.UnitTest.Logging
+namespace UnitTests.Xunit.Logging
 {
     public class XunitOutputLoggerTest
     {
