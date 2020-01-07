@@ -1,0 +1,174 @@
+name: Pull Request workflow
+
+on: [pull_request]
+
+env:
+  DOTNET_SDK_VERSION: '2.1.607'
+
+jobs:
+  # The build job, builds the entire solution.
+  # We start with this job - even though building
+  # is also done during analysis - as it should
+  # allow us to fail the workflow quickly (none
+  # of the other jobs makes sense to run, if we
+  # cannot build the code!).
+  build-code:
+    name: Build code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+      - name: Build the solution in release mode
+        run: dotnet build -c Release
+
+  # Build the documentation (and do nothing with it).
+  # This is just to prove that the documentation is valid
+  # and that we will be able to build and publish it when
+  # we merge the PR.
+  build-docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build documentation
+        shell: bash
+        run: |
+          docker build -t rapidcore:mkdocs -f Dockerfile.mkdocs .
+          docker run --volume=${PWD}:/app/repository:rw -p 8000:8000 -t rapidcore:mkdocs build
+
+  #
+  # Run all unit tests on all relevant operating systems
+  #
+  unit-tests:
+    name: Unit tests
+    needs: build-code
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+      - name: Run unit tests in Release mode
+        run: dotnet test '.\src\test-unit\unittests.csproj' -c Release -f netcoreapp2.0
+
+  #
+  # Run our functional tests
+  #
+  functional-tests:
+    name: Functional tests
+    needs: build-code
+
+    # Note that we would prefer running the functional
+    # tests on all supported operating systems, but due
+    # to limitations in Github Actions, it is only possible
+    # use "services" on Linux
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:3.4
+        ports:
+          - 27017:27017
+      redis-server:
+        image: redis:3.2
+        ports:
+          - 6379:6379
+      postgresql:
+        image: postgres:10.1-alpine
+        ports:
+          - 5432:5432
+      mssql-server-linux:
+        image: microsoft/mssql-server-linux:2017-CU6
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: "sql-s3rv3r%"
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+      - name: Core tests
+        run: dotnet test src/core/test-functional/functionaltests.csproj -c Release
+      - name: Google Cloud tests
+        run: dotnet test src/google-cloud/test-functional/functionaltests.csproj -c Release
+      - name: Mongo tests
+        run: dotnet test src/mongo/test-functional/functionaltests.csproj -c Release
+      - name: PostgresSql tests
+        run: dotnet test src/postgresql/test-functional/functionaltests.csproj -c Release
+      - name: SQL Server tests
+        run: dotnet test src/sqlserver/test-functional/functionaltests.csproj -c Release
+      - name: Redis tests
+        run: dotnet test src/redis/test-functional/functionaltest.csproj -c Release
+
+
+
+  # Run SonarQube on the solution.
+  # This requires us to build the code
+  # while the sonar-scanner is running.
+  # The same is true for running our tests
+  # in order to gather code coverage (which do
+  # not actually do yet).
+  analyze:
+    name: "SonarQube analysis"
+    runs-on: ubuntu-latest
+
+    needs: [build-code, unit-tests]
+
+    steps:
+      # Get information about the PULL REQUEST
+      - name: Extract PR info
+        shell: bash
+        id: extract_pr_info
+        run: |
+          echo "##[set-output name=pr_branch;]$(jq .pull_request.head.ref ${GITHUB_EVENT_PATH})"
+          echo "##[set-output name=pr_base;]$(jq .pull_request.base.ref ${GITHUB_EVENT_PATH})"
+          echo "##[set-output name=pr_number;]$(jq .pull_request.number ${GITHUB_EVENT_PATH})"
+      
+      - uses: actions/checkout@v1
+      
+      # Get the version of the code to report to SonarQube
+      - name: Extract info from info_for_actions.json
+        shell: bash
+        id: extract_info
+        run: |
+          clean=$(jq -r .version ./info_for_actions.json)
+          pr_version="${clean}-pr-${{ steps.extract_pr_info.outputs.pr_number }}"
+          echo "##[set-output name=version;]$pr_version"
+      
+      - name: debug output
+        shell: bash
+        run: |
+          echo branch: ${{ steps.extract_pr_info.outputs.pr_branch }}
+          echo base: ${{ steps.extract_pr_info.outputs.pr_base }}
+          echo PR number: ${{ steps.extract_pr_info.outputs.pr_number }}
+          echo Version: ${{ steps.extract_info.outputs.version }}
+      
+      # Actually run SonarQube
+      - uses: Secbyte/dotnet-sonarscanner@v1.2
+        with:
+          buildCommand: dotnet build -c Release
+          testCommand: dotnet test src/test-unit/unittests.csproj -c Release
+          projectKey: rapidcore_rapidcore
+          projectName: rapidcore
+          sonarOrganisation: rapidcore
+          # relative paths to source directories. More details and properties are described
+          # in https://sonarcloud.io/documentation/project-administration/narrowing-the-focus/ 
+          beginArguments: /d:sonar.verbose="true" /d:sonar.sources="./src" /d:sonar.exclusions=./src/test-unit /d:sonar.pullrequest.branch="${{ steps.extract_pr_info.outputs.pr_branch }}" /d:sonar.pullrequest.key="${{ steps.extract_pr_info.outputs.pr_number }}" /d:sonar.pullrequest.base="${{ steps.extract_pr_info.outputs.pr_base }}" /v:${{ steps.extract_info.outputs.version }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
