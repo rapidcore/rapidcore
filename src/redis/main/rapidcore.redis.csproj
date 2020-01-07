@@ -17,11 +17,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ProjectGuid>61b3fa73-c122-4660-860d-902cd8e411f4</ProjectGuid>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-  </PropertyGroup>
-  
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

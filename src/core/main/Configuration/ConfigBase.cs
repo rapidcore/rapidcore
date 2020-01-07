@@ -1,4 +1,3 @@
-#if NETSTANDARD2_0
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -39,4 +38,3 @@ namespace RapidCore.Configuration
         }
     }
 }
-#endif
