@@ -1,9 +1,10 @@
 ﻿using System;
 using FakeItEasy;
+using RapidCore.Mongo;
 using RapidCore.Mongo.Migration;
 using Xunit;
 
-namespace RapidCore.Mongo.UnitTests.Migration
+namespace UnitTests.Mongo.Migration
 {
     public class ConnectionProviderTests
     {

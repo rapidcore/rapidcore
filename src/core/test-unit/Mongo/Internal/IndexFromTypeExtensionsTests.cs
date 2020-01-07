@@ -1,10 +1,11 @@
 using System;
 using System.Reflection;
 using MongoDB.Bson;
+using RapidCore.Mongo;
 using RapidCore.Mongo.Internal;
 using Xunit;
 
-namespace RapidCore.Mongo.UnitTests.Internal
+namespace UnitTests.Mongo.Internal
 {
     public class IndexFromTypeExtensionsTests
     {
