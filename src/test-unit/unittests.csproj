@@ -27,11 +27,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\mongo\main\rapidcore.mongo.csproj" />
-    <ProjectReference Include="..\..\postgresql\main\rapidcore.postgresql.csproj" />
-    <ProjectReference Include="..\..\redis\main\rapidcore.redis.csproj" />
-    <ProjectReference Include="..\..\sqlserver\main\rapidcore.sqlserver.csproj" />
-    <ProjectReference Include="..\..\xunit\main\rapidcore.xunit.csproj" />
-    <ProjectReference Include="..\main\rapidcore.csproj" />
+    <ProjectReference Include="..\core\main\rapidcore.csproj" />
+    <ProjectReference Include="..\google-cloud\main\rapidcore.google-cloud.csproj" />
+    <ProjectReference Include="..\mongo\main\rapidcore.mongo.csproj" />
+    <ProjectReference Include="..\postgresql\main\rapidcore.postgresql.csproj" />
+    <ProjectReference Include="..\redis\main\rapidcore.redis.csproj" />
+    <ProjectReference Include="..\sqlserver\main\rapidcore.sqlserver.csproj" />
+    <ProjectReference Include="..\xunit\main\rapidcore.xunit.csproj" />
   </ItemGroup>
 </Project>

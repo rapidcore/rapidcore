@@ -17,7 +17,7 @@ dotnet build -c Release -f netstandard2.0 src/xunit/main/rapidcore.xunit.csproj 
 #
 # Run unit tests
 #
-dotnet test src/core/test-unit/unittests.csproj -c Release -f netcoreapp2.0 || { echo 'unit tests failed' ; exit 1; }
+dotnet test src/test-unit/unittests.csproj -c Release -f netcoreapp2.0 || { echo 'unit tests failed' ; exit 1; }
 
 #
 # Run functional tests

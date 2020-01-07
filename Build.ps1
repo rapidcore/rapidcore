@@ -93,7 +93,7 @@ if($isNotPullRequest) {
 }
 
 exec { & dotnet build -c Release }
-exec { & dotnet test '.\src\core\test-unit\unittests.csproj' -c Release }
+exec { & dotnet test '.\src\test-unit\unittests.csproj' -c Release }
 
 # trigger Sonar Scanner analysis
 exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
