@@ -214,16 +214,9 @@ namespace UnitTests.Core.Diffing.Internal.StateChangeFinderWorkerTests
             
             Assert.Equal(3, stateChanges.Changes.Count);
             
-            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
-            
-            Assert.Equal("Old field2", sorted[0].OldValue);
-            Assert.Equal("New field2", sorted[0].NewValue);
-
-            Assert.Equal("Old prop1", sorted[1].OldValue);
-            Assert.Equal("New prop1", sorted[1].NewValue);
-
-            Assert.Equal("Old prop2", sorted[2].OldValue);
-            Assert.Equal("New prop2", sorted[2].NewValue);
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old field2") && x.NewValue.Equals("New field2"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old prop1") && x.NewValue.Equals("New prop1"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old prop2") && x.NewValue.Equals("New prop2"));
         }
 
         [Fact]
@@ -257,16 +250,9 @@ namespace UnitTests.Core.Diffing.Internal.StateChangeFinderWorkerTests
             
             Assert.Equal(3, stateChanges.Changes.Count);
             
-            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
-            
-            Assert.Equal("Old field1", sorted[0].OldValue);
-            Assert.Equal("New field1", sorted[0].NewValue);
-
-            Assert.Equal("Old field2", sorted[1].OldValue);
-            Assert.Equal("New field2", sorted[1].NewValue);
-
-            Assert.Equal("Old prop2", sorted[2].OldValue);
-            Assert.Equal("New prop2", sorted[2].NewValue);
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old field1") && x.NewValue.Equals("New field1"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old field2") && x.NewValue.Equals("New field2"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old prop2") && x.NewValue.Equals("New prop2"));
         }
 
         [Fact]
@@ -300,19 +286,10 @@ namespace UnitTests.Core.Diffing.Internal.StateChangeFinderWorkerTests
             
             Assert.Equal(4, stateChanges.Changes.Count);
             
-            var sorted = stateChanges.Changes.OrderBy(x => x.Breadcrumb).ToList();
-            
-            Assert.Equal("Old field1", sorted[0].OldValue);
-            Assert.Equal("New field1", sorted[0].NewValue);
-
-            Assert.Equal("Old field2", sorted[1].OldValue);
-            Assert.Equal("New field2", sorted[1].NewValue);
-
-            Assert.Equal("Old prop1", sorted[2].OldValue);
-            Assert.Equal("New prop1", sorted[2].NewValue);
-
-            Assert.Equal("Old prop2", sorted[3].OldValue);
-            Assert.Equal("New prop2", sorted[3].NewValue);
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old field1") && x.NewValue.Equals("New field1"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old field2") && x.NewValue.Equals("New field2"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old prop1") && x.NewValue.Equals("New prop1"));
+            Assert.Contains(stateChanges.Changes, x => x.OldValue.Equals("Old prop2") && x.NewValue.Equals("New prop2"));
         }
 
         [Fact]
