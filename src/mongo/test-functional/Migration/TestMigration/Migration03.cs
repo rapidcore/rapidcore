@@ -17,7 +17,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
                 var update = Builders<KewlEntityUpdated>.Update
                     .Set("Mucho", "Ulla Henriksen");
 
-                await db.GetCollection<KewlEntityUpdated>(KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
+                await db.GetCollection<KewlEntityUpdated>().UpdateManyAsync(filter, update);
             });
             
             builder.Step("Add 'Mucho' to 'seven'", async () =>
@@ -27,7 +27,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
                 var update = Builders<KewlEntityUpdated>.Update
                     .Set("Mucho", "Bubbly");
 
-                await db.GetCollection<KewlEntityUpdated>(KewlEntityUpdated.Collection).UpdateManyAsync(filter, update);
+                await db.GetCollection<KewlEntityUpdated>().UpdateManyAsync(filter, update);
             });
         }
 

@@ -12,7 +12,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
             
             builder.Step("Change Reference from int to string", () =>
             {
-                var collection = db.GetCollection<KewlEntity>(KewlEntity.Collection);
+                var collection = db.GetCollection<KewlEntity>();
 
                 var cursor = collection
                     .Find(_ => true)
@@ -23,7 +23,7 @@ namespace RapidCore.Mongo.FunctionalTests.Migration.TestMigration
                     var filter = Builders<KewlEntityUpdated>.Filter.Eq(x => x.Id, doc.Id);
                     var update = Builders<KewlEntityUpdated>.Update.Set("Reference", doc.Reference.ToString());
 
-                    db.GetCollection<KewlEntityUpdated>(KewlEntityUpdated.Collection).UpdateMany(filter, update);
+                    db.GetCollection<KewlEntityUpdated>().UpdateMany(filter, update);
                 });
             });
         }

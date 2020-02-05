@@ -20,8 +20,8 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
         [Fact]
         public async void RunMigration()
         {
-            EnsureEmptyCollection(MigrationDocument.CollectionName);
-            EnsureEmptyCollection(KewlEntity.Collection);
+            EnsureEmptyCollection<MigrationDocument>();
+            EnsureEmptyCollection<KewlEntity>();
             
             var db = new MongoDbConnection(GetDb());
             var services = new ServiceCollection();
@@ -45,9 +45,9 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
             
             // setup some state
             var five = new KewlEntity {Reference = 5};
-            await db.InsertAsync<KewlEntity>(KewlEntity.Collection, five);
+            await db.InsertAsync<KewlEntity>(five);
             var seven = new KewlEntity {Reference = 7};
-            await db.InsertAsync<KewlEntity>(KewlEntity.Collection, seven);
+            await db.InsertAsync<KewlEntity>(seven);
             
             // let's say that migration01 has already been completed
             await storage.MarkAsCompleteAsync(context, new Migration01(), 123);
@@ -55,17 +55,17 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
             await runner.UpgradeAsync();
             
             // are all the migrations marked as completed?
-            var allDocs = GetAll<MigrationDocument>(MigrationDocument.CollectionName);
+            var allDocs = GetAll<MigrationDocument>();
             Assert.Contains(allDocs, x => x.Name == nameof(Migration01) && x.MigrationCompleted);
             Assert.Contains(allDocs, x => x.Name == nameof(Migration02) && x.MigrationCompleted);
             Assert.Contains(allDocs, x => x.Name == nameof(Migration03) && x.MigrationCompleted);
             
             // check the state of the db
-            var fiveUp = await db.FirstOrDefaultAsync<KewlEntityUpdated>(KewlEntity.Collection, x => x.Id == five.Id);
+            var fiveUp = await db.FirstOrDefaultAsync<KewlEntityUpdated>(x => x.Id == five.Id);
             Assert.Equal("5", fiveUp.Reference);
             Assert.Equal("Ulla Henriksen", fiveUp.Mucho);
             
-            var sevenUp = await db.FirstOrDefaultAsync<KewlEntityUpdated>(KewlEntity.Collection, x => x.Id == seven.Id);
+            var sevenUp = await db.FirstOrDefaultAsync<KewlEntityUpdated>(x => x.Id == seven.Id);
             Assert.Equal("7", sevenUp.Reference);
             Assert.Equal("Bubbly", sevenUp.Mucho);
         }

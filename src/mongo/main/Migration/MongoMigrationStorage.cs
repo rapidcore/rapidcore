@@ -17,7 +17,7 @@ namespace RapidCore.Mongo.Migration
         {
             var db = GetDb(context);
 
-            var doc = await db.FirstOrDefaultAsync<MigrationDocument>(MigrationDocument.CollectionName, x => x.Name == migration.Name);
+            var doc = await db.FirstOrDefaultAsync<MigrationDocument>(x => x.Name == migration.Name);
 
             if (doc == default(MigrationDocument))
             {
@@ -31,19 +31,14 @@ namespace RapidCore.Mongo.Migration
             doc.MigrationCompleted = true;
             doc.TotalMigrationTimeInMs = milliseconds;
 
-            await db.UpsertAsync<MigrationDocument>(MigrationDocument.CollectionName, doc, x => x.Name == doc.Name);
+            await db.UpsertAsync<MigrationDocument>(doc, x => x.Name == doc.Name);
         }
 
         public async Task<MigrationInfo> GetMigrationInfoAsync(IMigrationContext context, string migrationName)
         {
             var db = GetDb(context);
             
-            var doc = await db
-                .FirstOrDefaultAsync<MigrationDocument>
-                (
-                    MigrationDocument.CollectionName,
-                    document => document.Name == migrationName
-                );
+            var doc = await db.FirstOrDefaultAsync<MigrationDocument>(document => document.Name == migrationName);
 
             if (doc == default(MigrationDocument))
             {
@@ -59,7 +54,7 @@ namespace RapidCore.Mongo.Migration
 
             var doc = ToMigrationDocument(info);
 
-            await db.UpsertAsync(MigrationDocument.CollectionName, doc, x => x.Name == info.Name);
+            await db.UpsertAsync(doc, x => x.Name == info.Name);
         }
 
         public async Task<bool> HasMigrationBeenFullyCompletedAsync(IMigrationContext context, string migrationName)
@@ -67,10 +62,7 @@ namespace RapidCore.Mongo.Migration
             var db = GetDb(context);
             
             var completedDoc = await db.FirstOrDefaultAsync<MigrationDocument>
-            (
-                MigrationDocument.CollectionName,
-                x => x.Name == migrationName && x.MigrationCompleted
-            );
+                (x => x.Name == migrationName && x.MigrationCompleted);
 
             return completedDoc != default(MigrationDocument);
         }

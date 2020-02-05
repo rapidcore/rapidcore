@@ -8,11 +8,9 @@ namespace RapidCore.Mongo.Migration.Internal
     /// <summary>
     /// Mongodb document for storing migrations that have been executed
     /// </summary>
+    [Entity(CollectionName = "__RapidCoreMigrations")]
     public class MigrationDocument
     {
-        [BsonIgnore]
-        public const string CollectionName = "__RapidCoreMigrations";
-
         [BsonIgnoreIfDefault]
         public ObjectId Id { get; set; }
 
