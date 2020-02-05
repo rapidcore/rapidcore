@@ -116,5 +116,17 @@ namespace RapidCore.Mongo
             return this.mongoDb
                     .GetCollection<TDocument>(collectionName ?? typeof(TDocument).Name);
         }
+
+        /// <summary>
+        /// Convert IAsyncCursor to a MongoAsyncCursor
+        /// This can be used to improve testabilty as MongoAsyncCursor is a mockable wrapper for the IAsyncCursor
+        /// </summary>
+        /// <param name="cursor">The IAsyncCursor to convert</param>
+        /// <typeparam name="TDocument">The type of the document associated with the <paramref name="cursor"/></typeparam>
+        /// <returns>An instance of MongoAsyncCursor wrapping around <paramref name="cursor"/></returns>
+        public virtual MongoAsyncCursor<TDocument> ConvertToMongoAsyncCursor<TDocument>(IAsyncCursor<TDocument> cursor)
+        {
+            return new MongoAsyncCursor<TDocument>(cursor);
+        }
     }
 }
