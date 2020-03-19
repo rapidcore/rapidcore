@@ -35,4 +35,9 @@
     <ProjectReference Include="..\sqlserver\main\rapidcore.sqlserver.csproj" />
     <ProjectReference Include="..\xunit\main\rapidcore.xunit.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\IO\FilesForMimeTyperTests\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
