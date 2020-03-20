@@ -16,6 +16,7 @@
     <Company>SKARP ApS</Company>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ProjectGuid>61b3fa73-c122-4660-860d-902cd8e411f4</ProjectGuid>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>
