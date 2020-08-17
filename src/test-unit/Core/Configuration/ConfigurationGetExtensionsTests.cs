@@ -16,6 +16,7 @@ namespace UnitTests.Core.Configuration
                     { "string", "from config" },
                     { "string_null", null },
                     { "string_empty", string.Empty },
+                    { "string_whitespace", "   "},
                     { "int", "3" },
                     { "int_zero", "0" },
                     { "section:section-1", "s1 from config" },
@@ -27,44 +28,51 @@ namespace UnitTests.Core.Configuration
                 }).Build();
         }
         
+        #region Single key getter
         [Fact]
-        public void Get_String()
+        public void Get_singleKey_String()
         {
             Assert.Equal("from config", config.Get<string>("string", "default"));
         }
+        
+        [Fact]
+        public void Get_singleKey_String_whitespaceIsConsideredAValue()
+        {
+            Assert.Equal("   ", config.Get<string>("string_whitespace", "default"));
+        }
 
         [Fact]
-        public void Get_String_Default_IfNull()
+        public void Get_singleKey_String_Default_IfNull()
         {
             Assert.Equal("default", config.Get<string>("string_null", "default"));
         }
 
         [Fact]
-        public void Get_String_Default_IfEmpty()
+        public void Get_singleKey_String_Default_IfEmpty()
         {
             Assert.Equal("default", config.Get<string>("string_empty", "default"));
         }
 
         [Fact]
-        public void Get_String_Default_IfUndefined()
+        public void Get_singleKey_String_Default_IfUndefined()
         {
             Assert.Equal("default", config.Get<string>("does_not_exist_coz_that_would_be_weird", "default"));
         }
 
         [Fact]
-        public void Get_Int()
+        public void Get_singleKey_Int()
         {
             Assert.Equal(3, config.Get<int>("int", 999));
         }
 
         [Fact]
-        public void Get_Int_zeroIsValid()
+        public void Get_singleKey_Int_zeroIsValid()
         {
             Assert.Equal(0, config.Get<int>("int_zero", 999));
         }
 
         [Fact]
-        public void Get_Int_Default_IfUndefined()
+        public void Get_singleKey_Int_Default_IfUndefined()
         {
             Assert.Equal(999, config.Get<int>("does_not_exist_coz_that_would_be_weird", 999));
         }
@@ -86,58 +94,143 @@ namespace UnitTests.Core.Configuration
         }
         
         [Fact]
-        public void Get_Section_exists_key_exists()
+        public void Get_singleKey_Section_exists_key_exists()
         {
             Assert.Equal("s1 from config", config.Get<string>("section:section-1", "default"));
         }
         
         [Fact]
-        public void Get_Section_if_section_is_undefined_return_default()
+        public void Get_singleKey_Section_if_section_is_undefined_return_default()
         {
             Assert.Equal("default", config.Get<string>("no-such-section:yummy", "default"));
         }
         
         [Fact]
-        public void Get_Section_if_key_is_undefined_return_default()
+        public void Get_singleKey_Section_if_key_is_undefined_return_default()
         {
             Assert.Equal("default", config.Get<string>("section:yummy", "default"));
         }
         
         [Fact]
-        public void Get_SubSection_exists_key_exists()
+        public void Get_singleKey_SubSection_exists_key_exists()
         {
             Assert.Equal("subsection 1 from config", config.Get<string>("section:subsection:subsection-1", "default"));
         }
 
         [Fact]
-        public void Get_Enum()
+        public void Get_singleKey_Enum()
         {
             Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum", MyTestConfigThing.Zero));
         }
 
         [Fact]
-        public void Get_Enum_Default_IfNull()
+        public void Get_singleKey_Enum_Default_IfNull()
         {
             Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_null", MyTestConfigThing.One));
         }
 
         [Fact]
-        public void Get_Enum_Default_IfEmpty()
+        public void Get_singleKey_Enum_Default_IfEmpty()
         {
             Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_empty", MyTestConfigThing.One));
         }
 
         [Fact]
-        public void Get_Enum_Default_IfUndefined()
+        public void Get_singleKey_Enum_Default_IfUndefined()
         {
             Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("does_not_exist_coz_that_would_be_weird", MyTestConfigThing.One));
         }
         
         [Fact]
-        public void Get_Enum_Default_IfInvalidValue()
+        public void Get_singleKey_Enum_Default_IfInvalidValue()
         {
             Assert.Equal(MyTestConfigThing.One, config.Get<MyTestConfigThing>("enum_invalid", MyTestConfigThing.One));
         }
+        #endregion
+
+        #region multi key getter
+        [Theory]
+        [InlineData("1", "2", "3", "default", "1")]
+        [InlineData("   ", "2", "3", "default", "   ")] // whitespace is a valid value
+        // primary not set
+        [InlineData(null, "2", "3", "default", "2")]
+        [InlineData("", "2", "3", "default", "2")]
+        [InlineData(null, "  ", "3", "default", "  ")] // whitespace is a valid value
+        // primary and secondary not set
+        [InlineData(null, null, "3", "default", "3")]
+        [InlineData(null, "", "3", "default", "3")]
+        [InlineData(null, null, "   ", "default", "   ")] // whitespace is a valid value
+        // no keys set
+        [InlineData(null, null, null, "default", "default")]
+        [InlineData(null, null, "", "default", "default")]
+        public void Get_multiKey_respectsOrdering(string primaryValue, string secondaryValue, string tertiaryValue, string defaultValue, string expected)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "primary", primaryValue },
+                    { "secondary", secondaryValue },
+                    { "tertiary", tertiaryValue }
+                }).Build();
+
+            var actual = conf.Get(new[] {"primary", "secondary", "tertiary"}, defaultValue);
+            
+            Assert.Equal(expected, actual);
+        }
+        #endregion
+        
+        #region 2-key getter
+        [Theory]
+        [InlineData("1", "2", "default", "1")]
+        [InlineData("   ", "2", "default", "   ")] // whitespace is a valid value
+        // primary not set
+        [InlineData(null, "2", "default", "2")]
+        [InlineData("", "2", "default", "2")]
+        [InlineData(null, "  ", "default", "  ")] // whitespace is a valid value
+        // no keys set
+        [InlineData(null, null, "default", "default")]
+        public void Get_2Key_respectsOrdering(string primaryValue, string secondaryValue, string defaultValue, string expected)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "primary", primaryValue },
+                    { "secondary", secondaryValue }
+                }).Build();
+
+            var actual = conf.Get("primary", "secondary", defaultValue);
+            
+            Assert.Equal(expected, actual);
+        }
+        #endregion
+        
+        #region 3-key getter
+        [Theory]
+        [InlineData("1", "2", "3", "default", "1")]
+        [InlineData("   ", "2", "3", "default", "   ")] // whitespace is a valid value
+        // primary not set
+        [InlineData(null, "2", "3", "default", "2")]
+        [InlineData("", "2", "3", "default", "2")]
+        [InlineData(null, "  ", "3", "default", "  ")] // whitespace is a valid value
+        // primary and secondary not set
+        [InlineData(null, null, "3", "default", "3")]
+        [InlineData(null, "", "3", "default", "3")]
+        [InlineData(null, null, "   ", "default", "   ")] // whitespace is a valid value
+        // no keys set
+        [InlineData(null, null, null, "default", "default")]
+        [InlineData(null, null, "", "default", "default")]
+        public void Get_3Key_respectsOrdering(string primaryValue, string secondaryValue, string tertiaryValue, string defaultValue, string expected)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "primary", primaryValue },
+                    { "secondary", secondaryValue },
+                    { "tertiary", tertiaryValue }
+                }).Build();
+
+            var actual = conf.Get("primary", "secondary", "tertiary", defaultValue);
+            
+            Assert.Equal(expected, actual);
+        }
+        #endregion
 
         #region Victims
         private enum MyTestConfigThing
