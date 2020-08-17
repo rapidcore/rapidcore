@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 
 namespace RapidCore.Configuration
@@ -103,6 +105,30 @@ namespace RapidCore.Configuration
             }
 
             return defaultValue;
+        }
+
+        /// <summary>
+        /// Treat a value as a comma separated list of values of some type - or return a default value.
+        ///
+        /// The parsing is as follows:
+        /// 1. the raw value is split by "comma"
+        /// 2. empty values are removed
+        /// 3. each value is trimmed and converted (just like Get would do)
+        /// </summary>
+        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string key, List<T> defaultValue)
+        {
+            var value = config.Get<string>(key, null);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return defaultValue;
+            }
+
+            return value
+                .Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => ConvertOrDefault(x.Trim(), default(T)))
+                .ToList();
         }
     }
 }

@@ -232,6 +232,81 @@ namespace UnitTests.Core.Configuration
         }
         #endregion
 
+        #region GetCommaSeparatedList
+        [Fact]
+        public void GetCommaSeparatedList_returns_default_whenKeyDoesNotExist()
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "not_this_key", "some value" }
+                }).Build();
+
+            var theDefault = new List<string> { "default" };
+            
+            var actual = conf.GetCommaSeparatedList("pick_me", theDefault);
+            
+            Assert.Same(actual, theDefault);
+            Assert.Single(actual);
+            Assert.Equal("default", actual[0]);
+        }
+        
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void GetCommaSeparatedList_returns_default_whenKeyExistsButIsNullOrEmpty(string keyValue)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "not_this_key", "some value" },
+                    { "pick_me", keyValue }
+                }).Build();
+
+            var theDefault = new List<string> { "default" };
+            
+            var actual = conf.GetCommaSeparatedList("pick_me", theDefault);
+            
+            Assert.Same(actual, theDefault);
+            Assert.Single(actual);
+            Assert.Equal("default", actual[0]);
+        }
+        
+        [Fact]
+        public void GetCommaSeparatedList_string_returns_trimmedAndSeparated()
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "not_this_key", "some value" },
+                    { "pick_me", ", a   , , b,c,d"}
+                }).Build();
+
+            var actual = conf.GetCommaSeparatedList("pick_me", new List<string>(0));
+            
+            Assert.Equal(4, actual.Count);
+            Assert.Equal("a", actual[0]);
+            Assert.Equal("b", actual[1]);
+            Assert.Equal("c", actual[2]);
+            Assert.Equal("d", actual[3]);
+        }
+        
+        [Fact]
+        public void GetCommaSeparatedList_int()
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "not_this_key", "some value" },
+                    { "pick_me", ", 1  , , 2,3,4"}
+                }).Build();
+
+            var actual = conf.GetCommaSeparatedList("pick_me", new List<int>(0));
+            
+            Assert.Equal(4, actual.Count);
+            Assert.Equal(1, actual[0]);
+            Assert.Equal(2, actual[1]);
+            Assert.Equal(3, actual[2]);
+            Assert.Equal(4, actual[3]);
+        }
+        #endregion
+
         #region Victims
         private enum MyTestConfigThing
         {
