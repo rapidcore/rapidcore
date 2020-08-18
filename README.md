@@ -1,5 +1,5 @@
 [![Number of downloads][nuget-image-core-downloads]][nuget-url-core]
-[![Build status][appveyor-image]][appveyor-url]
+[![Master workflow][github-workflow-image]][github-workflow-url]
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rapidcore_rapidcore&metric=alert_status)][sonarcloud-url]
 
 # RapidCore
@@ -95,8 +95,8 @@ Current features
 [nuget-url-xunit]: https://www.nuget.org/packages/RapidCore.Xunit
 
 
-[appveyor-image]: https://img.shields.io/appveyor/ci/nover/rapidcore/master.svg?style=flat-square
-[appveyor-url]: https://ci.appveyor.com/project/nover/rapidcore/branch/master
+[github-workflow-image]: https://github.com/rapidcore/rapidcore/workflows/Master%20workflow/badge.svg
+[github-workflow-url]: https://github.com/rapidcore/rapidcore/actions
 
 [sonarcloud-url]: https://sonarcloud.io/dashboard?id=rapidcore_rapidcore
 
