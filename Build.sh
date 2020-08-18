@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# stop on first error, as we otherwise end up with
+# weird error messages
+set -e
+
 # Perform the actual build
 dotnet restore
 
