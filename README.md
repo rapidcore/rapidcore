@@ -106,7 +106,7 @@ Start by running `docker-compose up -d`.
 
 ### Documentation
 
-The documentation is available with live-reload at http://localhost:8000.
+The documentation is available with live-reload at <http://localhost:8000>.
 
 ### SonarCloud
 

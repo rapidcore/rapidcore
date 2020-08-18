@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>UnitTests</RootNamespace>
     <ProjectGuid>d0c5a83a-179a-4efd-92fa-53b7d60507d9</ProjectGuid>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.2" />
@@ -34,5 +35,10 @@
     <ProjectReference Include="..\redis\main\rapidcore.redis.csproj" />
     <ProjectReference Include="..\sqlserver\main\rapidcore.sqlserver.csproj" />
     <ProjectReference Include="..\xunit\main\rapidcore.xunit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\IO\FilesForMimeTyperTests\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

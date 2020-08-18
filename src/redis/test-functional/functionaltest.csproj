@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>RapidCore.Redis.FunctionalTest</AssemblyName>
     <RootNamespace>RapidCore.Redis.FunctionalTest</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.2" />
