@@ -9,7 +9,7 @@ on:
 
 env:
   DOTNET_SDK_VERSION: '2.1.809'
-  DOCS_BUCKET: i-am-just-testing-stuff-1961s45g4sd6g54sd9hgs4gh54s
+  DOCS_BUCKET: docs.rapidcore.io
   GENERATED_DOCS_ARTIFACT: generated-docs
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
 
@@ -144,8 +144,7 @@ jobs:
           }
       - name: Push NuGet packages
         shell: bash
-        run: echo skipping this for now
-        #run: |
-        #  # ls -l nuget-artifacts
-        #  cd nuget-artifacts
-        #  dotnet nuget push **/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_SOURCE }}
+        run: |
+          # ls -l nuget-artifacts
+          cd nuget-artifacts
+          dotnet nuget push **/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_SOURCE }}
