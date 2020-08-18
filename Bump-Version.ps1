@@ -19,6 +19,20 @@ function Update-Package {
     return $newVersion
 }
 
+
+function Update-InfoForActions {
+    Param ([string]$version)
+
+    $file = "info_for_actions.json"
+
+    Write-Host "updating " $file
+
+    $info = Get-Content $file -Raw | ConvertFrom-Json
+    $info.version = $version
+    $info | ConvertTo-Json -Depth 32 | Set-Content $file
+}
+
+
 # Go to the rapidcore repo and update
 Set-Location ./src/core/main
 $newVersion = & dotnet version --output-format=json --skip-vcs $BumpLevel | ConvertFrom-Json | Select-Object -ExpandProperty newVersion
@@ -31,6 +45,10 @@ Update-Package -path .\mongo\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\postgresql\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\redis\main -goTo ..\..\ -version $newVersion |Out-Null
 Update-Package -path .\xunit\main -goTo ..\..\ -version $newVersion |Out-Null
+
+Set-Location ../ # move to the root of the repo
+
+Update-InfoForActions $newVersion | Out-Null
 
 $versionString = -join("v",$newVersion);
 $output = (& git add -Av 2>&1)

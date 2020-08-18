@@ -1,0 +1,150 @@
+name: New version workflow
+
+on:
+  push:
+    branches-ignore:
+      - '*' # ignore all branches
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+ # match tags like "v34.12.895"
+
+env:
+  DOTNET_SDK_VERSION: '2.1.809'
+  DOCS_BUCKET: docs.rapidcore.io
+  GENERATED_DOCS_ARTIFACT: generated-docs
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+jobs:
+  # Build the documentation.
+  # This is to have it ready for publishing.
+  build-docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build documentation
+        shell: bash
+        run: |
+          docker build -t rapidcore:mkdocs -f Dockerfile.mkdocs .
+          docker run --volume=${PWD}:/app/repository:rw -p 8000:8000 -t rapidcore:mkdocs build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ${{ env.GENERATED_DOCS_ARTIFACT }}
+          path: ./docs-generated
+
+  publish-docs:
+    name: Publish docs
+    runs-on: ubuntu-latest
+
+    needs: [build-docs, release-packages] # only publish docs, if we have actually released code
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Download the generated docs
+        uses: actions/download-artifact@v1
+        with:
+          name: ${{ env.GENERATED_DOCS_ARTIFACT }}
+          path: ./docs-generated
+
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          CLI: gsutil
+        with:
+          args: -m rsync -r -d ./docs-generated gs://${{ env.DOCS_BUCKET }}
+
+  # Run SonarQube on the solution.
+  # This requires us to build the code
+  # while the sonar-scanner is running.
+  # The same is true for running our tests
+  # in order to gather code coverage (which we do
+  # not actually do yet).
+  analyze:
+    name: "SonarQube analysis"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      
+      # Get the version of the code to report to SonarQube
+      - name: Extract info from info_for_actions.json
+        shell: bash
+        id: extract_info
+        run: |
+          clean=$(jq -r .version ./info_for_actions.json)
+          echo "##[set-output name=version;]$clean"
+      
+      - name: debug output
+        shell: bash
+        run: |
+          echo Version: ${{ steps.extract_info.outputs.version }}
+      
+      # Actually run SonarQube
+      - uses: Secbyte/dotnet-sonarscanner@v2.3
+        with:
+          buildCommand: dotnet build -c Release
+          testCommand: dotnet test src/test-unit/unittests.csproj -c Release
+          projectKey: rapidcore_rapidcore
+          projectName: rapidcore
+          sonarOrganisation: rapidcore
+          # relative paths to source directories. More details and properties are described
+          # in https://sonarcloud.io/documentation/project-administration/narrowing-the-focus/ 
+          beginArguments: >
+            /d:sonar.verbose="true" 
+            /d:sonar.sources="./src" 
+            /d:sonar.exclusions=./src/test-unit 
+            /v:${{ steps.extract_info.outputs.version }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-packages:
+    name: Release packages
+    runs-on: ubuntu-latest
+
+    needs: [analyze, build-docs] # only release, if code and documentation seems to be ok
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+      - name: Figure out the version
+        id: version
+        shell: pwsh
+        run: |
+          . cicd_tools/Get-Version.ps1
+          $version = Get-Version Production
+          Write-Host "##[set-output name=value;]$version"
+      - name: Debug
+        shell: bash
+        run: |
+          echo branch: ${{ steps.version.outputs.value }}
+      - name: Restore and build packages
+        shell: bash
+        run: |
+          dotnet restore
+          dotnet build -c Release
+
+      - name: Make non-Core packages, use Core from NuGet
+        shell: pwsh
+        run: |
+          ./cicd_tools/Use-NuGetReference.ps1 ${{ steps.version.outputs.value }}
+      - name: Pack all packages
+        shell: pwsh
+        run: |
+          . ./cicd_tools/Get-MainProjects.ps1
+          $mainProjects = Get-MainProjects "src\"
+          $version = "${{ steps.version.outputs.value }}"
+          foreach ($csproj in $mainProjects) {
+              # Explicitly set the package version to include any version suffixes...
+              & dotnet pack $csproj -c Release -o ..\..\..\nuget-artifacts --include-source --no-build --no-restore /p:PackageVersion=$version /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg
+          }
+      - name: Push NuGet packages
+        shell: bash
+        run: |
+          # ls -l nuget-artifacts
+          cd nuget-artifacts
+          dotnet nuget push **/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_SOURCE }}
