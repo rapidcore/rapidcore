@@ -3,7 +3,7 @@ name: Pull Request workflow
 on: [pull_request]
 
 env:
-  DOTNET_SDK_VERSION: '2.1.607'
+  DOTNET_SDK_VERSION: '2.1.809'
 
 jobs:
   # The build job, builds the entire solution.
@@ -159,7 +159,7 @@ jobs:
           echo Version: ${{ steps.extract_info.outputs.version }}
       
       # Actually run SonarQube
-      - uses: Secbyte/dotnet-sonarscanner@v1.2
+      - uses: Secbyte/dotnet-sonarscanner@v2.3
         with:
           buildCommand: dotnet build -c Release
           testCommand: dotnet test src/test-unit/unittests.csproj -c Release
@@ -168,7 +168,14 @@ jobs:
           sonarOrganisation: rapidcore
           # relative paths to source directories. More details and properties are described
           # in https://sonarcloud.io/documentation/project-administration/narrowing-the-focus/ 
-          beginArguments: /d:sonar.verbose="true" /d:sonar.sources="./src" /d:sonar.exclusions=./src/test-unit /d:sonar.pullrequest.branch="${{ steps.extract_pr_info.outputs.pr_branch }}" /d:sonar.pullrequest.key="${{ steps.extract_pr_info.outputs.pr_number }}" /d:sonar.pullrequest.base="${{ steps.extract_pr_info.outputs.pr_base }}" /v:${{ steps.extract_info.outputs.version }}
+          beginArguments: > 
+            /d:sonar.verbose="true" 
+            /d:sonar.sources="./src" 
+            /d:sonar.exclusions=./src/test-unit 
+            /d:sonar.pullrequest.branch="${{ steps.extract_pr_info.outputs.pr_branch }}" 
+            /d:sonar.pullrequest.key="${{ steps.extract_pr_info.outputs.pr_number }}" 
+            /d:sonar.pullrequest.base="${{ steps.extract_pr_info.outputs.pr_base }}" 
+            /v:${{ steps.extract_info.outputs.version }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

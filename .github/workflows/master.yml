@@ -6,7 +6,7 @@ on:
       - 159-start-using-github-actions-for-cicd
 
 env:
-  DOTNET_SDK_VERSION: '2.1.607'
+  DOTNET_SDK_VERSION: '2.1.809'
   DOCS_BUCKET: i-am-just-testing-stuff-1961s45g4sd6g54sd9hgs4gh54s
   GENERATED_DOCS_ARTIFACT: generated-docs
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
@@ -181,7 +181,7 @@ jobs:
           echo Version: ${{ steps.extract_info.outputs.version }}
       
       # Actually run SonarQube
-      - uses: Secbyte/dotnet-sonarscanner@v1.2
+      - uses: Secbyte/dotnet-sonarscanner@v2.3
         with:
           buildCommand: dotnet build -c Release
           testCommand: dotnet test src/test-unit/unittests.csproj -c Release
@@ -190,7 +190,11 @@ jobs:
           sonarOrganisation: rapidcore
           # relative paths to source directories. More details and properties are described
           # in https://sonarcloud.io/documentation/project-administration/narrowing-the-focus/ 
-          beginArguments: /d:sonar.verbose="true" /d:sonar.sources="./src" /d:sonar.exclusions=./src/test-unit /v:${{ steps.extract_info.outputs.version }}
+          beginArguments: > 
+            /d:sonar.verbose="true" 
+            /d:sonar.sources="./src" 
+            /d:sonar.exclusions=./src/test-unit 
+            /v:${{ steps.extract_info.outputs.version }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
