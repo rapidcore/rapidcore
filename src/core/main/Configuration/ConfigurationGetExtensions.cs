@@ -108,16 +108,53 @@ namespace RapidCore.Configuration
         }
 
         /// <summary>
+        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// </summary>
+        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string key, List<T> defaultValue)
+        {
+            var value = config.Get<string>(key, null);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return defaultValue;
+            }
+
+            return value
+                .Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => ConvertOrDefault(x.Trim(), default(T)))
+                .ToList();
+        }
+        
+        /// <summary>
+        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// </summary>
+        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, List<T> defaultValue)
+        {
+            return config.GetCommaSeparatedList(new[] {keyPrimary, keySecondary}, defaultValue);
+        }
+        
+        /// <summary>
+        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// </summary>
+        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, string keyTertiary, List<T> defaultValue)
+        {
+            return config.GetCommaSeparatedList(new[] {keyPrimary, keySecondary, keyTertiary}, defaultValue);
+        }
+        
+        
+        /// <summary>
         /// Treat a value as a comma separated list of values of some type - or return a default value.
+        /// The raw value is determined using the Get extension method.
         ///
         /// The parsing is as follows:
         /// 1. the raw value is split by "comma"
         /// 2. empty values are removed
         /// 3. each value is trimmed and converted (just like Get would do)
         /// </summary>
-        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string key, List<T> defaultValue)
+        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, IEnumerable<string> keys, List<T> defaultValue)
         {
-            var value = config.Get<string>(key, null);
+            var value = config.Get<string>(keys, null);
 
             if (string.IsNullOrEmpty(value))
             {

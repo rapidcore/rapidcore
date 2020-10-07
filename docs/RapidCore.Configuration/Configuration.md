@@ -79,7 +79,7 @@ In the config classes it is now possible to do `public string Host => myIConfigu
 
 A common case is to have a configuration value that is actually a list of something. Since it (probably) needs to be represented as a string in an environment variable, a _comma separated string_ is an easy pattern.
 
-For this purpose the `GetCommaSeparatedList<T>(string key, List<T> defaultValue)` method exists.
+For this purpose the `GetCommaSeparatedList<T>(string key, List<T> defaultValue)` method exists - note that it also supports trying multiple keys.
 
 ```json
 {

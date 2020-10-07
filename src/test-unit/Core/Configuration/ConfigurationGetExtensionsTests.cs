@@ -232,7 +232,7 @@ namespace UnitTests.Core.Configuration
         }
         #endregion
 
-        #region GetCommaSeparatedList
+        #region GetCommaSeparatedList (single key)
         [Fact]
         public void GetCommaSeparatedList_returns_default_whenKeyDoesNotExist()
         {
@@ -304,6 +304,74 @@ namespace UnitTests.Core.Configuration
             Assert.Equal(2, actual[1]);
             Assert.Equal(3, actual[2]);
             Assert.Equal(4, actual[3]);
+        }
+        #endregion
+
+        #region GetCommaSeparatedList (multi key)
+        [Theory]
+        [InlineData("1", "2", "default", "1")]
+        [InlineData("   ", "2", "default", "--empty--")] // whitespace is a valid value
+        // primary not set
+        [InlineData(null, "2", "default", "2")]
+        [InlineData("", "2", "default", "2")]
+        [InlineData(null, "  ", "default", "--empty--")] // whitespace is a valid value
+        // no keys set
+        [InlineData(null, null, "default", "default")]
+        public void GetCommaSeparatedList_2keys_respectsOrdering(string primaryValue, string secondaryValue, string defaultValue, string expected)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "primary", primaryValue },
+                    { "secondary", secondaryValue }
+                }).Build();
+
+            var actual = conf.GetCommaSeparatedList("primary", "secondary", new List<string> { defaultValue });
+
+            if (expected.Equals("--empty--"))
+            {
+                Assert.Empty(actual);
+            }
+            else
+            {
+                Assert.Single(actual);
+                Assert.Equal(expected, actual[0]);
+            }
+        }
+
+        [Theory]
+        [InlineData("1", "2", "3", "default", "1")]
+        [InlineData("   ", "2", "3", "default", "--empty--")] // whitespace is a valid value
+        // primary not set
+        [InlineData(null, "2", "3", "default", "2")]
+        [InlineData("", "2", "3", "default", "2")]
+        [InlineData(null, "  ", "3", "default", "--empty--")] // whitespace is a valid value
+        // primary and secondary not set
+        [InlineData(null, null, "3", "default", "3")]
+        [InlineData(null, "", "3", "default", "3")]
+        [InlineData(null, null, "   ", "default", "--empty--")] // whitespace is a valid value
+        // no keys set
+        [InlineData(null, null, null, "default", "default")]
+        [InlineData(null, null, "", "default", "default")]
+        public void GetCommaSeparatedList_3keys_respectsOrdering(string primaryValue, string secondaryValue, string tertiaryValue, string defaultValue, string expected)
+        {
+            var conf = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "primary", primaryValue },
+                    { "secondary", secondaryValue },
+                    { "tertiary", tertiaryValue }
+                }).Build();
+
+            var actual = conf.GetCommaSeparatedList("primary", "secondary", "tertiary", new List<string> { defaultValue });
+
+            if (expected.Equals("--empty--"))
+            {
+                Assert.Empty(actual);
+            }
+            else
+            {
+                Assert.Single(actual);
+                Assert.Equal(expected, actual[0]);
+            }
         }
         #endregion
 
