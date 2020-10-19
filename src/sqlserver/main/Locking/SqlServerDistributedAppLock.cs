@@ -27,8 +27,7 @@ namespace RapidCore.SqlServer.Locking
 
         public bool IsActive { get; private set; }
 
-
-        public async Task<IDistributedAppLock> AcquireLockAsync(
+        public Task<IDistributedAppLock> AcquireLockAsync(
             string lockName,
             TimeSpan? lockWaitTimeout = null,
             TimeSpan? lockAutoExpireTimeout = null)
@@ -55,40 +54,7 @@ namespace RapidCore.SqlServer.Locking
                     throw new NotSupportedException("Sql AppLock does not support auto expiry.");
                 }
 
-                var parameters = new DynamicParameters();
-                parameters.Add("@Resource", lockName);
-                parameters.Add("@LockMode", "Exclusive");
-                parameters.Add("@DbPrincipal", "public");
-                parameters.Add("@LockOwner", "Session");
-                parameters.Add("@LockTimeout", lockWaitTimeout.Value.TotalMilliseconds);
-                parameters.Add("exitCode", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
-
-                await _dbConnection.ExecuteAsync("sp_getapplock",
-                    parameters,
-                    commandType: CommandType.StoredProcedure);
-                var exitCode = parameters.Get<int>("exitCode");
-
-                if (exitCode < (int) SpGetAppLockReturnCode.Granted)
-                {
-                    // acquire lock failure
-                    if (exitCode == (int) SpGetAppLockReturnCode.LockRequestTimeout && lockWaitTimeout != TimeSpan.Zero)
-                    {
-                        throw new DistributedAppLockException($"Timeout while acquiring lock: '{lockName}'")
-                        {
-                            Reason = DistributedAppLockExceptionReason.Timeout
-                        };
-                    }
-
-                    throw new DistributedAppLockException($"Unable to acquire lock: '{lockName}'")
-                    {
-                        Reason = DistributedAppLockExceptionReason.LockAlreadyAcquired
-                    };
-                }
-
-                // lock is available, whop whop!
-                IsActive = true;
-                Name = lockName;
-                return this;
+                return AcquireLockInternalAsync(lockName, lockWaitTimeout);
             }
             catch (DistributedAppLockException)
             {
@@ -102,6 +68,46 @@ namespace RapidCore.SqlServer.Locking
                 };
                 throw ex;
             }
+        }
+        
+        private async Task<IDistributedAppLock> AcquireLockInternalAsync(
+            string lockName,
+            TimeSpan? lockWaitTimeout = null)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Resource", lockName);
+            parameters.Add("@LockMode", "Exclusive");
+            parameters.Add("@DbPrincipal", "public");
+            parameters.Add("@LockOwner", "Session");
+            parameters.Add("@LockTimeout", lockWaitTimeout.Value.TotalMilliseconds);
+            parameters.Add("exitCode", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+            await _dbConnection.ExecuteAsync("sp_getapplock",
+                parameters,
+                commandType: CommandType.StoredProcedure);
+            var exitCode = parameters.Get<int>("exitCode");
+
+            if (exitCode < (int) SpGetAppLockReturnCode.Granted)
+            {
+                // acquire lock failure
+                if (exitCode == (int) SpGetAppLockReturnCode.LockRequestTimeout && lockWaitTimeout != TimeSpan.Zero)
+                {
+                    throw new DistributedAppLockException($"Timeout while acquiring lock: '{lockName}'")
+                    {
+                        Reason = DistributedAppLockExceptionReason.Timeout
+                    };
+                }
+
+                throw new DistributedAppLockException($"Unable to acquire lock: '{lockName}'")
+                {
+                    Reason = DistributedAppLockExceptionReason.LockAlreadyAcquired
+                };
+            }
+
+            // lock is available, whop whop!
+            IsActive = true;
+            Name = lockName;
+            return this;
         }
 
         /// <summary>
