@@ -5,9 +5,9 @@ It is extremely rare to deal with an application that does not need to read conf
 The common pattern these days - in a world of containerized applications - is to have some default configuration in files and allowing specific config values to be overruled using environment variables.
 
 
-## [Obsolete] `ConfigBase`
+## Extension methods on `IConfiguration`
 
-The abstract `RapidCore.Configuration.ConfigBase` class exists to make it easy to deliver a strict config interface for use in an application.
+RapidCore adds a few extension methods to `IConfiguration`, which allows for easy implementation of config classes.
 
 An example:
 
@@ -26,22 +26,24 @@ public enum ShoutColor
     Purple
 }
 
-public class ShoutConfig : ConfigBase, IShoutConfig
+public class ShoutConfig : IShoutConfig
 {
-    public MyConfig(IConfiguration config) : base(config) {}
+    private readonly IConfiguration config;
 
-    public string WhatToShout => Get("WHAT_TO_SHOUT", "default shout");
-    public int HowManyTimesToShout => Get("HOW_MANY_TIMES_TO_SHOUT", 666);
-    public ShoutColor Color => Get("SHOUT_COLOR", ShoutColor.Purple);
+    public MyConfig(IConfiguration config)
+    {
+        this.config = config;
+    }
+
+    public string WhatToShout => config.Get("WHAT_TO_SHOUT", "default shout");
+    public int HowManyTimesToShout => config.Get("HOW_MANY_TIMES_TO_SHOUT", 666);
+    public ShoutColor Color => config.Get("SHOUT_COLOR", ShoutColor.Purple);
 }
 ```
 
 With the above, our `Shouter` class just needs to depend on `IShoutConfig` and it will automatically get type appropriate configuration values - including defaults. This allows the code to not have to duplicate the parsing/handling of the raw configuration values all over the place.
 
 
-## Extension methods on `IConfiguration`
-
-The logic implemented in `ConfigBase` does not actually need to be in a class. Instead the logic has been moved to extension methods on `Microsoft.Extensions.Configuration.IConfiguration`, which means that it is no longer necessary to extend `ConfigBase` (and it has actually been marked as _obsolete_).
 
 ### Get<T>(string key, T defaultValue)
 
@@ -97,3 +99,45 @@ var characters = config.GetFromCommaSeparatedList("characters", new List<string>
 ```
 
 Notice how it trims and removes empty entries.
+
+
+
+## [Obsolete] `ConfigBase`
+
+The abstract `RapidCore.Configuration.ConfigBase` class exists to make it easy to deliver a strict config interface for use in an application.
+
+An example:
+
+```csharp
+/**
+ * This is an older pattern, which we now consider
+ * to be obsolete.
+ * You should use the IConfiguration extension methods
+ * instead.
+ */
+
+public interface IShoutConfig
+{
+    string WhatToShout { get; }
+    int HowManyTimesToShout { get; }
+    ShoutColor Color { get; }
+}
+
+public enum ShoutColor
+{
+    Red,
+    Green,
+    Purple
+}
+
+public class ShoutConfig : ConfigBase, IShoutConfig
+{
+    public MyConfig(IConfiguration config) : base(config) {}
+
+    public string WhatToShout => Get("WHAT_TO_SHOUT", "default shout");
+    public int HowManyTimesToShout => Get("HOW_MANY_TIMES_TO_SHOUT", 666);
+    public ShoutColor Color => Get("SHOUT_COLOR", ShoutColor.Purple);
+}
+```
+
+With the above, our `Shouter` class just needs to depend on `IShoutConfig` and it will automatically get type appropriate configuration values - including defaults. This allows the code to not have to duplicate the parsing/handling of the raw configuration values all over the place.
