@@ -108,9 +108,9 @@ namespace RapidCore.Configuration
         }
 
         /// <summary>
-        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// This is a convenience overload for GetFromCommaSeparatedList(string[] keys, List<T> defaultValue)
         /// </summary>
-        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string key, List<T> defaultValue)
+        public static List<T> GetFromCommaSeparatedList<T>(this IConfiguration config, string key, List<T> defaultValue)
         {
             var value = config.Get<string>(key, null);
 
@@ -127,19 +127,19 @@ namespace RapidCore.Configuration
         }
         
         /// <summary>
-        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// This is a convenience overload for GetFromCommaSeparatedList(string[] keys, List<T> defaultValue)
         /// </summary>
-        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, List<T> defaultValue)
+        public static List<T> GetFromCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, List<T> defaultValue)
         {
-            return config.GetCommaSeparatedList(new[] {keyPrimary, keySecondary}, defaultValue);
+            return config.GetFromCommaSeparatedList(new[] {keyPrimary, keySecondary}, defaultValue);
         }
         
         /// <summary>
-        /// This is a convenience overload for GetCommaSeparatedList(string[] keys, T defaultValue)
+        /// This is a convenience overload for GetFromCommaSeparatedList(string[] keys, List<T> defaultValue)
         /// </summary>
-        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, string keyTertiary, List<T> defaultValue)
+        public static List<T> GetFromCommaSeparatedList<T>(this IConfiguration config, string keyPrimary, string keySecondary, string keyTertiary, List<T> defaultValue)
         {
-            return config.GetCommaSeparatedList(new[] {keyPrimary, keySecondary, keyTertiary}, defaultValue);
+            return config.GetFromCommaSeparatedList(new[] {keyPrimary, keySecondary, keyTertiary}, defaultValue);
         }
         
         
@@ -152,7 +152,7 @@ namespace RapidCore.Configuration
         /// 2. empty values are removed
         /// 3. each value is trimmed and converted (just like Get would do)
         /// </summary>
-        public static List<T> GetCommaSeparatedList<T>(this IConfiguration config, IEnumerable<string> keys, List<T> defaultValue)
+        public static List<T> GetFromCommaSeparatedList<T>(this IConfiguration config, IEnumerable<string> keys, List<T> defaultValue)
         {
             var value = config.Get<string>(keys, null);
 

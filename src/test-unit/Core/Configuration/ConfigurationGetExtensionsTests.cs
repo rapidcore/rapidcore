@@ -232,9 +232,9 @@ namespace UnitTests.Core.Configuration
         }
         #endregion
 
-        #region GetCommaSeparatedList (single key)
+        #region GetFromCommaSeparatedList (single key)
         [Fact]
-        public void GetCommaSeparatedList_returns_default_whenKeyDoesNotExist()
+        public void GetFromCommaSeparatedList_returns_default_whenKeyDoesNotExist()
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -243,7 +243,7 @@ namespace UnitTests.Core.Configuration
 
             var theDefault = new List<string> { "default" };
             
-            var actual = conf.GetCommaSeparatedList("pick_me", theDefault);
+            var actual = conf.GetFromCommaSeparatedList("pick_me", theDefault);
             
             Assert.Same(actual, theDefault);
             Assert.Single(actual);
@@ -253,7 +253,7 @@ namespace UnitTests.Core.Configuration
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void GetCommaSeparatedList_returns_default_whenKeyExistsButIsNullOrEmpty(string keyValue)
+        public void GetFromCommaSeparatedList_returns_default_whenKeyExistsButIsNullOrEmpty(string keyValue)
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -263,7 +263,7 @@ namespace UnitTests.Core.Configuration
 
             var theDefault = new List<string> { "default" };
             
-            var actual = conf.GetCommaSeparatedList("pick_me", theDefault);
+            var actual = conf.GetFromCommaSeparatedList("pick_me", theDefault);
             
             Assert.Same(actual, theDefault);
             Assert.Single(actual);
@@ -271,7 +271,7 @@ namespace UnitTests.Core.Configuration
         }
         
         [Fact]
-        public void GetCommaSeparatedList_string_returns_trimmedAndSeparated()
+        public void GetFromCommaSeparatedList_string_returns_trimmedAndSeparated()
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -279,7 +279,7 @@ namespace UnitTests.Core.Configuration
                     { "pick_me", ", a   , , b,c,d"}
                 }).Build();
 
-            var actual = conf.GetCommaSeparatedList("pick_me", new List<string>(0));
+            var actual = conf.GetFromCommaSeparatedList("pick_me", new List<string>(0));
             
             Assert.Equal(4, actual.Count);
             Assert.Equal("a", actual[0]);
@@ -289,7 +289,7 @@ namespace UnitTests.Core.Configuration
         }
         
         [Fact]
-        public void GetCommaSeparatedList_int()
+        public void GetFromCommaSeparatedList_int()
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -297,7 +297,7 @@ namespace UnitTests.Core.Configuration
                     { "pick_me", ", 1  , , 2,3,4"}
                 }).Build();
 
-            var actual = conf.GetCommaSeparatedList("pick_me", new List<int>(0));
+            var actual = conf.GetFromCommaSeparatedList("pick_me", new List<int>(0));
             
             Assert.Equal(4, actual.Count);
             Assert.Equal(1, actual[0]);
@@ -307,7 +307,7 @@ namespace UnitTests.Core.Configuration
         }
         #endregion
 
-        #region GetCommaSeparatedList (multi key)
+        #region GetFromCommaSeparatedList (multi key)
         [Theory]
         [InlineData("1", "2", "default", "1")]
         [InlineData("   ", "2", "default", "--empty--")] // whitespace is a valid value
@@ -317,7 +317,7 @@ namespace UnitTests.Core.Configuration
         [InlineData(null, "  ", "default", "--empty--")] // whitespace is a valid value
         // no keys set
         [InlineData(null, null, "default", "default")]
-        public void GetCommaSeparatedList_2keys_respectsOrdering(string primaryValue, string secondaryValue, string defaultValue, string expected)
+        public void GetFromCommaSeparatedList_2keys_respectsOrdering(string primaryValue, string secondaryValue, string defaultValue, string expected)
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -325,7 +325,7 @@ namespace UnitTests.Core.Configuration
                     { "secondary", secondaryValue }
                 }).Build();
 
-            var actual = conf.GetCommaSeparatedList("primary", "secondary", new List<string> { defaultValue });
+            var actual = conf.GetFromCommaSeparatedList("primary", "secondary", new List<string> { defaultValue });
 
             if (expected.Equals("--empty--"))
             {
@@ -352,7 +352,7 @@ namespace UnitTests.Core.Configuration
         // no keys set
         [InlineData(null, null, null, "default", "default")]
         [InlineData(null, null, "", "default", "default")]
-        public void GetCommaSeparatedList_3keys_respectsOrdering(string primaryValue, string secondaryValue, string tertiaryValue, string defaultValue, string expected)
+        public void GetFromCommaSeparatedList_3keys_respectsOrdering(string primaryValue, string secondaryValue, string tertiaryValue, string defaultValue, string expected)
         {
             var conf = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
@@ -361,7 +361,7 @@ namespace UnitTests.Core.Configuration
                     { "tertiary", tertiaryValue }
                 }).Build();
 
-            var actual = conf.GetCommaSeparatedList("primary", "secondary", "tertiary", new List<string> { defaultValue });
+            var actual = conf.GetFromCommaSeparatedList("primary", "secondary", "tertiary", new List<string> { defaultValue });
 
             if (expected.Equals("--empty--"))
             {

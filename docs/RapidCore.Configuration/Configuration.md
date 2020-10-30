@@ -75,11 +75,11 @@ By allowing the config class to check on multiple keys, the following can be don
 In the config classes it is now possible to do `public string Host => myIConfiguration.Get("db_a:host", "db_shared:host", "no host")`.
 
 
-### GetCommaSeparatedList<T>(string key, List<T> defaultValue)
+### GetFromCommaSeparatedList<T>(string key, List<T> defaultValue)
 
 A common case is to have a configuration value that is actually a list of something. Since it (probably) needs to be represented as a string in an environment variable, a _comma separated string_ is an easy pattern.
 
-For this purpose the `GetCommaSeparatedList<T>(string key, List<T> defaultValue)` method exists - note that it also supports trying multiple keys.
+For this purpose the `GetFromCommaSeparatedList<T>(string key, List<T> defaultValue)` method exists - note that it also supports trying multiple keys.
 
 ```json
 {
@@ -90,7 +90,7 @@ For this purpose the `GetCommaSeparatedList<T>(string key, List<T> defaultValue)
 ```csharp
 IConfiguration config = __magic__;
 
-var characters = config.GetCommaSeparatedList("characters", new List<string>(0));
+var characters = config.GetFromCommaSeparatedList("characters", new List<string>(0));
 // 0 = joker
 // 1 = mr. freeze
 // 2 = poison ivy
