@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
 namespace RapidCore.Configuration
@@ -12,6 +10,7 @@ namespace RapidCore.Configuration
     /// for your project, but gain easy access to reading config values
     /// from wherever.
     /// </summary>
+    [Obsolete("No longer necessary. The methods have been implemented as extension methods on Microsoft.Extensions.Configuration.IConfiguration")]
     public abstract class ConfigBase
     {
         private readonly IConfiguration configuration;
@@ -23,18 +22,7 @@ namespace RapidCore.Configuration
 
         protected T Get<T>(string key, T defaultValue)
         {
-            var value = configuration[key];
-
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-
-            if (TypeDescriptor.GetConverter(typeof(T)).IsValid(value))
-            {
-                return (T) TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
-            }
-            return defaultValue;
+            return configuration.Get(key, defaultValue);
         }
     }
 }

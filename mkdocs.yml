@@ -12,6 +12,8 @@ nav:
       - Indexes: MongoDB/Indexes.md
   - Dependency injection:
       - IRapidContainerAdapter: DependencyInjection/IRapidContainerAdapter.md
+  - Configuration:
+      - Reading config values: RapidCore.Configuration/Configuration.md
   - Diffing:
       - Diff object instances: Diffing/StateChangeFinder.md
   - Environment:
