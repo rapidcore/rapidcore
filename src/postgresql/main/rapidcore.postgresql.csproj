@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>RapidCore.PostgreSql</RootNamespace>
-    <Version>0.24.0</Version>
+    <Version>0.25.0</Version>
     <Title>RapidCore.PostgreSql</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
