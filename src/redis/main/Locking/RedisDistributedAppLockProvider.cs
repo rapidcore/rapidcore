@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using RapidCore.Locking;
 using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core.Abstractions;
 
 namespace RapidCore.Redis.Locking
 {
@@ -11,16 +12,16 @@ namespace RapidCore.Redis.Locking
     /// </summary>
     public class RedisDistributedAppLockProvider : IDistributedAppLockProvider
     {
-        private readonly IConnectionMultiplexer _redisMuxer;
+        private readonly IRedisCacheConnectionPoolManager _redisConnectionPool;
         private readonly Random _rng;
 
         /// <summary>
         /// Create a new instance of the locker
         /// </summary>
-        /// <param name="redisMuxer">A connected instance of a redis muxer</param>
-        public RedisDistributedAppLockProvider(IConnectionMultiplexer redisMuxer)
+        /// <param name="redisConnectionPool">A connected instance of a redis muxer</param>
+        public RedisDistributedAppLockProvider(IRedisCacheConnectionPoolManager redisConnectionPool)
         {
-            _redisMuxer = redisMuxer;
+            _redisConnectionPool = redisConnectionPool;
             _rng = new Random();
         }
 
@@ -36,7 +37,7 @@ namespace RapidCore.Redis.Locking
         public IDistributedAppLock Acquire(string lockName, TimeSpan? lockWaitTimeout = default(TimeSpan?),
             TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
-            var handle = new RedisDistributedAppLock(_redisMuxer, _rng);
+            var handle = new RedisDistributedAppLock(_redisConnectionPool.GetConnection(), _rng);
             var task = handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
 
             try
@@ -61,7 +62,7 @@ namespace RapidCore.Redis.Locking
         public async Task<IDistributedAppLock> AcquireAsync(string lockName,
             TimeSpan? lockWaitTimeout = default(TimeSpan?), TimeSpan? lockAutoExpireTimeout = default(TimeSpan?))
         {
-            var handle = new RedisDistributedAppLock(_redisMuxer, _rng);
+            var handle = new RedisDistributedAppLock(_redisConnectionPool.GetConnection(), _rng);
             return await handle.AcquireLockAsync(lockName, lockWaitTimeout, lockAutoExpireTimeout);
         }
     }

@@ -3,19 +3,34 @@ using System.Threading.Tasks;
 using RapidCore.Locking;
 using RapidCore.Redis.Locking;
 using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Core.Implementations;
 using Xunit;
 
 namespace RapidCore.Redis.FunctionalTest.Locking
 {
     public class RedisDistributedAppLockProviderTest
     {
-        private readonly IConnectionMultiplexer _redisMuxer;
         private readonly string _hostname;
+        private readonly int _port;
+        private RedisCacheConnectionPoolManager _connectionPool;
 
         public RedisDistributedAppLockProviderTest()
         {
-            _hostname = "127.0.0.1:6379";
-            _redisMuxer = ConnectionMultiplexer.Connect(_hostname);
+            _hostname = "127.0.0.1";
+            _port = 6379;
+
+            _connectionPool = new RedisCacheConnectionPoolManager(new RedisConfiguration
+            {
+                Hosts = new RedisHost[]
+                {
+                    new RedisHost()
+                    {
+                        Host = _hostname,
+                        Port = _port
+                    }
+                }
+            });
         }
 
         [Fact]
@@ -23,8 +38,8 @@ namespace RapidCore.Redis.FunctionalTest.Locking
         {
             var lockName = "first-lock";
             // ensure that no stale keys are left
-            _redisMuxer.GetDatabase().KeyDelete(lockName);
-            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            _connectionPool.GetConnection().GetDatabase().KeyDelete(lockName);
+            var locker = new RedisDistributedAppLockProvider(_connectionPool);
             using (locker.Acquire(lockName))
             {
                 // mutual exclusion scope here
@@ -44,8 +59,8 @@ namespace RapidCore.Redis.FunctionalTest.Locking
         {
             var lockName = "second-lock";
             // ensure that no stale keys are left
-            _redisMuxer.GetDatabase().KeyDelete(lockName);
-            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            _connectionPool.GetConnection().GetDatabase().KeyDelete(lockName);
+            var locker = new RedisDistributedAppLockProvider(_connectionPool);
 
             using (locker.Acquire(lockName, TimeSpan.FromSeconds(1)))
             {
@@ -70,9 +85,9 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             RedisDistributedAppLock secondLock = null;
             var lockName = "some-other-lock";
             // ensure that no stale keys are left
-            _redisMuxer.GetDatabase().KeyDelete(lockName);
+            _connectionPool.GetConnection().GetDatabase().KeyDelete(lockName);
 
-            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_connectionPool);
             firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
 
             // Create task to dispose of loclk at some point
@@ -96,7 +111,7 @@ namespace RapidCore.Redis.FunctionalTest.Locking
         [Fact]
         public void Test_that_is_acquired_is_false_when_disposed()
         {
-            var provider = new RedisDistributedAppLockProvider(_redisMuxer);
+            var provider = new RedisDistributedAppLockProvider(_connectionPool);
             var theLock = provider.Acquire("this-is-my-lock");
             theLock.Dispose();
             Assert.False(theLock.IsActive);
@@ -116,9 +131,9 @@ namespace RapidCore.Redis.FunctionalTest.Locking
             RedisDistributedAppLock secondLock = null;
             var lockName = "some-other-lock-that-expire";
             // ensure that no stale keys are left
-            _redisMuxer.GetDatabase().KeyDelete(lockName);
+            _connectionPool.GetConnection().GetDatabase().KeyDelete(lockName);
 
-            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_connectionPool);
             firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
             // Create task to dispose of lock at some point
@@ -140,7 +155,7 @@ namespace RapidCore.Redis.FunctionalTest.Locking
         [Fact]
         public async void Test_that_lock_is_released_on_exception_in_using_block()
         {
-            var locker = new RedisDistributedAppLockProvider(_redisMuxer);
+            var locker = new RedisDistributedAppLockProvider(_connectionPool);
             var lockName = "is_released_on_exception";
             var lockWait = TimeSpan.FromSeconds(3);
             var autoExpire = TimeSpan.MaxValue;
