@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using RapidCore.Locking;
 using RapidCore.Redis.Locking;
-using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Core.Implementations;
 using Xunit;

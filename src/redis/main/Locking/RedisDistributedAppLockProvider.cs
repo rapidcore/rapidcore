@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using RapidCore.Locking;
-using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 
 namespace RapidCore.Redis.Locking

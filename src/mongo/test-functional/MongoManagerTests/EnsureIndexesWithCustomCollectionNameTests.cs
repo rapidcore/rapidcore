@@ -1,7 +1,4 @@
-using System.Reflection;
 using MongoDB.Bson;
-using MongoDB.Driver;
-using RapidCore.Mongo.Internal;
 using Xunit;
 
 namespace RapidCore.Mongo.FunctionalTests.MongoManagerTests
