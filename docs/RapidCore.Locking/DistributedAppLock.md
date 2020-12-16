@@ -5,7 +5,7 @@ When you need to ensure that only 1 process (across all of your instances or ser
 You can implement your own or use one the implementations available in the RapidCore packages with dependencies:
 
 - Noop in `RapidCore` for when you really do not care, but the framework requires it
-- Redis in in the package `RapidCore.Redis`
+- Redis in the package `RapidCore.Redis`
 - SqlServer in the package [`RapidCore.SqlServer`](../SqlServer/Locking.md)
 
 ## Taking a lock
@@ -38,6 +38,60 @@ public class Worker
     }
 }
 ```
+
+
+## When the thing we are protecting is part of the lock name
+
+In some cases part of the lock name comes from the thing you are protecting - e.g. an order ID. This means that you have to know that ID before you can take the lock, but you also need to make sure that you are not working on stale data.
+
+An example:
+
+```csharp
+using RapidCore.Locking;
+
+public class Worker
+{
+    private readonly IDistributedAppLockProvider appLockProvider;
+
+    public Worker(IDistributedAppLockProvider appLockProvider)
+    {
+        this.appLockProvider = appLockProvider;
+    }
+
+    public async Task WorkOnSomethingSensitiveAsync(string someValue)
+    {
+        var myThing = loadMyThingBasedOnSomeThing(x => x.SomeProp == someValue);
+
+        using (var appLock = await appLockProvider.Acquire($"lockname-{myThing.Id}"))
+        {
+            // we can use info on appLock to see whether we need to reload myThing or not
+            if (!appLock.WasTakenImmediately)
+            {
+                // we had to wait for the lock, so someone else might have
+                // worked on "myThing" and thus we need to update our version
+                // of it
+                myThing = loadMyThingBasedOnSomeThing(x => x.SomeProp == someValue);
+            }
+
+            // work on the sensitive resource
+        }
+    }
+}
+```
+
+
+## Monitoring goodies
+
+The `IDistributedAppLock` has a property that states how long it took to acquire the lock. This could be used for monitoring lock acquiring times.
+
+```csharp
+using (var appLock = await appLockProvider.AcquireAsync("lock name", howLongBeforeGivingUp, howLongBeforeLockAutoExpires))
+{
+    // appLock.TimeUsedToAcquire is a TimeSpan
+    // that tells you how long you waited in total
+}
+```
+
 
 ## Handling errors
 
