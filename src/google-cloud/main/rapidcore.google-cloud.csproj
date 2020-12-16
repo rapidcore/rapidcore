@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>RapidCore.GoogleCloud</RootNamespace>
-    <Version>0.25.1</Version>
+    <Version>0.26.0</Version>
     <Title>RapidCore.GoogleCloud</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
