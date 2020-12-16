@@ -28,6 +28,11 @@ namespace RapidCore.Reflection
         /// <param name="listener">The listener that will be notified when we find something</param>
         public virtual void TraverseInstance(object instance, int maxDepth, IInstanceListener listener)
         {
+            if (!ShouldRecurse(instance.GetType()))
+            {
+                throw new InstanceTraversalException($"{instance.GetType()} is not a type that can be traversed.");
+            }
+            
             var context = new InstanceTraversalContext
             {
                 Instance = instance,

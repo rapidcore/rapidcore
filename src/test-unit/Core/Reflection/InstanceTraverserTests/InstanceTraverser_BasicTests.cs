@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using FakeItEasy;
@@ -10,6 +12,40 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
 {
     public class InstanceTraverser_BasicTests : InstanceTraverserTestBase
     {
+        public static IEnumerable<object[]> Throws_ifGivenANonTraversable_instance_data()
+        {
+            return new List<object[]>
+            {
+                new [] { (object)StringSplitOptions.RemoveEmptyEntries },
+                new [] { new MemoryStream() },
+                new [] { (object)'c' },
+                new [] { (object)true },
+                new [] { (object)0x12 },
+                new [] { (object)(short)3 },
+                new [] { (object)5 },
+                new [] { (object)7L },
+                new [] { (object)12.34F },
+                new [] { (object)56.37D },
+                new [] { (object)1234m },
+                new [] { (object)DateTime.UtcNow },
+                new [] { (object)DateTimeOffset.UtcNow },
+                new [] { (object)TimeSpan.FromSeconds(666) },
+                new [] { (object)Guid.NewGuid() },
+                new [] { (object)"string" },
+                new [] { (object)(int?)5}
+            };
+        }
+        
+        [Theory]
+        [MemberData(nameof(Throws_ifGivenANonTraversable_instance_data))]
+        public void Throws_ifGivenANonTraversable_instance(object instance)
+        {
+            var actual = Record.Exception(() => Traverser.TraverseInstance(instance, 10, listener));
+            
+            Assert.NotNull(actual);
+            Assert.IsType<InstanceTraversalException>(actual);
+        }
+        
         [Fact]
         public void EventHandlersAreCalled()
         {

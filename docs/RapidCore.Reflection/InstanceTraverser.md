@@ -2,7 +2,7 @@
 
 Traversing an instance of an object is useful in many reflection based tasks, but it has a bunch of pitfalls and requires a seemingly infinite amount of tests.
 
-Instead of repeating a bunch of these things every time we build something with reflection, we now have `RapidCore.Reflection.InstanceTraverser`, which can traverse an instance of an object.
+Instead of repeating a bunch of these things every time we build something with reflection, we now have `RapidCore.Reflection.InstanceTraverser`, which can traverse an instance of an object. It will throw an exception if given an instance of a type that it cannot traverse (e.g. decimal, DateTime, Streams etc.).
 
 It will:
 
