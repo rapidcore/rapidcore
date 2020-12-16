@@ -22,7 +22,7 @@ namespace UnitTests.Redis.Locking
             _client = A.Fake<IDatabase>(o => o.Strict());
             _manager = A.Fake<IConnectionMultiplexer>(o => o.Strict());
             A.CallTo(() => _manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(_client);
-            A.CallTo(() => _client.LockTake(
+            A.CallTo(() => _client.LockTakeAsync(
                 A<RedisKey>.That.Matches(str => str == _defaultLockName),
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
@@ -39,7 +39,7 @@ namespace UnitTests.Redis.Locking
             var handle = new RedisDistributedAppLock(_manager, _rng);
             await handle.AcquireLockAsync(_defaultLockName);
 
-            A.CallTo(() => _client.LockTake(
+            A.CallTo(() => _client.LockTakeAsync(
                     A<RedisKey>.That.Matches(str => str == _defaultLockName),
                     A<RedisValue>.Ignored,
                     A<TimeSpan>.Ignored,
@@ -55,7 +55,7 @@ namespace UnitTests.Redis.Locking
             var handle = new RedisDistributedAppLock(_manager, _rng);
             await handle.AcquireLockAsync(_defaultLockName, TimeSpan.MaxValue, TimeSpan.FromSeconds(2));
             
-            A.CallTo(() => _client.LockTake(
+            A.CallTo(() => _client.LockTakeAsync(
                     A<RedisKey>.That.Matches(str => str == _defaultLockName),
                     A<RedisValue>.Ignored,
                     TimeSpan.FromSeconds(2),
@@ -117,7 +117,7 @@ namespace UnitTests.Redis.Locking
             var manager = A.Fake<IConnectionMultiplexer>();
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
 
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                  A<RedisKey>.That.Matches(str => str == lockName),
                  A<RedisValue>.Ignored,
                  A<TimeSpan>.Ignored,
@@ -140,7 +140,7 @@ namespace UnitTests.Redis.Locking
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
 
             var exceptionThrownDuringTest = new TimeoutException("test is faking it!");
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                  A<RedisKey>.That.Matches(str => str == lockName),
                  A<RedisValue>.Ignored,
                  A<TimeSpan>.Ignored,
@@ -166,7 +166,7 @@ namespace UnitTests.Redis.Locking
             var manager = A.Fake<IConnectionMultiplexer>();
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
 
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                  A<RedisKey>.That.Matches(str => str == lockName),
                  A<RedisValue>.Ignored,
                  A<TimeSpan>.Ignored,

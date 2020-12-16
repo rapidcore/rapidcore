@@ -42,11 +42,13 @@ namespace RapidCore.Redis.Locking
             try
             {
                 // wait for task to complete
-                return task.Result;
+                return task.GetAwaiter().GetResult();
             }
             catch (AggregateException exception)
             {
-                throw exception.Flatten().InnerException;
+                var innerException = exception.Flatten().InnerException;
+                if (innerException != null) throw innerException;
+                throw;
             }
         }
 

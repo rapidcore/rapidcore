@@ -66,7 +66,7 @@ namespace RapidCore.Redis.Locking
                 stopWatch.Start();
                 do
                 {
-                    var lockWasAcquired = _redisDb.LockTake(lockName, LockHandle, lockAutoExpireTimeout.Value);
+                    var lockWasAcquired = await _redisDb.LockTakeAsync(lockName, LockHandle, lockAutoExpireTimeout.Value);
 
                     if (!lockWasAcquired && !timeoutProvided)
                     {
