@@ -36,6 +36,10 @@ namespace RapidCore.Locking
         
         public bool IsActive { get; set; }
         
+        public bool WasAcquiredInstantly { get; } = true;
+        
+        public TimeSpan TimeUsedToAcquire { get; } = TimeSpan.Zero;
+
         /// <summary>
         /// Determines whether the current lock instance is <see cref="IsActive"/> and has a name that matches the given
         /// parameter

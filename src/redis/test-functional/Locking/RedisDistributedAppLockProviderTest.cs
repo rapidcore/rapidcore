@@ -88,7 +88,8 @@ namespace RapidCore.Redis.FunctionalTest.Locking
 
             var locker = new RedisDistributedAppLockProvider(_connectionPool);
             firstLock = (RedisDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
-
+            Assert.True(firstLock.WasAcquiredInstantly);
+            
             // Create task to dispose of loclk at some point
             Task.Factory.StartNew(() =>
             {
@@ -100,6 +101,8 @@ namespace RapidCore.Redis.FunctionalTest.Locking
                 Task.Delay(TimeSpan.FromMilliseconds(500));
                 Assert.Equal(lockName, secondLock.Name);
                 Assert.True(secondLock.IsActive);
+                Assert.False((secondLock.WasAcquiredInstantly));
+                Assert.True(secondLock.TimeUsedToAcquire.Ticks > 0);
                 secondLock.Dispose();
             });
 

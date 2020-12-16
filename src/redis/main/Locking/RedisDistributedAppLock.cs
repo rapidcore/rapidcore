@@ -30,6 +30,10 @@ namespace RapidCore.Redis.Locking
         public string Name { get; private set; }
 
         public bool IsActive { get; private set; }
+        
+        public bool WasAcquiredInstantly { get; private set; }
+        
+        public TimeSpan TimeUsedToAcquire { get; private set; }
 
         /// <summary>
         /// A unique lock handle for this instance of the lock
@@ -47,6 +51,7 @@ namespace RapidCore.Redis.Locking
         public async Task<IDistributedAppLock> AcquireLockAsync(string lockName, TimeSpan? lockWaitTimeout = null,
             TimeSpan? lockAutoExpireTimeout = null)
         {
+            this.WasAcquiredInstantly = true;
             var stopWatch = new Stopwatch();
             try
             {
@@ -78,6 +83,7 @@ namespace RapidCore.Redis.Locking
 
                     if (!lockWasAcquired)
                     {
+                        this.WasAcquiredInstantly = false;
                         var timeout = _rng.Next(
                             1,
                             (int) Math.Min(2500, lockWaitTimeout.Value.TotalMilliseconds)
@@ -100,6 +106,7 @@ namespace RapidCore.Redis.Locking
                     };
                 }
 
+                TimeUsedToAcquire = stopWatch.Elapsed;
                 return this;
             }
             catch (TimeoutException tex)
@@ -126,7 +133,7 @@ namespace RapidCore.Redis.Locking
             }
             finally
             {
-                stopWatch?.Stop();
+                stopWatch?.Stop(); 
             }
         }
 
