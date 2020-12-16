@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Dapper;
 using RapidCore.Locking;
@@ -25,6 +26,10 @@ namespace RapidCore.SqlServer.Locking
         public string Name { get; private set; }
 
         public bool IsActive { get; private set; }
+        
+        public bool WasAcquiredInstantly { get; private set; }
+        
+        public TimeSpan TimeUsedToAcquire { get; private set; }
 
 
         public async Task<IDistributedAppLock> AcquireLockAsync(
@@ -32,8 +37,11 @@ namespace RapidCore.SqlServer.Locking
             TimeSpan? lockWaitTimeout = null,
             TimeSpan? lockAutoExpireTimeout = null)
         {
+            var sw = new Stopwatch();
             try
             {
+                sw.Start();
+                this.WasAcquiredInstantly = true;
                 _dbConnection = _dbConnectionFactory();
 
                 if (_dbConnection.State != ConnectionState.Open)
@@ -87,6 +95,7 @@ namespace RapidCore.SqlServer.Locking
                 // lock is available, whop whop!
                 IsActive = true;
                 Name = lockName;
+                TimeUsedToAcquire = sw.Elapsed;
                 return this;
             }
             catch (DistributedAppLockException)
@@ -100,6 +109,10 @@ namespace RapidCore.SqlServer.Locking
                     Reason = DistributedAppLockExceptionReason.SeeInnerException,
                 };
                 throw ex;
+            }
+            finally
+            {
+                sw.Stop();
             }
         }
 

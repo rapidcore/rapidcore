@@ -179,5 +179,15 @@ namespace UnitTests.Redis.Locking
             Assert.Equal(DistributedAppLockExceptionReason.SeeInnerException, ex.Reason);
             Assert.IsType<OperationCanceledException>(ex.InnerException);
         }
+        
+        [Fact]
+        public async Task Does_set_lock_take_time_and_happened_immediately()
+        {
+            var handle = new RedisDistributedAppLock(_manager, _rng);
+            await handle.AcquireLockAsync(_defaultLockName);
+            
+            Assert.True(handle.WasAcquiredInstantly);
+            Assert.True(handle.TimeUsedToAcquire.Ticks > 0);
+        }
     }
 }

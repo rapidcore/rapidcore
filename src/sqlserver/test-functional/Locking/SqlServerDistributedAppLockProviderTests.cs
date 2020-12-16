@@ -118,7 +118,8 @@ namespace functionaltests.Locking
 
             var locker = new SqlServerDistributedAppLockProvider(_connectionFactory);
             firstLock = (SqlServerDistributedAppLock) locker.Acquire(lockName, TimeSpan.FromSeconds(1));
-
+            Assert.True(firstLock.WasAcquiredInstantly);
+            
             var threadStarted = false;
             // Create task to dispose of lock at some point
             Task.Factory.StartNew(() =>
@@ -139,6 +140,8 @@ namespace functionaltests.Locking
                 Task.Delay(TimeSpan.FromMilliseconds(500));
                 Assert.Equal(lockName, secondLock.Name);
                 Assert.True(secondLock.IsActive);
+                Assert.False(secondLock.WasAcquiredInstantly);
+                Assert.True(secondLock.TimeUsedToAcquire.Ticks > 0);
                 secondLock.Dispose();
             });
             

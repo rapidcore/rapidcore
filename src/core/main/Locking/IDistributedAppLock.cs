@@ -18,6 +18,16 @@ namespace RapidCore.Locking
         bool IsActive { get; }
 
         /// <summary>
+        /// Determines whether the lock was grabbed without applying retry logic 
+        /// </summary>
+        bool WasAcquiredInstantly { get; }
+        
+        /// <summary>
+        /// The total time spent on acquiring the lock including any retry time
+        /// </summary>
+        TimeSpan TimeUsedToAcquire { get; }
+        
+        /// <summary>
         /// When implemented in a downstream provider it will verify that the current instance of the lock is in an
         /// active (locked) state and has the name given to the method
         /// </summary>
