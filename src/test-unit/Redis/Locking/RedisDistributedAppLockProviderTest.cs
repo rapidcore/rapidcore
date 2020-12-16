@@ -20,7 +20,7 @@ namespace UnitTests.Redis.Locking
             
             A.CallTo(() => pool.GetConnection()).Returns(manager);
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                 A<RedisKey>.That.Matches(str => str == lockName),
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
@@ -45,7 +45,7 @@ namespace UnitTests.Redis.Locking
             
             A.CallTo(() => pool.GetConnection()).Returns(manager);
             A.CallTo(() => manager.GetDatabase(A<int>.Ignored, A<object>.Ignored)).Returns(client);
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                 A<RedisKey>.That.Matches(str => str == lockName),
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
@@ -54,7 +54,7 @@ namespace UnitTests.Redis.Locking
 
             locker.Acquire(lockName);
 
-            A.CallTo(() => client.LockTake(
+            A.CallTo(() => client.LockTakeAsync(
                 A<RedisKey>.That.Matches(key => key == lockName),
                 A<RedisValue>.Ignored,
                 A<TimeSpan>.Ignored,
