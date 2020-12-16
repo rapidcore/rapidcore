@@ -65,7 +65,7 @@ public class Worker
         using (var appLock = await appLockProvider.Acquire($"lockname-{myThing.Id}"))
         {
             // we can use info on appLock to see whether we need to reload myThing or not
-            if (!appLock.WasTakenImmediately)
+            if (!appLock.WasAcquiredInstantly)
             {
                 // we had to wait for the lock, so someone else might have
                 // worked on "myThing" and thus we need to update our version
