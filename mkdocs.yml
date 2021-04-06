@@ -3,6 +3,9 @@ theme: readthedocs
 repo_url: https://github.com/rapidcore/rapidcore/
 nav:
   - RapidCore: index.md
+  - Get involved:
+      - Contributing: contributing.md
+      - Code of conduct: code_of_conduct.md
   - Audit:
       - Introduction: Audit/Introduction.md
       - AuditDiffer: Audit/AuditDiffer.md
