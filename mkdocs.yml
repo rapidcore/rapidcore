@@ -11,6 +11,7 @@ nav:
       - AuditDiffer: Audit/AuditDiffer.md
       - Value masking: Audit/ValueMasking.md
   - Mongo DB:
+      - Entities: MongoDB/Entities.md
       - Connection: MongoDB/RapidCore.Mongo.MongoDbConnection.md
       - Indexes: MongoDB/Indexes.md
   - Dependency injection:
