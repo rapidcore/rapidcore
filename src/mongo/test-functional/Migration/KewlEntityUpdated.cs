@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RapidCore.Mongo.FunctionalTests.Migration
 {
+    [Entity(CollectionName = "Kewl")]
     public class KewlEntityUpdated
     {
         [BsonIgnoreIfDefault]
@@ -11,7 +12,5 @@ namespace RapidCore.Mongo.FunctionalTests.Migration
         public string Reference { get; set; }
             
         public string Mucho { get; set; }
-            
-        public static string Collection => "Kewl";
     }
 }

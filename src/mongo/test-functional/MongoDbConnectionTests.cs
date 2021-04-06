@@ -20,7 +20,7 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             EnsureEmptyCollection(collectionName);
             
-            var actual = await connection.FirstOrDefaultAsync<Document>(collectionName, filter => filter.String == "does not exist");
+            var actual = await connection.FirstOrDefaultAsync<Document>(filter => filter.String == "does not exist");
 
             Assert.Null(actual);
         }
@@ -33,7 +33,7 @@ namespace RapidCore.Mongo.FunctionalTests
             var doc = new Document { String = "one" };
             await GetDb().GetCollection<Document>(collectionName).InsertOneAsync(doc);
             
-            var actual = await connection.FirstOrDefaultAsync<Document>(collectionName, filter => filter.String == "one");
+            var actual = await connection.FirstOrDefaultAsync<Document>(filter => filter.String == "one");
 
             Assert.NotNull(actual);
             Assert.Equal("one", actual.String);
@@ -45,12 +45,12 @@ namespace RapidCore.Mongo.FunctionalTests
             EnsureEmptyCollection(collectionName);
 
             var first = new Document { String = "one", Aux = "first" };
-            Insert<Document>(collectionName, first);
+            Insert<Document>(first);
 
             var second = new Document { String = "one", Aux = "second" };
-            Insert<Document>(collectionName, second);
+            Insert<Document>(second);
             
-            var actual = await connection.FirstOrDefaultAsync<Document>(collectionName, filter => filter.String == "one");
+            var actual = await connection.FirstOrDefaultAsync<Document>(filter => filter.String == "one");
 
             Assert.NotNull(actual);
             Assert.Equal("one", actual.String);
@@ -63,7 +63,7 @@ namespace RapidCore.Mongo.FunctionalTests
             EnsureEmptyCollection(collectionName);
 
             var doc = new Document { String = "hi" };
-            await connection.UpsertAsync<Document>(collectionName, doc, filter => filter.String == "hi");
+            await connection.UpsertAsync<Document>( doc, filter => filter.String == "hi");
 
             Assert.NotNull(doc.Id);
 
@@ -73,7 +73,7 @@ namespace RapidCore.Mongo.FunctionalTests
 
             foundDocument.String = "bye";
 
-            await connection.UpsertAsync<Document>(collectionName, foundDocument, filter => filter.Id == foundDocument.Id);
+            await connection.UpsertAsync<Document>(foundDocument, filter => filter.Id == foundDocument.Id);
 
             var updatedDocument = GetDb().GetCollection<Document>(collectionName).Find(filter => filter.Id == foundDocument.Id).FirstOrDefault();
 
@@ -86,13 +86,13 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             EnsureEmptyCollection(collectionName);
 
-            Insert<Document>(collectionName, new Document { String = "one", Aux = "deleteMe" });
-            Insert<Document>(collectionName, new Document { String = "two", Aux = "keep" });
-            Insert<Document>(collectionName, new Document { String = "thr", Aux = "deleteMe" });
+            Insert<Document>(new Document { String = "one", Aux = "deleteMe" });
+            Insert<Document>(new Document { String = "two", Aux = "keep" });
+            Insert<Document>(new Document { String = "thr", Aux = "deleteMe" });
             
-            await connection.DeleteAsync<Document>(collectionName, filter => filter.Aux == "deleteMe");
+            await connection.DeleteAsync<Document>(filter => filter.Aux == "deleteMe");
 
-            var actual = GetAll<Document>(collectionName);
+            var actual = GetAll<Document>();
 
             Assert.Equal(1, actual.Count);
             Assert.Equal("two", actual[0].String);
@@ -103,11 +103,11 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             EnsureEmptyCollection(collectionName);
 
-            Insert<Document>(collectionName, new Document { String = "one", Aux = "mememe" });
-            Insert<Document>(collectionName, new Document { String = "two", Aux = "hipster" });
-            Insert<Document>(collectionName, new Document { String = "thr", Aux = "mememe" });
+            Insert<Document>(new Document { String = "one", Aux = "mememe" });
+            Insert<Document>(new Document { String = "two", Aux = "hipster" });
+            Insert<Document>(new Document { String = "thr", Aux = "mememe" });
 
-            var actual = await connection.GetAsync<Document>(collectionName, filter => filter.Aux == "mememe");
+            var actual = await connection.GetAsync<Document>(filter => filter.Aux == "mememe");
 
             Assert.Equal(2, actual.Count());
             Assert.Equal("one", actual.ElementAt(0).String);
@@ -119,11 +119,11 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             EnsureEmptyCollection(collectionName);
 
-            Insert<Document>(collectionName, new Document { String = "one", Aux = "mememe" });
-            Insert<Document>(collectionName, new Document { String = "two", Aux = "hipster" });
-            Insert<Document>(collectionName, new Document { String = "thr", Aux = "mememe" });
+            Insert<Document>(new Document { String = "one", Aux = "mememe" });
+            Insert<Document>(new Document { String = "two", Aux = "hipster" });
+            Insert<Document>(new Document { String = "thr", Aux = "mememe" });
 
-            var actual = await connection.GetAsync<Document>(collectionName, filter => filter.Aux == "mememe", 1);
+            var actual = await connection.GetAsync<Document>(filter => filter.Aux == "mememe", 1);
 
             Assert.Equal(1, actual.Count());
             Assert.Equal("one", actual.ElementAt(0).String);
@@ -134,7 +134,7 @@ namespace RapidCore.Mongo.FunctionalTests
         {
             EnsureEmptyCollection(collectionName);
 
-            var actual = await connection.GetAsync<Document>(collectionName, filter => true, 1);
+            var actual = await connection.GetAsync<Document>(filter => true, 1);
 
             Assert.Empty(actual);
         }

@@ -23,7 +23,7 @@ namespace RapidCore.Mongo.FunctionalTests
             var doc = new Document { String = "insert" };
             Assert.Equal(ObjectId.Empty, doc.Id);
 
-            await connection.InsertAsync<Document>(collectionName, doc);
+            await connection.InsertAsync<Document>(doc);
 
             Assert.NotEqual(ObjectId.Empty, doc.Id);
 
@@ -44,10 +44,10 @@ namespace RapidCore.Mongo.FunctionalTests
             var doc = new Document { String = "multi" };
 
             // first insert is ok
-            await connection.InsertAsync<Document>(collectionName, doc);
+            await connection.InsertAsync<Document>(doc);
 
             // second insert throws, as the document now has an ID
-            await Assert.ThrowsAsync<MongoWriteException>(async () => await connection.InsertAsync<Document>(collectionName, doc));
+            await Assert.ThrowsAsync<MongoWriteException>(async () => await connection.InsertAsync<Document>(doc));
         }
     }
 }

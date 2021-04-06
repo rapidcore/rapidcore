@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RapidCore.Mongo.FunctionalTests
 {
+    [Entity(CollectionName = "documents")]
     public class Document
     {
         [BsonIgnoreIfDefault]

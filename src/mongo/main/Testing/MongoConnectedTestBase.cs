@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Reflection;
 using MongoDB.Driver;
+using RapidCore.Mongo.Internal;
 
 namespace RapidCore.Mongo.Testing
 {
@@ -44,19 +46,24 @@ namespace RapidCore.Mongo.Testing
             return GetClient().GetDatabase(GetDbName());
         }
 
+        protected void EnsureEmptyCollection<TDocument>()
+        {
+            EnsureEmptyCollection(typeof(TDocument).GetTypeInfo().GetCollectionName());
+        }
+        
         protected void EnsureEmptyCollection(string collectionName)
         {
             GetDb().DropCollection(collectionName);
         }
 
-        protected void Insert<TDocument>(string collectionName, TDocument doc)
+        protected void Insert<TDocument>(TDocument doc)
         {
-            GetDb().GetCollection<TDocument>(collectionName).InsertOne(doc);
+            GetDb().GetCollection<TDocument>(typeof(TDocument).GetTypeInfo().GetCollectionName()).InsertOne(doc);
         }
 
-        protected IList<TDocument> GetAll<TDocument>(string collectionName)
+        protected IList<TDocument> GetAll<TDocument>()
         {
-            return GetDb().GetCollection<TDocument>(collectionName).Find(filter => true).ToList();
+            return GetDb().GetCollection<TDocument>(typeof(TDocument).GetTypeInfo().GetCollectionName()).Find(filter => true).ToList();
         }
     }
 }
