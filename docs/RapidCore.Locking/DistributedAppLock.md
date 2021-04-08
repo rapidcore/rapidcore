@@ -5,6 +5,7 @@ When you need to ensure that only 1 process (across all of your instances or ser
 You can implement your own or use one the implementations available in the RapidCore packages with dependencies:
 
 - Noop in `RapidCore` for when you really do not care, but the framework requires it
+- InMemory in `RapidCore` when it is known for sure that only 1 process is working on a resource
 - Redis in the package `RapidCore.Redis`
 - SqlServer in the package [`RapidCore.SqlServer`](../SqlServer/Locking.md)
 
