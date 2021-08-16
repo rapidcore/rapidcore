@@ -1,11 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using FakeItEasy;
 using RapidCore;
 using RapidCore.Audit;
 using RapidCore.DependencyInjection;
 using RapidCore.Diffing;
-using RapidCore.Reflection;
 using Xunit;
 
 namespace UnitTests.Core.Audit
@@ -16,7 +14,7 @@ namespace UnitTests.Core.Audit
 
         public AuditDifferTests()
         {
-            auditDiffer = new AuditDiffer(new TheContainer(), new StateChangeFinder(new InstanceTraverser()));
+            auditDiffer = new AuditDiffer(new TheContainer(), new StateChangeFinder());
         }
 
         [Fact]

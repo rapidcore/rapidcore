@@ -7,22 +7,19 @@ namespace RapidCore.Diffing
 {
     public class StateChangeFinder
     {
-        private readonly InstanceTraverser instanceTraverser;
-        private readonly Func<InstanceTraverser, StateChangeFinderWorker> workerGenerator;
+        private readonly Func<StateChangeFinderWorker> workerGenerator;
 
-        public StateChangeFinder(InstanceTraverser instanceTraverser)
+        public StateChangeFinder()
         {
-            this.instanceTraverser = instanceTraverser;
-            this.workerGenerator = (traverser) => new StateChangeFinderWorker(traverser);
+            this.workerGenerator = () => new StateChangeFinderWorker(new InstanceTraverser());
         }
         
         /// <summary>
         /// Only meant to be used by unit tests
         /// </summary>
-        protected StateChangeFinder(Func<InstanceTraverser, StateChangeFinderWorker> workerGenerator, InstanceTraverser instanceTraverser)
+        protected StateChangeFinder(Func<StateChangeFinderWorker> workerGenerator)
         {
             this.workerGenerator = workerGenerator;
-            this.instanceTraverser = instanceTraverser;
         }
         
         /// <summary>
@@ -42,7 +39,7 @@ namespace RapidCore.Diffing
             //
             // Create a new worker, as a worker contains state
             //
-            var worker = workerGenerator.Invoke(instanceTraverser);
+            var worker = workerGenerator();
             
             var changes = new StateChanges
             {
