@@ -27,7 +27,7 @@ services:
       - 5432:5432
 
   sqlserver:
-    image: microsoft/mssql-server-linux:2017-CU6
+    image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: sql-s3rv3r%
