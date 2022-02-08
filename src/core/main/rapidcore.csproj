@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>RapidCore</RootNamespace>
-    <Version>0.27.0</Version>
+    <Version>0.27.1</Version>
     <Title>RapidCore</Title>
     <Authors>nover</Authors>
     <Description>RapidCore is a collection of dotnet libraries to help you accelerate backend and api development</Description>
