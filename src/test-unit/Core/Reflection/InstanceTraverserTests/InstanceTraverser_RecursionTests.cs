@@ -564,6 +564,8 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
             public bool? BoolNullable => true;
             public byte Byte => 4;
             public byte? ByteNullable => 4;
+            public sbyte SByte => 4;
+            public sbyte? SByteNullable => 4;
             public short Short => 5;
             public short? ShortNullable => 5;
             public ushort UShort => 6;
@@ -582,6 +584,10 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
             public double? DoubleNullable => 123.23;
             public decimal Decimal => 123.467m;
             public decimal? DecimalNullable => 123.467m;
+            public IntPtr IntPtr => IntPtr.Zero;
+            public IntPtr? IntPtrNullable => IntPtr.Zero;
+            public UIntPtr UIntPtr => UIntPtr.Zero;
+            public UIntPtr? UIntPtrNullable => UIntPtr.Zero;
             public DateTime DateTime => DateTime.Now;
             public DateTime? DateTimeNullable => DateTime.Now;
             public DateTimeOffset DateTimeOffset => DateTimeOffset.Now;
