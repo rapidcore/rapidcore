@@ -236,9 +236,11 @@ namespace RapidCore.Reflection
         /// </summary>
         private readonly Dictionary<Type, bool> nonRecursedTypes = new Dictionary<Type, bool>
         {
+            // make sure to include the types from this list: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
             { typeof(char), true },
             { typeof(bool), true },
             { typeof(byte), true },
+            { typeof(sbyte), true },
             { typeof(short), true },
             { typeof(ushort), true },
             { typeof(int), true },
@@ -248,6 +250,8 @@ namespace RapidCore.Reflection
             { typeof(float), true },
             { typeof(double), true },
             { typeof(decimal), true },
+            { typeof(IntPtr), true }, // nint
+            { typeof(UIntPtr), true}, // nuint
             { typeof(DateTime), true },
             { typeof(DateTimeOffset), true },
             { typeof(TimeSpan), true },
