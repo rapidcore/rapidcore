@@ -78,7 +78,7 @@ namespace RapidCore.Reflection
             var props = typeInfo.GetProperties(bindingFlags);
             foreach (var propertyInfo in props)
             {
-                if (!IsIndexProperty(propertyInfo))
+                if (!IsIndexProperty(propertyInfo) && !IsUselessBuiltInProperty(propertyInfo))
                 {
                     FieldAndPropertyHandler(listener, propertyInfo, context, instance);
                 }
@@ -240,8 +240,11 @@ namespace RapidCore.Reflection
             { typeof(bool), true },
             { typeof(byte), true },
             { typeof(short), true },
+            { typeof(ushort), true },
             { typeof(int), true },
+            { typeof(uint), true },
             { typeof(long), true },
+            { typeof(ulong), true },
             { typeof(float), true },
             { typeof(double), true },
             { typeof(decimal), true },
@@ -294,6 +297,25 @@ namespace RapidCore.Reflection
         private bool IsBackingMethod(MethodBase method)
         {
             return BackingMethodNameRegex.IsMatch(method.Name);
+        }
+
+        /// <summary>
+        /// Is the given property a built-in property that we should
+        /// ignore?
+        /// </summary>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        private bool IsUselessBuiltInProperty(PropertyInfo prop)
+        {
+            // the ICollection.SyncRoot property does not seem to be relevant
+            // for our traversal needs
+            if (prop.DeclaringType.ImplementsInterface(typeof(ICollection)) &&
+                prop.Name.Equals("System.Collections.ICollection.SyncRoot"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

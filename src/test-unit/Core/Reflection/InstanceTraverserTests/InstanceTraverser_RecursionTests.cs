@@ -566,10 +566,16 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
             public byte? ByteNullable => 4;
             public short Short => 5;
             public short? ShortNullable => 5;
+            public ushort UShort => 6;
+            public ushort? UShortNullable => 6;
             public int Int => 12345;
             public int? IntNullable => 12345;
+            public uint UInt => 2345;
+            public uint? UIntNullable => 2345;
             public long Long => 12352326;
             public long? LongNullable => 12352326;
+            public ulong ULong => 258741;
+            public ulong? ULongNullable => 258741;
             public float Float => 1.23f;
             public float? FloatNullable => 1.23f;
             public double Double => 123.23;
