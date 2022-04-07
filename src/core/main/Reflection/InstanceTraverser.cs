@@ -256,7 +256,8 @@ namespace RapidCore.Reflection
             { typeof(DateTimeOffset), true },
             { typeof(TimeSpan), true },
             { typeof(Guid), true },
-            { typeof(string), true }
+            { typeof(string), true },
+            { typeof(Type), true }
         };
         
         /// <summary>
