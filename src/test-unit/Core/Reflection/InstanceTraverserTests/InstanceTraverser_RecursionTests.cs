@@ -598,6 +598,7 @@ namespace UnitTests.Core.Reflection.InstanceTraverserTests
             public VictimOf Enum => VictimOf.Beauty;
             public VictimOf? EnumNullable => VictimOf.Beauty;
             public MemoryStream Stream => new MemoryStream();
+            public Type Type => typeof(NoRecursionOnTheseTypesVictim);
         }
         
         public enum VictimOf
