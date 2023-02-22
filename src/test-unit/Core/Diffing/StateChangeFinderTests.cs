@@ -83,7 +83,8 @@ namespace UnitTests.Core.Diffing
         
         public class TestableStateChangeFinder : StateChangeFinder
         {
-            public TestableStateChangeFinder(StateChangeFinderWorker worker) : base(worker)
+            public TestableStateChangeFinder(StateChangeFinderWorker worker) 
+                : base(() => worker)
             {
             }
         }
